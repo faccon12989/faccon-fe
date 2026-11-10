@@ -93,10 +93,14 @@ npm run dev        # http://127.0.0.1:5173 에서 직접 눈으로 확인
    - 예: `fix: 내 업무 화면 금액 줄바꿈 수정`
 3. `git push -u origin 브랜치이름` 후 GitHub에서 Pull Request를 만들어 팀원 확인을 받습니다.
 
-## 5. 배포 (faccon.naegoworks.com)
-- 사이트는 `gh-pages` 브랜치의 빌드 결과물로 운영됩니다.
-- `npm run build` → `dist/` 내용을 `gh-pages` 브랜치에 올립니다. `dist/CNAME`(faccon.naegoworks.com)이 빠지면 도메인이 끊기니 지우지 않습니다.
+## 5. 배포 (faccon.naegoworks.com) — 자동
+- **`main`에 올라오면 자동으로 배포됩니다.** 따로 할 일이 없습니다 (`.github/workflows/deploy.yml`).
+- 자동 배포는 먼저 `npm run check`를 돌립니다. **검사가 실패하면 사이트는 바뀌지 않고** 이전 화면이 그대로 남습니다.
+- 진행 상황: GitHub 저장소 → **Actions** 탭 → "사이트 자동 배포". 초록 체크면 성공, 빨간 X면 실패(눌러서 메시지를 AI에게 보여주세요).
+- 보통 2~3분 뒤 사이트에 반영됩니다. 안 바뀌어 보이면 브라우저 새로고침(강력 새로고침)을 해보세요.
+- `public/CNAME`(faccon.naegoworks.com)은 지우지 않습니다.
 - 페이지 링크는 상대 경로(`./my.html`)로 씁니다. `/my.html`처럼 `/`로 시작하면 배포 후 깨질 수 있습니다.
+- `gh-pages` 브랜치는 예전 수동 배포용이라 더 이상 쓰지 않습니다.
 
 ## 6. AI에게 요청할 때 (팀원용 예시)
 - "내 업무 화면에서 할 일 카드 문구를 더 짧게 바꿔줘. AGENTS.md 규칙 지키고 `npm run check` 통과시켜줘."

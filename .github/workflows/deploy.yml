@@ -1,0 +1,46 @@
+# main 에 올라오면 검사 → 빌드 → faccon.naegoworks.com 에 자동 배포한다.
+# 검사(npm run check)가 실패하면 배포하지 않는다.
+name: 사이트 자동 배포
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: 검사하고 빌드
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: 패키지 설치
+        run: npm ci
+      - name: 규칙·타입·테스트·빌드 검사
+        run: npm run check
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    name: 사이트에 올리기
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
