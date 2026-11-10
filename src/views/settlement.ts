@@ -3,7 +3,7 @@ import { adjust, won } from "../calc";
 import type { AppState } from "../types";
 import { findContract, pill } from "../ui";
 
-export function settlementView(): string {
+export const settlementView = (): string => {
   const c = findContract("AL-001");
   if (!c) return `<div class="card empty">실증용 계약이 없습니다</div>`;
   const r = adjust(c);
@@ -38,10 +38,10 @@ export function settlementView(): string {
         <p class="note">공개 체인에서는 주소와 금액이 보이므로 합성자료로만 시연합니다. 원가 판단이나 실물 검수 진위를 체인이 보증하지 않습니다.</p>
       </section>
     </div>`;
-}
+};
 
 /** 현재 상태를 실증 화면의 버튼·배지에 반영한다. */
-export function syncSettlement(state: AppState): void {
+export const syncSettlement = (state: AppState): void => {
   const box = document.getElementById("pay-state");
   const deposit = document.getElementById("btn-deposit");
   const pay = document.getElementById("btn-pay");
@@ -50,4 +50,4 @@ export function syncSettlement(state: AppState): void {
   else if (state.deposited) box.innerHTML = pill("p-info", "예치 완료 · 지급 가능");
   deposit.disabled = state.deposited;
   pay.disabled = !state.deposited || state.paid;
-}
+};

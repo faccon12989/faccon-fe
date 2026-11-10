@@ -10,21 +10,21 @@ import { renderDone, renderStep } from "./steps";
 const UPLOAD_DELAY_MS = 700;
 let state: StartState = INITIAL;
 
-function $(id: string): HTMLElement {
+const $ = (id: string): HTMLElement => {
   const node = document.getElementById(id);
   if (!node) throw new Error(`#${id} 요소가 없습니다`);
   return node;
-}
+};
 
-function renderRail(): void {
+const renderRail = (): void => {
   $("rail").innerHTML = STEP_TITLES.map((t, i) => {
     const cls = state.done || i < state.step ? "done" : i === state.step ? "now" : "";
     const label = i === 2 && state.path === "B" ? "준비 자료" : t;
     return `<li class="${cls}" ${i === state.step && !state.done ? 'aria-current="step"' : ""}><span>${i + 1}</span>${label}</li>`;
   }).join("");
-}
+};
 
-function render(focusTitle = false): void {
+const render = (focusTitle = false): void => {
   renderRail();
   const pane = $("step");
   const actions = document.querySelector<HTMLElement>(".actions");
@@ -40,10 +40,10 @@ function render(focusTitle = false): void {
   $("err").textContent = "";
   if (focusTitle) pane.querySelector<HTMLElement>("h1")?.setAttribute("tabindex", "-1");
   if (focusTitle) pane.querySelector<HTMLElement>("h1")?.focus();
-}
+};
 
 /** 폼의 현재 입력값을 상태로 읽어 온다 (새 상태 반환). */
-function readForm(s: StartState): StartState {
+const readForm = (s: StartState): StartState => {
   const form = $("step-form") as HTMLFormElement;
   const data = new FormData(form);
   const text = (k: string, fallback: string): string => (data.has(k) ? String(data.get(k) ?? "") : fallback);
@@ -76,19 +76,19 @@ function readForm(s: StartState): StartState {
     default:
       return s;
   }
-}
+};
 
-function go(next: number): void {
+const go = (next: number): void => {
   state = update(state, { step: Math.max(0, Math.min(LAST_STEP, next)) });
   render(true);
   window.scrollTo({ top: 0 });
-}
+};
 
-function fakeUpload(button: HTMLButtonElement, apply: () => StartState): void {
+const fakeUpload = (button: HTMLButtonElement, apply: () => StartState): void => {
   button.disabled = true;
   button.innerHTML = "<b>파일을 읽는 중…</b><span>조건과 원문 위치를 찾고 있습니다</span>";
   window.setTimeout(() => { state = apply(); render(); }, UPLOAD_DELAY_MS);
-}
+};
 
 document.addEventListener("click", (e) => {
   const t = e.target instanceof Element ? e.target.closest<HTMLButtonElement>("button") : null;

@@ -6,7 +6,7 @@ import { esc, findContract, pill, supplierName, visibleContracts } from "../ui";
 
 const STAGES = ["산출", "발주 반영", "청구", "지급근거"] as const;
 
-export function reconcileView(role: Role): string {
+export const reconcileView = (role: Role): string => {
   const list = visibleContracts(role);
   const rows = RECONCILE.flatMap((row) => {
     const c = findContract(row.contract);
@@ -30,9 +30,9 @@ export function reconcileView(role: Role): string {
       <thead><tr><th>계약</th><th>발주번호</th><th class="num">계산단가</th><th class="num">발주단가</th><th class="num">차이 × 수량</th><th style="width:220px">진행</th><th>상태</th></tr></thead>
       <tbody>${rows || `<tr><td colspan="7" class="empty">대조할 발주가 없습니다</td></tr>`}</tbody></table></div>
       <p class="note">조정 계산이 끝났다고 수령 완료가 아닙니다. 입금 또는 지급명세 근거가 없으면 “수령 확인 전”으로 표시합니다.</p></div>`;
-}
+};
 
-export function requestsView(role: Role): string {
+export const requestsView = (role: Role): string => {
   const isSupplier = role === "supplier";
   // 데모 편의: 공급기업 화면에서도 S-04 요청을 함께 보여준다.
   const rows = isSupplier ? REQUESTS.filter((q) => q.supplier === SELF_SUPPLIER || q.supplier === "S-04") : REQUESTS;
@@ -57,9 +57,9 @@ export function requestsView(role: Role): string {
     <section class="card" style="margin-top:16px"><h2>${isSupplier ? "우리 자료 열람 이력" : "열람 이력"}</h2>
       <div class="tbl"><table><thead><tr><th>시각</th><th>누가</th><th>무엇을</th><th>범위</th></tr></thead>
       <tbody>${log}</tbody></table></div></section>`;
-}
+};
 
-export function packagesView(role: Role): string {
+export const packagesView = (role: Role): string => {
   if (role === "supplier") {
     return `<h1>제출 패키지</h1><div class="card empty">제출 패키지는 구매기업이 목적별로 만들고, 공급기업 자료는 공유 승인된 범위만 포함됩니다.</div>`;
   }
@@ -75,4 +75,4 @@ export function packagesView(role: Role): string {
     <p class="sub">요청 항목 → 산출값 → 근거 파일·페이지·버전. 기관 담당자는 지갑 없이 PDF·엑셀로 읽습니다.</p>
     ${cards}
     <p class="note">체결 비율은 등록된 계약 기준입니다. 미등록 계약이 있으면 회사 전체 비율로 표시하지 않습니다. 실적 인정은 기관의 판단입니다.</p>`;
-}
+};

@@ -9,7 +9,7 @@ const TODO_ICON: Readonly<Record<TodoKind, readonly [string, string]>> = {
   missing: ["p-info", "보"],
 };
 
-export function dashboardView(role: Role): string {
+export const dashboardView = (role: Role): string => {
   const list = visibleContracts(role);
   const results = list.map((c) => ({ c, r: adjust(c) }));
   // 약정 전(초안) 계약은 예상액 합계에서 뺀다.
@@ -65,4 +65,4 @@ export function dashboardView(role: Role): string {
         <p class="note">조정 차액은 양사 간 이전금액입니다. 구매기업의 이득이나 절감액으로 계산하지 않습니다.</p>
       </section>
     </div>`;
-}
+};

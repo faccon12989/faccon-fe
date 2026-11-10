@@ -5,7 +5,7 @@ import { adjustPill, esc, findContract, statusPill, supplierName, visibleContrac
 
 const STEPS = ["등록", "검토", "보완", "약정", "모니터링", "조정·반영", "이력", "제출"] as const;
 
-export function contractsView(role: Role): string {
+export const contractsView = (role: Role): string => {
   const actions = role === "buyer"
     ? `<div class="row"><button class="btn" data-toast="CSV 매핑 화면은 데모에서 생략했습니다">기존 약정 파일 가져오기</button><button class="btn pri" data-toast="신규 약정 준비(B 경로)는 데모에서 생략했습니다">신규 약정 준비</button></div>`
     : "";
@@ -21,9 +21,9 @@ export function contractsView(role: Role): string {
     <div class="card"><div class="tbl"><table>
       <thead><tr><th>계약</th><th>공급기업</th><th>품목 / 원재료</th><th>경로</th><th>주기</th><th>버전</th><th>계약 종료</th><th>상태</th></tr></thead>
       <tbody>${rows}</tbody></table></div></div>`;
-}
+};
 
-function indexChart(series: readonly number[], threshold: number): string {
+const indexChart = (series: readonly number[], threshold: number): string => {
   const W = 520, H = 170, PAD = 28;
   const min = Math.min(92, ...series);
   const max = Math.max(110, ...series);
@@ -40,18 +40,18 @@ function indexChart(series: readonly number[], threshold: number): string {
     <text x="${W - PAD + 2}" y="${y(100 - threshold) + 4}">-${threshold}%</text>
     <polyline points="${points}" fill="none" stroke="#0F766E" stroke-width="2.5"/>${dots}
   </svg>`;
-}
+};
 
-export function resultBlock(c: Readonly<Contract>, r: AdjustResult): string {
+export const resultBlock = (c: Readonly<Contract>, r: AdjustResult): string => {
   const cls = !r.triggered ? "flat" : r.diffPerUnit < 0 ? "down" : "";
   return `<div class="result ${cls}">
     <div><small>변동률</small><br><b>${pct(r.rate)}</b></div>
     <div><small>변경 단가 Pt</small><br><b>${won(r.price)}</b></div>
     <div><small>차액 (× ${c.qty.toLocaleString()}개)</small><br><b>${r.triggered ? signedWon(r.total) : "조정 없음"}</b></div>
     <div>${adjustPill(r)}</div></div>`;
-}
+};
 
-export function contractDetailView(role: Role, id: string): string {
+export const contractDetailView = (role: Role, id: string): string => {
   const c = findContract(id);
   if (!c || !visibleContracts(role).includes(c)) return `<div class="card empty">볼 수 있는 계약이 아닙니다</div>`;
   const r = adjust(c);
@@ -101,4 +101,4 @@ export function contractDetailView(role: Role, id: string): string {
         ${lock}
       </section>
     </div>`;
-}
+};

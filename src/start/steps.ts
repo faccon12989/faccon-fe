@@ -10,7 +10,7 @@ const field = (name: string, label: string, value: string, opts: { type?: string
     ${opts.hint ? `<small>${opts.hint}</small>` : ""}
   </label>`;
 
-function stepPath(s: StartState): string {
+const stepPath = (s: StartState): string => {
   const card = (v: "A" | "B", title: string, desc: string, first: string): string => `
     <label class="choice ${s.path === v ? "on" : ""}">
       <input type="radio" name="path" value="${v}" ${s.path === v ? "checked" : ""}>
@@ -28,9 +28,9 @@ function stepPath(s: StartState): string {
     <details class="pre-check"><summary>우리 거래가 연동 대상인지 모르겠어요</summary>
       <p>주요 원재료(비용이 납품대금의 10% 이상)가 있는지, 위탁기업이 소기업이거나 90일 이내·1억 원 이하 거래인지에 따라 달라집니다. 여기서 결론 내리지 않고, 시작 후 거래별로 근거와 함께 “대상 / 예외 / 추가 확인”으로 분류합니다.</p>
     </details>`;
-}
+};
 
-function stepCompany(s: StartState): string {
+const stepCompany = (s: StartState): string => {
   return `
     <h1>회사와 담당자를 알려주세요</h1>
     <p class="lead-s">파일럿은 한 품목군에서 시작합니다. 결재하실 분이 따로 있으면 함께 적어 주세요.</p>
@@ -41,9 +41,9 @@ function stepCompany(s: StartState): string {
       ${field("email", "담당자 이메일", s.email, { type: "email", required: true, ac: "email" })}
       ${field("approver", "예산 승인자 (선택)", s.approver, { hint: "도입 결정에 참여하실 분" })}
     </div>`;
-}
+};
 
-function stepUploadA(s: StartState): string {
+const stepUploadA = (s: StartState): string => {
   if (!s.uploaded) {
     return `
       <h1>기존 약정을 가져옵니다</h1>
@@ -69,18 +69,18 @@ function stepUploadA(s: StartState): string {
       <tbody>${rows}</tbody></table></div>
     <button type="button" class="btn ghost sm" id="confirm-all">모두 원문과 같음으로 표시</button>
     <p class="hint-s">AI가 찾은 값은 초안입니다. 금액 계산은 확인된 값으로 고정된 규칙이 합니다. “다시 확인” 항목은 필요하면 공급기업에 그 항목만 보완 요청합니다.</p>`;
-}
+};
 
-function stepUploadB(s: StartState): string {
+const stepUploadB = (s: StartState): string => {
   const items = B_CHECKLIST.map((c) => `<label class="ck row-ck"><input type="checkbox" name="checklist" value="${esc(c)}" ${s.checklist.includes(c) ? "checked" : ""}> ${esc(c)}</label>`).join("");
   return `
     <h1>지금 준비할 수 있는 자료를 골라 주세요</h1>
     <p class="lead-s">없는 자료는 비워 두세요. 빠진 항목만 공급기업에 이유와 기간을 밝혀 요청합니다.</p>
     <div class="check-list">${items}</div>
     <p class="hint-s">원가 비중·지표·산식 확인이 어려우면 전문기관 검토로 연결합니다. 전문기관 명의 확인서는 그 기관이 발급합니다.</p>`;
-}
+};
 
-function stepInvite(s: StartState): string {
+const stepInvite = (s: StartState): string => {
   const rows = s.invites.map((inv, i) => `
     <div class="invite">
       <input name="inv-company-${i}" placeholder="공급기업 회사명" value="${esc(inv.company)}" aria-label="공급기업 회사명 ${i + 1}">
@@ -96,9 +96,9 @@ function stepInvite(s: StartState): string {
       <label class="ck row-ck"><input type="radio" name="scope" value="result+summary" ${s.shareScope === "result+summary" ? "checked" : ""}> 산정 결과 + 요약 근거</label>
       <p class="lock-s">🔒 상세 매입자료 원문은 어떤 경우에도 기본 비공개입니다. 미연동 동의나 포괄적 정보공유는 미리 체크해 두지 않습니다.</p>
     </fieldset>`;
-}
+};
 
-function stepErp(s: StartState): string {
+const stepErp = (s: StartState): string => {
   if (!s.erpUploaded) {
     return `
       <h1>ERP 발주·청구 파일을 연결합니다</h1>
@@ -117,9 +117,9 @@ function stepErp(s: StartState): string {
     <h1>열 이름을 한 번만 맞춰 주세요</h1>
     <p class="lead-s"><b>PO_2026-11.csv</b> · 1,284행 (가상). 이 설정은 저장되어 다음 달부터는 파일만 올리면 됩니다.</p>
     <div class="tbl-s"><table><thead><tr><th>필요한 항목</th><th>파일의 열</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
-}
+};
 
-function stepReview(s: StartState): string {
+const stepReview = (s: StartState): string => {
   const invites = s.invites.filter((i) => i.company.trim()).map((i) => esc(i.company)).join(", ") || "-";
   const plan = [
     ["1주", "실제 절차 재현 · 정답셋 만들기"],
@@ -139,9 +139,9 @@ function stepReview(s: StartState): string {
     <h2 class="h2-s">6주 파일럿 일정</h2>
     <ol class="plan-s">${plan}</ol>
     <label class="ck row-ck consent"><input type="checkbox" name="consent" ${s.measureConsent ? "checked" : ""}> 같은 업무를 기존 방식과 이 서비스로 각각 해보고 걸린 시간을 기록하는 데 동의합니다. <small>가격은 이 측정 결과를 보고 제안합니다.</small></label>`;
-}
+};
 
-export function renderStep(s: StartState): string {
+export const renderStep = (s: StartState): string => {
   switch (s.step) {
     case 0: return stepPath(s);
     case 1: return stepCompany(s);
@@ -150,9 +150,9 @@ export function renderStep(s: StartState): string {
     case 4: return stepErp(s);
     default: return stepReview(s);
   }
-}
+};
 
-export function renderDone(s: StartState): string {
+export const renderDone = (s: StartState): string => {
   return `
     <div class="done">
       <span class="done-mark" aria-hidden="true">✓</span>
@@ -160,4 +160,4 @@ export function renderDone(s: StartState): string {
       <p class="lead-s">공급기업 초대 메일이 발송되고, 담당 매니저가 1주차 업무 재현 일정을 잡기 위해 연락드립니다 (데모 — 실제 발송 없음).</p>
       <div class="row"><a class="btn solid" href="./my.html">내 업무 화면으로 →</a><a class="btn ghost" href="./">소개로 돌아가기</a></div>
     </div>`;
-}
+};

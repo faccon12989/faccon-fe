@@ -71,12 +71,12 @@ export const AUTO_MAPPING: Readonly<Record<string, string>> = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-export function update(s: StartState, patch: Partial<StartState>): StartState {
+export const update = (s: StartState, patch: Partial<StartState>): StartState => {
   return { ...s, ...patch };
-}
+};
 
 /** 현재 단계에서 다음으로 넘어갈 수 없는 이유. 없으면 null. */
-export function validate(s: StartState): string | null {
+export const validate = (s: StartState): string | null => {
   switch (s.step) {
     case 0:
       return s.path ? null : "시작 방식을 골라 주세요.";
@@ -103,4 +103,4 @@ export function validate(s: StartState): string | null {
     default:
       return null;
   }
-}
+};

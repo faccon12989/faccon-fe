@@ -12,13 +12,13 @@ export interface FlowStep {
   cta: string;
 }
 
-function contractOf(id: string): Contract {
+const contractOf = (id: string): Contract => {
   const c = findContract(id);
   if (!c) throw new Error(`${id} 계약이 없습니다`);
   return c;
-}
+};
 
-function unappliedFlow(): FlowStep[] {
+const unappliedFlow = (): FlowStep[] => {
   const c = contractOf("AL-001");
   const r = adjust(c);
   const gap = (r.price - 10000) * c.qty;
@@ -54,9 +54,9 @@ function unappliedFlow(): FlowStep[] {
       cta: "완료",
     },
   ];
-}
+};
 
-function renewFlow(): FlowStep[] {
+const renewFlow = (): FlowStep[] => {
   const c = contractOf("ST-005");
   return [
     {
@@ -84,9 +84,9 @@ function renewFlow(): FlowStep[] {
       cta: "완료",
     },
   ];
-}
+};
 
-function missingFlow(): FlowStep[] {
+const missingFlow = (): FlowStep[] => {
   return [
     {
       title: "산정에 필요한 값 하나가 비어 있어요",
@@ -115,10 +115,10 @@ function missingFlow(): FlowStep[] {
       cta: "완료",
     },
   ];
-}
+};
 
-export function flowFor(id: TaskId): FlowStep[] {
+export const flowFor = (id: TaskId): FlowStep[] => {
   if (id === "C-101") return renewFlow();
   if (id === "C-102") return unappliedFlow();
   return missingFlow();
-}
+};

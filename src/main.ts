@@ -38,32 +38,32 @@ const TOAST_MS = 2200;
 let state: AppState = { role: "buyer", deposited: false, paid: false };
 let toastTimer: number | undefined;
 
-function setState(patch: Partial<AppState>): void {
+const setState = (patch: Partial<AppState>): void => {
   state = { ...state, ...patch };
-}
+};
 
-function el<T extends HTMLElement>(id: string): T {
+const el = <T extends HTMLElement>(id: string): T => {
   const node = document.getElementById(id);
   if (!node) throw new Error(`#${id} 요소가 없습니다`);
   return node as T;
-}
+};
 
-function parseHash(): { page: Page; id?: string } {
+const parseHash = (): { page: Page; id?: string } => {
   const [, raw = "dashboard", id] = (location.hash || "#/dashboard").split("/");
   const page = PAGES.includes(raw as Page) ? (raw as Page) : "dashboard";
   return id ? { page, id: decodeURIComponent(id) } : { page };
-}
+};
 
-function renderNav(active: Page): void {
+const renderNav = (active: Page): void => {
   el("nav").innerHTML = NAV.map((item) => {
     if (item === "sep") return `<div class="sep">독립 실증</div>`;
     const on = item.href.slice(2) === active;
     const badge = item.count && state.role === "buyer" ? `<span class="cnt">${item.count()}</span>` : "";
     return `<a href="${item.href}" class="${on ? "on" : ""}" ${on ? 'aria-current="page"' : ""}><span>${item.label}</span>${badge}</a>`;
   }).join("");
-}
+};
 
-function renderPage(page: Page, id: string | undefined, role: Role): string {
+const renderPage = (page: Page, id: string | undefined, role: Role): string => {
   switch (page) {
     case "contracts": return id ? contractDetailView(role, id) : contractsView(role);
     case "reconcile": return reconcileView(role);
@@ -72,9 +72,9 @@ function renderPage(page: Page, id: string | undefined, role: Role): string {
     case "settlement": return settlementView();
     default: return dashboardView(role);
   }
-}
+};
 
-function route(): void {
+const route = (): void => {
   const { page, id } = parseHash();
   const view = el("view");
   view.innerHTML = renderPage(page, id, state.role);
@@ -83,22 +83,22 @@ function route(): void {
   if (page === "settlement") syncSettlement(state);
   view.focus({ preventScroll: true });
   window.scrollTo(0, 0);
-}
+};
 
-function toast(message: string): void {
+const toast = (message: string): void => {
   const t = el("toast");
   t.textContent = message;
   t.classList.add("show");
   window.clearTimeout(toastTimer);
   toastTimer = window.setTimeout(() => t.classList.remove("show"), TOAST_MS);
-}
+};
 
-function switchRole(role: Role, button: HTMLElement): void {
+const switchRole = (role: Role, button: HTMLElement): void => {
   setState({ role });
   document.querySelectorAll<HTMLElement>("[data-role]").forEach((b) => b.classList.toggle("on", b === button));
   toast(role === "supplier" ? "공급기업(동양알루텍) 화면으로 전환했습니다" : "구매기업(A정밀) 화면으로 전환했습니다");
   route();
-}
+};
 
 document.addEventListener("click", (e) => {
   const target = e.target;

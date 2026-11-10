@@ -13,11 +13,11 @@ const SAMPLE: Readonly<Contract> = {
 const TABS = ["buyer", "supplier", "agency"] as const;
 type Tab = (typeof TABS)[number];
 
-function byId<T extends HTMLElement>(id: string): T | null {
+const byId = <T extends HTMLElement>(id: string): T | null => {
   return document.getElementById(id) as T | null;
-}
+};
 
-function renderCalc(it: number): void {
+const renderCalc = (it: number): void => {
   const out = byId<HTMLElement>("site-calc");
   const label = byId<HTMLOutputElement>("site-it-out");
   if (!out || !label) return;
@@ -34,9 +34,9 @@ function renderCalc(it: number): void {
     <div class="co-row"><span>1,000개 차액</span><b>${r.triggered ? signedWon(r.total) : "0원"}</b></div>
     <p class="co-note">${verdict}</p>
     <p class="co-formula">10,000 + 4,000 × (${it} − 100) ÷ 100</p>`;
-}
+};
 
-function selectTab(tab: Tab, focus = false): void {
+const selectTab = (tab: Tab, focus = false): void => {
   TABS.forEach((t) => {
     const btn = byId<HTMLButtonElement>(`t-${t}`);
     const panel = byId<HTMLElement>(`tab-${t}`);
@@ -47,13 +47,13 @@ function selectTab(tab: Tab, focus = false): void {
     panel.hidden = !on;
     if (on && focus) btn.focus();
   });
-}
+};
 
-function isTab(value: string | undefined): value is Tab {
+const isTab = (value: string | undefined): value is Tab => {
   return TABS.includes(value as Tab);
-}
+};
 
-function setupTabs(): void {
+const setupTabs = (): void => {
   const list = document.querySelector<HTMLElement>('[role="tablist"]');
   if (!list) return;
   list.addEventListener("click", (e) => {
@@ -67,14 +67,14 @@ function setupTabs(): void {
     const next = TABS[(current + step + TABS.length) % TABS.length];
     if (next) selectTab(next, true);
   });
-}
+};
 
-function setupSlider(): void {
+const setupSlider = (): void => {
   const input = byId<HTMLInputElement>("site-it");
   if (!input) return;
   input.addEventListener("input", () => renderCalc(Number(input.value)));
   renderCalc(Number(input.value));
-}
+};
 
 setupSlider();
 setupTabs();

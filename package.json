@@ -7,7 +7,9 @@
     "dev": "vite --host 127.0.0.1 --port 5173",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:style": "node scripts/check-style.mjs",
+    "check": "npm run check:style && npm run typecheck && npm test && vite build"
   },
   "devDependencies": {
     "typescript": "5.6.3",

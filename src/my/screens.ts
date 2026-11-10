@@ -13,16 +13,16 @@ export interface MyState {
 const ICON: Readonly<Record<Todo["kind"], string>> = { unapplied: "₩", renew: "↻", missing: "?" };
 const TONE: Readonly<Record<Todo["kind"], string>> = { unapplied: "red", renew: "amber", missing: "blue" };
 
-function todoCard(t: Todo): string {
+const todoCard = (t: Todo): string => {
   const c = findContract(t.contract);
   return `<button class="task ${TONE[t.kind]}" data-task="${esc(t.code)}">
     <span class="task-ic" aria-hidden="true">${ICON[t.kind]}</span>
     <span class="task-t"><b>${esc(t.title)}</b><small>${esc(c?.item)} · ${esc(t.reason)}</small></span>
     <span class="task-go" aria-hidden="true">›</span>
   </button>`;
-}
+};
 
-export function homeScreen(s: MyState): string {
+export const homeScreen = (s: MyState): string => {
   const open = TODOS.filter((t) => !s.doneTasks.includes(t.code));
   const signed = CONTRACTS.filter((c) => c.status !== "draft").map((c) => adjust(c));
   const up = signed.filter((r) => r.total > 0).reduce((a, r) => a + r.total, 0);
@@ -45,9 +45,9 @@ export function homeScreen(s: MyState): string {
       <p class="tiny">약정이 체결된 ${signed.length}건 기준 · 양사 간 주고받는 금액이에요</p>
       <button class="link-btn" data-tab="contracts">약정별로 보기 ›</button>
     </section>`;
-}
+};
 
-export function contractsScreen(): string {
+export const contractsScreen = (): string => {
   const cards = CONTRACTS.map((c) => {
     const r = adjust(c);
     const draft = c.status === "draft";
@@ -62,9 +62,9 @@ export function contractsScreen(): string {
   }).join("");
   return `<section class="hello"><h1>내 약정</h1><p class="date">공급기업 ${CONTRACTS.length}곳 · 11월 지표 기준</p></section>
     <div class="clist">${cards}</div>`;
-}
+};
 
-export function detailScreen(id: string): string {
+export const detailScreen = (id: string): string => {
   const c = findContract(id);
   if (!c) return `<p>약정을 찾을 수 없어요.</p>`;
   const r = adjust(c);
@@ -84,9 +84,9 @@ export function detailScreen(id: string): string {
       <dl><dt>원재료</dt><dd>${esc(c.material)}</dd><dt>지표</dt><dd>${esc(c.index)}</dd>
       <dt>확인 주기</dt><dd>${esc(c.cycle)}</dd><dt>적용</dt><dd>${esc(c.applyDay)}</dd><dt>계약 종료</dt><dd>${esc(c.end)}</dd></dl>
       <p class="tiny">🔒 공급기업의 원가 원문은 보이지 않아요. 양사가 합의한 값만 보여요.</p></section>`;
-}
+};
 
-export function docsScreen(): string {
+export const docsScreen = (): string => {
   const items = REQUESTS.map((q) => `<li class="doc">
       <span class="doc-ic" aria-hidden="true">${q.reuse ? "↺" : "↗"}</span>
       <span><b>${esc(q.item)}</b><small>${esc(supplierName(q.supplier))} · ${esc(q.reuse ? `기존 자료 재사용 (${q.reuse})` : q.state)}</small></span>
@@ -97,4 +97,4 @@ export function docsScreen(): string {
       <p class="tiny">포상 신청, 조사 대응, 지원사업 보고처럼 목적을 고르면 필요한 근거를 모아드려요.</p>
       <div class="purpose"><button data-toast="포상 서류 묶음을 만들었어요 (데모)">포상 신청</button><button data-toast="조사 대응 자료를 만들었어요 (데모)">조사 대응</button><button data-toast="지원사업 보고 자료를 만들었어요 (데모)">지원사업 보고</button></div>
     </section>`;
-}
+};

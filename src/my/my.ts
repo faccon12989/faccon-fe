@@ -22,12 +22,12 @@ const byId = (id: string): HTMLElement => {
   return el;
 };
 
-function setState(patch: Partial<MyState>): void {
+const setState = (patch: Partial<MyState>): void => {
   state = { ...state, ...patch };
   render();
-}
+};
 
-function render(): void {
+const render = (): void => {
   const screen = byId("screen");
   screen.innerHTML = state.detail ? detailScreen(state.detail)
     : state.tab === "contracts" ? contractsScreen()
@@ -37,17 +37,17 @@ function render(): void {
     const on = t.id === state.tab;
     return `<button data-tab="${t.id}" class="${on ? "on" : ""}" ${on ? 'aria-current="page"' : ""}><span aria-hidden="true">${t.icon}</span>${t.label}</button>`;
   }).join("");
-}
+};
 
-function toast(msg: string): void {
+const toast = (msg: string): void => {
   const t = byId("toast");
   t.textContent = msg;
   t.classList.add("show");
   window.clearTimeout(toastTimer);
   toastTimer = window.setTimeout(() => t.classList.remove("show"), TOAST_MS);
-}
+};
 
-function renderSheet(): void {
+const renderSheet = (): void => {
   if (!flow) return;
   const step = flow.steps[flow.at];
   if (!step) return;
@@ -59,26 +59,26 @@ function renderSheet(): void {
     <div class="sheet-body">${step.body}</div>
     <button class="btn solid lg wide" data-advance>${step.cta}</button>`;
   byId("sheet-title").focus();
-}
+};
 
-function openFlow(id: TaskId, opener: HTMLElement): void {
+const openFlow = (id: TaskId, opener: HTMLElement): void => {
   lastFocus = opener;
   flow = { id, steps: flowFor(id), at: 0 };
   byId("sheet-bg").hidden = false;
   byId("sheet").hidden = false;
   document.body.classList.add("locked");
   renderSheet();
-}
+};
 
-function closeFlow(): void {
+const closeFlow = (): void => {
   flow = null;
   byId("sheet-bg").hidden = true;
   byId("sheet").hidden = true;
   document.body.classList.remove("locked");
   lastFocus?.focus();
-}
+};
 
-function advance(): void {
+const advance = (): void => {
   if (!flow) return;
   if (flow.at < flow.steps.length - 1) {
     flow = { ...flow, at: flow.at + 1 };
@@ -89,7 +89,7 @@ function advance(): void {
   closeFlow();
   setState({ doneTasks: [...state.doneTasks, done] });
   toast("할 일을 처리했어요");
-}
+};
 
 document.addEventListener("click", (e) => {
   const el = e.target instanceof Element ? e.target : null;
