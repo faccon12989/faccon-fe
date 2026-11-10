@@ -158,6 +158,6 @@ export function renderDone(s: StartState): string {
       <span class="done-mark" aria-hidden="true">✓</span>
       <h1>${esc(s.company)}의 파일럿을 준비했습니다</h1>
       <p class="lead-s">공급기업 초대 메일이 발송되고, 담당 매니저가 1주차 업무 재현 일정을 잡기 위해 연락드립니다 (데모 — 실제 발송 없음).</p>
-      <div class="row"><a class="btn solid" href="/my.html">내 업무 화면으로 →</a><a class="btn ghost" href="/">소개로 돌아가기</a></div>
+      <div class="row"><a class="btn solid" href="./my.html">내 업무 화면으로 →</a><a class="btn ghost" href="./">소개로 돌아가기</a></div>
     </div>`;
 }
