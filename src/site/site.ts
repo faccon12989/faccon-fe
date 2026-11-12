@@ -15,8 +15,6 @@ const rowsHtml = (rows: readonly Row[]): string => rows
   .map(([label, value, tone]) => `<li><span>${esc(label)}</span><b class="${tone ?? ""}">${esc(value)}</b></li>`)
   .join("");
 
-const dateLine = (text: string): string => `<p class="chat-date">${esc(text)}</p>`;
-
 const message = (title: string, rows: readonly Row[], time: string, action?: string): string => `
   <div class="chat-msg">
     <span class="avatar" aria-hidden="true">F</span>
@@ -56,18 +54,16 @@ const renderChat = (): void => {
   const r = adjust(c);
   const rise = Math.round(r.rate * 100);
   box.innerHTML = [
-    dateLine("2026년 11월 1일 일요일"),
     message("[단가 변경] 11월 발주서 확인 필요", [
       ["품목", c.item],
       ["지수 변동", `알루미늄 +${rise}%`],
       ["새 단가", `${won(c.p0)} → ${won(r.price)}`, "new"],
       ["11월 발주서", `${won(po.poPrice)} (수정 필요)`, "warn"],
-    ], "오전 8:30", "대시보드에서 확인"),
-    dateLine("2026년 11월 3일 화요일"),
+    ], "11/1 오전 8:30", "대시보드에서 확인"),
     message("[계약 갱신] 계약 끝난 뒤 발주 2건", [
       ["품목", renew.item],
       ["계약 종료", "10월 31일"],
-    ], "오전 9:00"),
+    ], "11/3 오전 9:00"),
   ].join("");
   playArrival(box);
 };
