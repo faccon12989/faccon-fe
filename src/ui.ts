@@ -42,6 +42,13 @@ export const adjustPill = (r: AdjustResult): string => {
     : `<span class="pill p-info">인하 ${pct(r.rate)}</span>`;
 };
 
+/** 이번(11월 지표) 조정이 실제로 적용되는 날짜. 데모 기준 지표월은 2026년 11월. */
+export const applyFrom = (applyDay: string): string => {
+  if (applyDay.startsWith("익월")) return `2026년 12월 1일 ${applyDay.includes("검수") ? "검수분" : "발주분"}부터`;
+  if (applyDay.startsWith("분기")) return `2027년 1월 1일 ${applyDay.includes("검수") ? "검수분" : "발주분"}부터`;
+  return applyDay;
+};
+
 export const pill = (cls: string, label: string): string => {
   return `<span class="pill ${cls}">${esc(label)}</span>`;
 };

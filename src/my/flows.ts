@@ -1,7 +1,7 @@
 /* 할 일 해결 과정. 각 할 일은 몇 단계의 안내 화면으로 처리한다. */
 import { adjust, signedWon, won } from "../calc";
 import type { Contract } from "../types";
-import { esc, findContract } from "../ui";
+import { applyFrom, esc, findContract } from "../ui";
 
 export type TaskId = "C-101" | "C-102" | "C-103";
 
@@ -39,12 +39,12 @@ const unappliedFlow = (): FlowStep[] => {
       body: `<ul class="todo-list">
           <li><span>대상</span><b>PO-2611-014 · ${esc(c.item)}</b></li>
           <li><span>변경</span><b>${won(10000)} → ${won(r.price)}</b></li>
-          <li><span>적용 기준</span><b>${esc(c.applyDay)}</b></li>
+          <li><span>적용 시점</span><b>${esc(applyFrom(c.applyDay))}</b></li>
           <li><span>근거</span><b>변동표 11월 · 약정 ${esc(c.version)} 제5조</b></li>
         </ul>
         <label class="pick">받는 사람
           <select name="to"><option>ERP 담당 박OO (구매팀)</option><option>회계팀 이OO</option></select></label>
-        <p class="note-s">공급기업 동양알루텍에도 같은 변동표가 공유돼요. 원가 원문은 포함되지 않아요.</p>`,
+        <p class="note-s">약정 문구는 '${esc(c.applyDay)}'라서, 11월 발주 중 12월 1일 이후 검수되는 물량부터 새 단가가 적용돼요. 공급기업에도 같은 변동표가 공유되고, 원가 원문은 포함되지 않아요.</p>`,
       cta: "수정 요청 보내기",
     },
     {

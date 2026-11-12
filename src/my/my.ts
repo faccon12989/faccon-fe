@@ -4,6 +4,7 @@ import "./my.css";
 import { type FlowStep, flowFor, type TaskId } from "./flows";
 import { contractsScreen, detailScreen } from "./contract-views";
 import { docsScreen } from "./docs-view";
+import { ALERT_EVENTS, settingsScreen } from "./settings-view";
 import { CHANNELS, homeScreen, type MyState } from "./screens";
 import type { Channel } from "../types";
 
@@ -11,10 +12,11 @@ const TABS = [
   { id: "home", label: "홈" },
   { id: "contracts", label: "약정" },
   { id: "docs", label: "자료·제출" },
+  { id: "settings", label: "설정" },
 ] as const;
 const TOAST_MS = 2000;
 
-let state: MyState = { tab: "home", detail: null, doneTasks: [], channels: ["kakao", "email"] };
+let state: MyState = { tab: "home", detail: null, doneTasks: [], channels: ["kakao", "email"], events: ALERT_EVENTS.map((e) => e.id) };
 let flow: { id: TaskId; steps: FlowStep[]; at: number } | null = null;
 let lastFocus: HTMLElement | null = null;
 let toastTimer: number | undefined;
@@ -35,6 +37,7 @@ const render = (): void => {
   screen.innerHTML = state.detail ? detailScreen(state.detail)
     : state.tab === "contracts" ? contractsScreen()
     : state.tab === "docs" ? docsScreen()
+    : state.tab === "settings" ? settingsScreen(state)
     : homeScreen(state);
   byId("tabbar").innerHTML = TABS.map((t) => {
     const on = t.id === state.tab;
@@ -94,6 +97,12 @@ const advance = (): void => {
   toast("할 일을 처리했어요");
 };
 
+const toggleEvent = (id: string, label: string): void => {
+  const on = state.events.includes(id);
+  setState({ events: on ? state.events.filter((e) => e !== id) : [...state.events, id] });
+  toast(on ? `${label} 알림을 껐어요` : `${label} 알림을 켰어요`);
+};
+
 const toggleChannel = (id: Channel, label: string): void => {
   const on = state.channels.includes(id);
   setState({ channels: on ? state.channels.filter((c) => c !== id) : [...state.channels, id] });
@@ -104,7 +113,7 @@ document.addEventListener("click", (e) => {
   const el = e.target instanceof Element ? e.target : null;
   if (!el) return;
   const tab = el.closest<HTMLElement>("[data-tab]");
-  if (tab?.dataset.tab === "home" || tab?.dataset.tab === "contracts" || tab?.dataset.tab === "docs") {
+  if (tab?.dataset.tab === "home" || tab?.dataset.tab === "contracts" || tab?.dataset.tab === "docs" || tab?.dataset.tab === "settings") {
     setState({ tab: tab.dataset.tab, detail: null });
     window.scrollTo({ top: 0 });
     return;
@@ -119,6 +128,8 @@ document.addEventListener("click", (e) => {
   const chan = el.closest<HTMLElement>("[data-channel]");
   const picked = CHANNELS.find((ch) => ch.id === chan?.dataset.channel);
   if (picked) { toggleChannel(picked.id, picked.label); return; }
+  const ev = ALERT_EVENTS.find((x) => x.id === el.closest<HTMLElement>("[data-event]")?.dataset.event);
+  if (ev) { toggleEvent(ev.id, ev.label); return; }
   const t = el.closest<HTMLElement>("[data-toast]");
   if (t?.dataset.toast) toast(t.dataset.toast);
 });

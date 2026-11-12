@@ -2,7 +2,7 @@
 import { adjust, pct, signedWon, won } from "../calc";
 import { CONTRACTS, TRAILS } from "../data";
 import type { Contract } from "../types";
-import { esc, findContract, supplierName } from "../ui";
+import { applyFrom, esc, findContract, supplierName } from "../ui";
 
 const STATUS: Readonly<Record<Contract["status"], readonly [string, string]>> = {
   ok: ["ok", "운영 중"],
@@ -49,7 +49,7 @@ const conditions = (c: Contract): string => `
       <dt>기준 지표</dt><dd>${esc(c.index)} · 기준값 ${c.i0}</dd>
       <dt>조정 요건</dt><dd>지표 ±${c.threshold}% 이상 변동 시</dd>
       <dt>확인 주기</dt><dd>${esc(c.cycle)}</dd>
-      <dt>적용 시점</dt><dd>${esc(c.applyDay)}</dd>
+      <dt>적용 시점</dt><dd>${esc(c.applyDay)}<small>이번 조정: ${esc(applyFrom(c.applyDay))}</small></dd>
       <dt>제품당 원재료비</dt><dd>${won(c.m0)}</dd>
       <dt>계약 종료</dt><dd>${esc(c.end)}</dd>
       <dt>약정 버전</dt><dd>${esc(c.version)}</dd>
@@ -65,6 +65,8 @@ const calcPanel = (c: Contract): string => {
       <tr><td>지표</td><td class="n">${c.i0} → ${r.it}</td></tr>
       <tr><td>산식</td><td class="n formula">${c.p0.toLocaleString()} + ${c.m0.toLocaleString()} × (${r.it} − ${c.i0}) ÷ ${c.i0}</td></tr>
       <tr><td>판정</td><td class="n">${verdict}</td></tr>
+      <tr><td>적용</td><td class="n">${esc(applyFrom(c.applyDay))}</td></tr>
+      <tr><td>근거</td><td class="n"><button class="link" data-toast="${esc(c.index)} 11월 공표값 화면을 엽니다 (데모)">지표 출처 보기</button> · <button class="link" data-toast="약정서 ${esc(c.version)} 제5조(조정 요건) 원문을 엽니다 (데모)">약정서 제5조 보기</button></td></tr>
     </tbody></table></section>`;
 };
 

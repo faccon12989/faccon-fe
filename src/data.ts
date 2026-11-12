@@ -44,9 +44,9 @@ export const isCounted = (c: Readonly<Contract>): boolean => c.status === "ok" |
 
 /** 기획서 4.1 화면 예시: 담당자가 지금 처리할 항목 */
 export const TODOS: readonly Todo[] = [
-  { code: "C-101", contract: "ST-005", kind: "renew", title: "계약 갱신 검토", reason: "종료일(10/31) 이후에도 발주 2건 존재", next: "현행 약정 확인", go: "#/contracts/ST-005", notified: "알림톡 · 11/03 09:00" },
-  { code: "C-102", contract: "AL-001", kind: "unapplied", title: "조정단가 미반영", reason: "10,320원 계산 / 11월 발주 10,000원", next: "발주 단가 대조", go: "#/reconcile", notified: "알림톡·메일 · 11/01 08:30" },
-  { code: "C-103", contract: "AL-004", kind: "missing", title: "자료 보완", reason: "투입량(제품당 원재료 사용량) 미확정", next: "해당 항목만 요청", go: "#/requests", notified: "메일 · 11/05 10:00" },
+  { code: "C-101", contract: "ST-005", kind: "renew", title: "계약 갱신 검토", reason: "종료일(10/31) 이후에도 발주 2건 존재", next: "현행 약정 확인", go: "#/contracts/ST-005", notified: "알림톡 · 11/03 09:00", due: "11/20", delay: "계약 종료 후 12일 경과", impact: "약정 없는 발주 2건", action: "갱신 검토" },
+  { code: "C-102", contract: "AL-001", kind: "unapplied", title: "조정단가 미반영", reason: "10,320원 계산 / 11월 발주 10,000원", next: "발주 단가 대조", go: "#/reconcile", notified: "알림톡·메일 · 11/01 08:30", due: "11/30", delay: "12/1 검수분부터 적용", impact: "+320,000원 미반영", action: "단가 반영 요청" },
+  { code: "C-103", contract: "AL-004", kind: "missing", title: "자료 보완", reason: "투입량(제품당 원재료 사용량) 미확정", next: "해당 항목만 요청", go: "#/requests", notified: "메일 · 11/05 10:00", due: "11/19", delay: "요청 후 7일 대기", impact: "약정 체결 지연", action: "자료 요청" },
 ];
 
 export const MONTHS: readonly string[] = ["5월", "6월", "7월", "8월", "9월", "10월", "11월"];

@@ -5,11 +5,13 @@ import type { Channel, Todo } from "../types";
 import { esc, findContract, supplierName } from "../ui";
 
 export interface MyState {
-  readonly tab: "home" | "contracts" | "docs";
+  readonly tab: "home" | "contracts" | "docs" | "settings";
   readonly detail: string | null;
   readonly doneTasks: readonly string[];
   /** 화면을 열지 않아도 알림을 받을 곳 */
   readonly channels: readonly Channel[];
+  /** 알림 받을 일 */
+  readonly events: readonly string[];
 }
 
 export const CHANNELS: readonly Readonly<{ id: Channel; label: string }>[] = [
@@ -40,18 +42,19 @@ const summary = (open: readonly Todo[]): string => {
 
 const taskTable = (open: readonly Todo[]): string => {
   if (!open.length) return `<section class="panel"><h2>처리할 업무</h2><p class="empty">이번 달 처리할 업무가 없습니다. 다음 지표 확인일은 12월 1일입니다.</p></section>`;
-  const rows = open.map((t) => {
+  const byDue = [...open].sort((a, b) => a.due.localeCompare(b.due));
+  const rows = byDue.map((t) => {
     const c = findContract(t.contract);
     return `<tr>
-      <td><span class="tag ${t.kind}">${KIND_LABEL[t.kind]}</span></td>
-      <td><b>${esc(c?.item)}</b><small>${esc(t.contract)} · ${esc(supplierName(c?.supplier ?? ""))}</small></td>
-      <td>${esc(t.reason)}</td>
-      <td class="muted-cell">${esc(t.notified)}</td>
-      <td class="act"><button class="btn solid sm" data-task="${esc(t.code)}">처리</button></td></tr>`;
+      <td><span class="tag ${t.kind}">${KIND_LABEL[t.kind]}</span><b class="item">${esc(c?.item)}</b><small>${esc(t.contract)} · ${esc(supplierName(c?.supplier ?? ""))}</small></td>
+      <td>${esc(t.reason)}<small>알림 ${esc(t.notified)}</small></td>
+      <td class="n"><b>${esc(t.due)}</b><small>${esc(t.delay)}</small></td>
+      <td class="impact-cell">${esc(t.impact)}</td>
+      <td class="act"><button class="btn solid sm" data-task="${esc(t.code)}">${esc(t.action)}</button></td></tr>`;
   }).join("");
   return `<section class="panel">
-    <div class="panel-h"><h2>처리할 업무</h2><span class="count">${open.length}건</span></div>
-    <table class="grid"><thead><tr><th>구분</th><th>약정</th><th>내용</th><th>알림 발송</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+    <div class="panel-h"><h2>처리할 업무</h2><span class="count">${open.length}건 · 기한 빠른 순</span></div>
+    <table class="grid"><thead><tr><th>약정</th><th>내용</th><th class="n">기한</th><th>영향</th><th></th></tr></thead><tbody>${rows}</tbody></table>
   </section>`;
 };
 
@@ -76,12 +79,6 @@ const adjustTable = (): string => {
   </section>`;
 };
 
-const alertSettings = (s: MyState): string => {
-  const boxes = CHANNELS.map((ch) =>
-    `<label class="chan"><input type="checkbox" data-channel="${ch.id}" ${s.channels.includes(ch.id) ? "checked" : ""}> ${ch.label}</label>`).join("");
-  return `<section class="panel side"><h2>알림 받을 곳</h2><div class="chans">${boxes}</div></section>`;
-};
-
 const notices = (): string => {
   const items = NOTICES.map((n) => `<li><time>${esc(n.date)}</time><b>${esc(n.title)}</b></li>`).join("");
   return `<section class="panel side"><h2>제도 변경</h2><ul class="notice-list">${items}</ul></section>`;
@@ -95,6 +92,6 @@ export const homeScreen = (s: MyState): string => {
     ${summary(open)}
     <div class="cols">
       <div class="col-main">${taskTable(open)}${adjustTable()}</div>
-      <aside class="col-side">${alertSettings(s)}${notices()}</aside>
+      <aside class="col-side">${notices()}</aside>
     </div>`;
 };

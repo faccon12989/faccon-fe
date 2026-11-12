@@ -75,6 +75,14 @@ export interface Todo {
   go: string;
   /** 화면을 열기 전에 보낸 알림 */
   notified: string;
+  /** 처리 기한 (데모 기준일 11/12) */
+  due: string;
+  /** 지연 또는 남은 기간 */
+  delay: string;
+  /** 그대로 두면 생기는 영향 */
+  impact: string;
+  /** 처리 버튼 이름: 누르면 무엇을 하는지 */
+  action: string;
 }
 
 export interface ReconcileRow {
