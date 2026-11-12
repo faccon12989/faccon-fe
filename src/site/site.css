@@ -3,12 +3,14 @@
 :root{
   /* 화면 확대 비율: 큰 모니터에서 글씨·여백을 함께 키운다 */
   --z:1;
-  --bg:#FFFFFF; --paper:#FFFFFF; --surface:#F2F4F6; --surface-2:#F9FAFB;
-  --ink:#191F28; --soft:#4E5968; --mute:#6B7684;
-  --line:#E5E8EB; --rule:#E5E8EB;
-  --accent:#3182F6; --accent-dark:#1B64DA; --accent-bg:#E8F3FF;
-  --up:#E42939; --up-bg:#FFEEEE; --down:#2272EB; --down-bg:#E8F3FF;
-  --ok:#03A94D; --ok-bg:#E5F8EC; --warn:#D9730D; --warn-bg:#FFF4E5;
+  /* Faccon 색: 진한 남색(신뢰) + 호박색(알림 표시에만) + 따뜻한 회색 */
+  --bg:#FFFFFF; --paper:#FFFFFF; --surface:#F3F2EF; --surface-2:#FAF9F7;
+  --ink:#1A1F2B; --soft:#474D59; --mute:#6A7080;
+  --line:#E3E1DC; --rule:#E3E1DC;
+  --accent:#1E3A68; --accent-dark:#132849; --accent-bg:#E6EBF3;
+  --mark:#F0A202; --mark-bg:#FFF6DE;
+  --up:#C8322B; --up-bg:#FCEDEB; --down:#2B5C9E; --down-bg:#E6EDF6;
+  --ok:#1F8A4C; --ok-bg:#E6F4EC; --warn:#D9730D; --warn-bg:#FFF4E5;
   --r:16px;
   --mono:'Pretendard Variable',Pretendard,system-ui,sans-serif;
   --ease:cubic-bezier(.2,.8,.2,1);
@@ -59,14 +61,14 @@ h3{font-size:21px;margin:0 0 10px}
 .lead{font-size:20px;color:var(--soft);max-width:28em;margin:0 0 36px}
 .inbox{margin:0;display:grid;gap:14px}
 .inbox-cap{font-size:15px;color:var(--mute);margin-bottom:2px}
-.msg{background:var(--surface);border-radius:18px;padding:18px 20px}
+.msg{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--mark);border-radius:14px;padding:18px 20px;box-shadow:0 8px 24px -16px rgba(26,31,43,.25)}
 .msg-top{display:flex;justify-content:space-between;font-size:14px;color:var(--mute);margin-bottom:8px}
 .msg-top b{color:var(--ink);font-size:15px}
 .msg p{margin:0;font-size:16.5px;line-height:1.65;color:var(--ink)}
 .msg .num{font-weight:700}
 .msg .loss{color:var(--up);font-weight:700}
 .msg a{display:inline-block;margin-top:12px;font-size:15px;font-weight:600;color:var(--accent);text-decoration:none}
-.msg.old{opacity:.75}
+.msg.old{border-left-color:var(--line);opacity:.8}
 
 /* 2. 대시보드 화면: 이 페이지의 중심 */
 .shot{background:var(--surface);padding:40px 0}
@@ -74,7 +76,7 @@ h3{font-size:21px;margin:0 0 10px}
 .shot-head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:24px}
 .shot-head h2{margin:0}
 .shot-head p{margin:0;color:var(--soft);font-size:18px}
-.shot-frame{display:block;border-radius:20px;overflow:hidden;background:var(--paper);box-shadow:0 24px 60px -24px rgba(25,31,40,.28),0 0 0 1px rgba(25,31,40,.06);transition:transform .25s var(--ease)}
+.shot-frame{display:block;border-radius:20px;overflow:hidden;background:var(--paper);box-shadow:0 24px 60px -24px rgba(26,31,43,.3),0 0 0 1px rgba(26,31,43,.07);transition:transform .25s var(--ease)}
 .shot-frame:hover{transform:translateY(-4px)}
 .shot-frame img{display:block;width:100%;height:auto}
 .shot-cap{margin:16px 0 0;font-size:15px;color:var(--mute);text-align:center}
@@ -111,3 +113,8 @@ h3{font-size:21px;margin:0 0 10px}
 @media (min-width:1920px) and (min-height:1070px){:root{--z:1.2}}
 @media (min-width:2400px) and (min-height:1300px){:root{--z:1.45}}
 @media (min-width:3200px) and (min-height:1700px){:root{--z:1.9}}
+
+/* 도입: 누가 돈을 내는지 크게 */
+.who-pays{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 28px}
+.who-pays span{font-size:17px;font-weight:700;background:var(--surface);border-radius:10px;padding:8px 14px}
+.who-pays span:first-child{background:var(--accent);color:#fff}
