@@ -76,9 +76,9 @@ export const REQUESTS: readonly DataRequest[] = [
 ];
 
 export const ACCESS_LOG: readonly AccessLog[] = [
-  { when: "11.08 14:22", who: "A정밀 구매 김OO", what: "AL-001 산정 결과 열람", scope: "양사 공유 결과" },
-  { when: "11.05 10:03", who: "전문 검토자 (가상)", what: "AL-004 매입 단가 근거 열람", scope: "원문 · 승인 기간 내" },
-  { when: "10.30 16:40", who: "A정밀 구매 김OO", what: "AL-001 원문 열람 시도", scope: "차단됨 (권한 없음)" },
+  { contract: "AL-001", when: "11.08 14:22", who: "A정밀 (가상) 구매 김OO", what: "AL-001 산정 결과 열람", scope: "양사 공유 결과" },
+  { contract: "AL-004", when: "11.05 10:03", who: "전문 검토자 (가상)", what: "AL-004 매입 단가 근거 열람", scope: "원문 · 승인 기간 내" },
+  { contract: "AL-001", when: "10.30 16:40", who: "A정밀 (가상) 구매 김OO", what: "AL-001 원문 열람 시도", scope: "차단됨 (권한 없음)" },
 ];
 
 /** 기획서 4.3 제출 패키지 */

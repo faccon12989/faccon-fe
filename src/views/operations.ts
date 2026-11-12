@@ -1,78 +1,42 @@
-/* 반영 대조 · 자료 요청 · 제출 패키지 */
 import { adjust, signedWon, won } from "../calc";
-import { ACCESS_LOG, PACKAGES, RECONCILE, REQUESTS, SELF_SUPPLIER } from "../data";
+import { ACCESS_LOG, REQUESTS, SELF_SUPPLIER } from "../data";
+import { demoRows, readDemo, reconcileChecks, taskStatus } from "../demo";
+import { evidenceView } from "../evidence";
 import type { Role } from "../types";
 import { esc, findContract, pill, supplierName, visibleContracts } from "../ui";
 
-const STAGES = ["산출", "발주 반영", "청구", "지급근거"] as const;
-
+const STAGES = ["산출", "발주 반영", "청구 일치", "지급근거"] as const;
 export const reconcileView = (role: Role): string => {
   const list = visibleContracts(role);
-  const rows = RECONCILE.flatMap((row) => {
+  const rows = demoRows().flatMap((row): readonly string[] => {
     const c = findContract(row.contract);
-    if (!c || !list.includes(c)) return [];
+    if (!c || !list.some((item): boolean => item.id === c.id)) return [];
     const r = adjust(c);
+    const checks = reconcileChecks(row, c);
+    const active = c.status === "ok";
     const gap = (r.price - row.poPrice) * row.qty;
-    const stage = 1 + Number(row.poPrice === r.price) + Number(row.invPrice === r.price) + Number(row.paid);
-    const state = gap !== 0 ? pill("p-bad", "미반영") : row.paid ? pill("p-ok", "지급근거 확인") : pill("p-warn", "수령 확인 전");
-    const ask = gap !== 0 && role === "buyer" ? ` <button class="btn" data-toast="담당자 확인 요청을 보냈습니다 (데모)">확인 요청</button>` : "";
-    return [`<tr><td><b>${esc(c.id)}</b><br><small style="color:var(--mute)">${esc(supplierName(c.supplier))}</small></td>
-      <td class="mono">${esc(row.po)}</td><td class="num">${won(r.price)}</td><td class="num">${won(row.poPrice)}</td>
-      <td class="num ${gap ? "diff-up" : "diff-ok"}">${gap ? signedWon(gap) : "일치"}</td>
-      <td><div class="track">${STAGES.map((_, i) => `<span class="${i < stage ? "on" : ""}"></span>`).join("")}</div>
-        <div class="track-lbl">${STAGES.map((s) => `<span>${s}</span>`).join("")}</div></td>
-      <td>${state}${ask}</td></tr>`];
+    const label = !active ? "갱신 검토 우선" : !checks[1] ? "발주 불일치" : row.invPrice === null ? "청구자료 대기" : !checks[2] ? "청구 불일치" : !row.paid ? "지급근거 대기" : "대조 완료";
+    return [`<tr><td><b>${esc(c.id)}</b><br>${esc(supplierName(c.supplier))}</td><td>${esc(row.po)}</td>
+      <td class="num">${active ? won(r.price) : "참고값 제외"}</td><td class="num">${won(row.poPrice)}</td><td class="num">${won(row.invPrice)}</td>
+      <td class="num">${!active ? "검토 후 산출" : gap ? signedWon(gap) : "일치"}</td>
+      <td><div class="track">${checks.map((ok: boolean): string => `<span class="${ok ? "on" : ""}"></span>`).join("")}</div><div class="track-lbl">${STAGES.map((s: string): string => `<span>${esc(s)}</span>`).join("")}</div></td><td>${pill(checks.every(Boolean) ? "p-ok" : "p-warn", label)}</td></tr>`];
   }).join("");
-  return `
-    <h1>발주·청구 반영 대조</h1>
-    <p class="sub">계산된 조정단가와 ERP에서 가져온 발주·청구 단가를 비교합니다 (가상 ERP 파일 PO_2026-11.csv)</p>
-    <div class="card"><div class="tbl"><table>
-      <thead><tr><th>계약</th><th>발주번호</th><th class="num">계산단가</th><th class="num">발주단가</th><th class="num">차이 × 수량</th><th style="width:220px">진행</th><th>상태</th></tr></thead>
-      <tbody>${rows || `<tr><td colspan="7" class="empty">대조할 발주가 없습니다</td></tr>`}</tbody></table></div>
-      <p class="note">조정 계산이 끝났다고 수령 완료가 아닙니다. 입금 또는 지급명세 근거가 없으면 “수령 확인 전”으로 표시합니다.</p></div>`;
+  const s = readDemo();
+  const action = !s.po ? "① 수정된 발주 파일 반영" : !s.invoice ? "② 청구 파일 반영" : !s.payment ? "③ 지급근거 확인" : "AL-001 대조 완료";
+  return `<h1>발주·청구 반영 대조</h1><p class="sub">계산값, 발주, 청구, 지급근거를 각각 확인합니다. 요청만으로 완료 처리하지 않습니다.</p>
+    <section class="card"><h2>AL-001 · ${esc(taskStatus("C-102"))}</h2><p>계산단가 ${won(10320)} · 수량 1,000개. 아래 버튼은 실제 ERP 연결 없이 가상 파일 수신을 재현합니다.</p>
+      ${role === "buyer" ? `<div class="row"><button class="btn" data-request-po ${s.po ? "disabled" : ""}>수정 요청 기록 (데모)</button><button class="btn pri" data-next-evidence ${s.payment ? "disabled" : ""}>${action} (가상)</button></div>` : `<p>구매기업이 등록한 발주·청구·지급근거를 자사 거래 범위에서 조회합니다.</p>`}</section>
+    <section class="card" style="margin-top:16px"><div class="tbl"><table><thead><tr><th>계약</th><th>발주번호</th><th>계산단가</th><th>발주단가</th><th>청구단가</th><th>발주 차이 × 수량</th><th>근거별 확인</th><th>상태</th></tr></thead><tbody>${rows}</tbody></table></div><p class="note">청구 단가가 일치하더라도 다른 단계의 불일치는 그대로 표시합니다. 실제 ERP에 값을 쓰거나 송금하지 않습니다.</p></section>`;
 };
-
 export const requestsView = (role: Role): string => {
-  const isSupplier = role === "supplier";
-  // 데모 편의: 공급기업 화면에서도 S-04 요청을 함께 보여준다.
-  const rows = isSupplier ? REQUESTS.filter((q) => q.supplier === SELF_SUPPLIER || q.supplier === "S-04") : REQUESTS;
-  const body = rows.map((q) => `<tr>
-    <td><b>${esc(q.id)}</b><br><small style="color:var(--mute)">${esc(q.contract)} · ${esc(supplierName(q.supplier))}</small></td>
-    <td>${esc(q.item)}<br><small style="color:var(--soft)">${esc(q.why)}</small></td>
-    <td>${esc(q.period)}</td><td>${esc(q.to)}</td>
-    <td>${q.reuse ? `${pill("p-ok", "재사용")}<br><small>${esc(q.reuse)}</small>` : pill("p-warn", q.state)}</td>
-    <td>${isSupplier && !q.reuse ? `<button class="btn pri" data-toast="원문은 공급기업 전용 저장소에 올라갑니다 (데모)">제출</button>` : ""}</td></tr>`).join("");
-  const log = ACCESS_LOG.map((l) => `<tr><td class="mono">${esc(l.when)}</td><td>${esc(l.who)}</td><td>${esc(l.what)}</td>
-    <td>${l.scope.startsWith("차단") ? pill("p-bad", l.scope) : esc(l.scope)}</td></tr>`).join("");
-  const demoNote = isSupplier
-    ? `<div class="lock" style="margin-bottom:14px"><span aria-hidden="true">👁</span><div>데모 편의를 위해 공급기업 화면에 S-04 요청도 함께 보여줍니다. 실제로는 자사 요청만 보입니다.</div></div>`
-    : "";
-  return `
-    <h1>${isSupplier ? "받은 자료 요청" : "자료 요청·공유"}</h1>
-    <p class="sub">필요한 항목만, 이유와 기간·수신자를 밝혀 요청합니다. 상세 원가 원문은 공급기업 전용입니다.</p>
-    ${demoNote}
-    <div class="card"><div class="tbl"><table>
-      <thead><tr><th>요청</th><th>항목 · 필요 이유</th><th>기간</th><th>공유 범위</th><th>상태</th><th></th></tr></thead>
-      <tbody>${body}</tbody></table></div></div>
-    <section class="card" style="margin-top:16px"><h2>${isSupplier ? "우리 자료 열람 이력" : "열람 이력"}</h2>
-      <div class="tbl"><table><thead><tr><th>시각</th><th>누가</th><th>무엇을</th><th>범위</th></tr></thead>
-      <tbody>${log}</tbody></table></div></section>`;
+  const supplier = role === "supplier";
+  const list = visibleContracts(role);
+  const rows = REQUESTS.filter((q): boolean => !supplier || q.supplier === SELF_SUPPLIER);
+  const body = rows.map((q): string => `<tr><td><b>${esc(q.id)}</b><br>${esc(q.contract)} · ${esc(supplierName(q.supplier))}</td><td>${esc(q.item)}<br><small>${esc(q.why)}</small></td><td>${esc(q.period)}</td><td>${esc(q.to)}</td><td>${pill(q.reuse ? "p-ok" : "p-warn", q.reuse ? "기존 자료 재사용 승인 (가상)" : taskStatus("C-103"))}</td></tr>`).join("");
+  const logs = ACCESS_LOG.filter((l): boolean => list.some((c): boolean => c.id === l.contract)).map((l): string => `<tr><td>${esc(l.when)}</td><td>${esc(l.who)}</td><td>${esc(l.what)}</td><td>${esc(l.scope)}</td></tr>`).join("");
+  return `<h1>${supplier ? "받은 자료 요청" : "자료 요청·공유"}</h1><p class="sub">${supplier ? "동양알루텍 (가상) 자사 거래의 요청·열람 이력만 표시합니다." : "필요한 항목·이유·기간·받는 사람을 구분합니다."}</p>
+    <section class="card"><div class="tbl"><table><thead><tr><th>요청</th><th>항목 / 이유</th><th>기간</th><th>공유 범위</th><th>상태</th></tr></thead><tbody>${body}</tbody></table></div>
+      ${!supplier ? `<p><a class="btn pri" href="./start.html?path=B">AL-004 보완·공유 범위 확인</a></p>` : ""}</section>
+    <section class="card" style="margin-top:16px"><h2>열람 이력 (가상)</h2><div class="tbl"><table><thead><tr><th>시각</th><th>누가</th><th>무엇을</th><th>범위</th></tr></thead><tbody>${logs}</tbody></table></div><p class="note">역할별 화면을 설명하는 데모입니다. 실제 고객 자료를 보호하려면 서버 인증·권한 검사가 필요하며, 이 화면에 기밀자료를 입력하지 않습니다.</p></section>`;
 };
-
-export const packagesView = (role: Role): string => {
-  if (role === "supplier") {
-    return `<h1>제출 패키지</h1><div class="card empty">제출 패키지는 구매기업이 목적별로 만들고, 공급기업 자료는 공유 승인된 범위만 포함됩니다.</div>`;
-  }
-  const cards = PACKAGES.map((p) => `<section class="card" style="margin-bottom:16px">
-    <div class="between"><h2>${esc(p.purpose)} <span class="tag">${esc(p.year)}</span></h2>
-      <div class="row">${pill(p.state === "초안" ? "p-info" : "p-warn", p.state)}
-      <button class="btn" data-toast="PDF·엑셀 내보내기는 데모에서 생략했습니다">내보내기</button></div></div>
-    <div class="tbl"><table><thead><tr><th>요청 항목</th><th>산출값</th><th>집계 근거</th><th>근거 파일</th></tr></thead>
-    <tbody>${p.rows.map((r) => `<tr><td><b>${esc(r.req)}</b></td><td>${esc(r.value)}</td><td>${esc(r.basis)}</td><td class="mono">${esc(r.file)}</td></tr>`).join("")}</tbody></table></div>
-  </section>`).join("");
-  return `
-    <h1>제출 패키지</h1>
-    <p class="sub">요청 항목 → 산출값 → 근거 파일·페이지·버전. 기관 담당자는 지갑 없이 PDF·엑셀로 읽습니다.</p>
-    ${cards}
-    <p class="note">체결 비율은 등록된 계약 기준입니다. 미등록 계약이 있으면 회사 전체 비율로 표시하지 않습니다. 실적 인정은 기관의 판단입니다.</p>`;
-};
+export const packagesView = (role: Role): string => `<h1>제출 패키지 미리보기</h1><p class="sub">${role === "supplier" ? "자사 거래 범위" : "등록 계약 범위"}의 상태와 출처 색인을 담은 검토용 요약입니다.</p>${evidenceView(role)}`;

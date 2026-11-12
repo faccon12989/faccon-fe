@@ -158,3 +158,46 @@
 .grid td.n small{white-space:normal}
 .col-side{align-items:start}
 .main>.panel+.panel{margin-top:20px}
+
+/* 데모 도구: 운영 화면 이동 · 시나리오 초기화 */
+.demo-tools{display:flex;flex-wrap:wrap;gap:4px 12px;padding:0 12px;font-size:13px}
+.demo-tools a,.demo-tools button{color:var(--mute);background:none;border:0;padding:0;font:inherit;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.demo-tools a:hover,.demo-tools button:hover{color:var(--ink)}
+
+/* 휴대폰·태블릿: 왼쪽 메뉴를 위쪽 막대로 */
+@media (max-width:820px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .sidebar{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px 12px;padding:12px 16px 0;border-right:0;border-bottom:1px solid var(--line)}
+  .sidebar .logo{font-size:22px;padding:0}
+  .org{display:none}
+  .me{order:2;margin:0 0 0 auto;padding:0;border-top:0;display:flex;align-items:center;gap:10px}
+  .me span{display:none}
+  .me a{margin-top:0}
+  .tabbar{order:3;width:100%;display:flex;gap:4px;overflow-x:auto;padding-bottom:8px}
+  .tabbar button{white-space:nowrap;padding:8px 12px}
+  .setup-link{order:4;font-size:13.5px;padding:8px 10px}
+  .demo-tools{order:5;padding:0 0 12px}
+  .main{padding:20px 16px 48px}
+  .page-h{flex-wrap:wrap;align-items:flex-start}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .kpi{padding:12px 14px}
+  .kpi b{font-size:22px}
+  .cols,.col-side{grid-template-columns:minmax(0,1fr)}
+  .panel{padding:14px}
+}
+
+/* 휴대폰: 처리할 업무는 카드로, 숫자 표는 줄바꿈 없이 옆으로 밀어서 본다 */
+@media (max-width:820px){
+  .task-grid thead{display:none}
+  .task-grid,.task-grid tbody{display:block}
+  .task-grid tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .task-grid tbody tr:last-child{border-bottom:0}
+  .task-grid td{display:block;padding:0;border:0}
+  .task-grid td:nth-child(1),.task-grid td:nth-child(2){grid-column:1 / -1}
+  .task-grid td.n{text-align:left}
+  .task-grid td.n small{display:inline;margin-left:6px}
+  .task-grid .impact-cell{max-width:none;text-align:right;align-self:center}
+  .task-grid .act{grid-column:1 / -1;width:auto;text-align:left}
+  .task-grid .act .btn{width:100%}
+  .grid:not(.task-grid) td,.grid:not(.task-grid) th{white-space:nowrap}
+}

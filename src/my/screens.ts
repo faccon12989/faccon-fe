@@ -1,13 +1,13 @@
 /* 기업 대시보드: 홈 (요약 · 처리할 업무 · 이번 달 조정 금액 · 알림 설정 · 제도 변경) */
 import { adjust, pct, signedWon, won } from "../calc";
-import { CONTRACTS, isCounted, NOTICES, RECONCILE, TODOS } from "../data";
+import { isCounted, NOTICES, TODOS } from "../data";
+import { demoContracts, demoRows, taskDone, taskStatus } from "../demo";
 import type { Channel, Todo } from "../types";
 import { esc, findContract, supplierName } from "../ui";
 
 export interface MyState {
   readonly tab: "home" | "contracts" | "docs" | "settings";
   readonly detail: string | null;
-  readonly doneTasks: readonly string[];
   /** 화면을 열지 않아도 알림을 받을 곳 */
   readonly channels: readonly Channel[];
   /** 알림 받을 일 */
@@ -26,9 +26,9 @@ const kpi = (label: string, value: number, unit: string, tone = ""): string =>
   `<div class="kpi ${tone}"><span>${label}</span><b>${value}<small>${unit}</small></b></div>`;
 
 const summary = (open: readonly Todo[]): string => {
-  const counted = CONTRACTS.filter(isCounted);
+  const counted = demoContracts().filter(isCounted);
   const triggered = counted.filter((c) => adjust(c).triggered).length;
-  const unapplied = RECONCILE.filter((row) => {
+  const unapplied = demoRows().filter((row) => {
     const c = findContract(row.contract);
     return c !== undefined && adjust(c).price !== row.poPrice;
   }).length;
@@ -47,19 +47,19 @@ const taskTable = (open: readonly Todo[]): string => {
     const c = findContract(t.contract);
     return `<tr>
       <td><span class="tag ${t.kind}">${KIND_LABEL[t.kind]}</span><b class="item">${esc(c?.item)}</b><small>${esc(t.contract)} · ${esc(supplierName(c?.supplier ?? ""))}</small></td>
-      <td>${esc(t.reason)}<small>알림 ${esc(t.notified)}</small></td>
+      <td>${esc(t.reason)}<small>알림 ${esc(t.notified)} · <b class="status">${esc(taskStatus(t.code))}</b></small></td>
       <td class="n"><b>${esc(t.due)}</b><small>${esc(t.delay)}</small></td>
       <td class="impact-cell">${esc(t.impact)}</td>
       <td class="act"><button class="btn solid sm" data-task="${esc(t.code)}">${esc(t.action)}</button></td></tr>`;
   }).join("");
   return `<section class="panel">
     <div class="panel-h"><h2>처리할 업무</h2><span class="count">${open.length}건 · 기한 빠른 순</span></div>
-    <table class="grid"><thead><tr><th>약정</th><th>내용</th><th class="n">기한</th><th>영향</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+    <table class="grid task-grid"><thead><tr><th>약정</th><th>내용</th><th class="n">기한</th><th>영향</th><th></th></tr></thead><tbody>${rows}</tbody></table>
   </section>`;
 };
 
 const adjustTable = (): string => {
-  const counted = CONTRACTS.filter(isCounted).map((c) => ({ c, r: adjust(c) }));
+  const counted = demoContracts().filter(isCounted).map((c) => ({ c, r: adjust(c) }));
   const up = counted.filter((x) => x.r.total > 0).reduce((a, x) => a + x.r.total, 0);
   const down = counted.filter((x) => x.r.total < 0).reduce((a, x) => a + x.r.total, 0);
   const rows = counted.map(({ c, r }) => `<tr data-detail="${esc(c.id)}" class="link-row">
@@ -84,8 +84,8 @@ const notices = (): string => {
   return `<section class="panel side"><h2>제도 변경</h2><ul class="notice-list">${items}</ul></section>`;
 };
 
-export const homeScreen = (s: MyState): string => {
-  const open = TODOS.filter((t) => !s.doneTasks.includes(t.code));
+export const homeScreen = (): string => {
+  const open = TODOS.filter((t) => !taskDone(t.code));
   return `
     <header class="page-h"><div><h1>홈</h1><p>2026년 11월 · 지표 기준일 11월 1일</p></div>
       <button class="btn ghost sm" data-toast="11월 변동표 엑셀을 내려받았습니다 (데모)">11월 변동표 내려받기</button></header>

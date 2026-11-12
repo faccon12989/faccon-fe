@@ -97,18 +97,19 @@ export const validate = (s: StartState): string | null => {
     case 2:
       if (s.path === "B") return s.checklist.length ? null : "준비할 수 있는 자료를 하나 이상 골라 주십시오.";
       if (!s.uploaded) return "약정 파일을 올려 주십시오.";
-      return s.extracted.every((x) => x.confirmed) ? null : "추출된 값을 원문과 비교해 모두 확인해 주십시오.";
+      return s.extracted.every((x) => x.confirmed && x.confidence >= 0.8) ? null : "추출된 값을 원문과 비교해 모두 확인해 주십시오.";
     case 3: {
       const filled = s.invites.filter((i) => i.company.trim() || i.email.trim());
-      if (!filled.length) return "공급기업을 한 곳 이상 초대해 주십시오.";
+      if (!filled.length) return null;
       const bad = filled.find((i) => !i.company.trim() || !EMAIL_RE.test(i.email.trim()));
       return bad ? "초대할 공급기업의 회사명과 이메일을 확인해 주십시오." : null;
     }
     case 4:
       if (!s.erpUploaded) return "발주 파일을 올려 주십시오. 없으면 '나중에 연결'을 누르십시오.";
+      if (new Set(ERP_FIELDS.map((f): string => s.mapping[f] ?? "")).size !== ERP_FIELDS.length) return "각 항목은 서로 다른 열에 연결해 주십시오.";
       return ERP_FIELDS.every((f) => s.mapping[f]) ? null : "필수 항목의 열을 모두 골라 주십시오.";
     case 5:
-      return s.measureConsent ? null : "파일럿 효과 측정에 동의해 주십시오.";
+      return null;
     default:
       return null;
   }

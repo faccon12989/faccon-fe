@@ -1,5 +1,7 @@
 /* 기업 대시보드: 자료 요청 · 제출 자료 */
 import { PURPOSES, REQUESTS } from "../data";
+import { taskStatus } from "../demo";
+import { evidenceView } from "../evidence";
 import { esc, supplierName } from "../ui";
 
 export const docsScreen = (): string => {
@@ -8,7 +10,7 @@ export const docsScreen = (): string => {
       <td><b>${esc(q.item)}</b><small>${esc(q.why)}</small></td>
       <td>${esc(supplierName(q.supplier))}</td>
       <td>${esc(q.period)}</td>
-      <td>${esc(q.reuse ? `재사용 (${q.reuse})` : q.state)}</td></tr>`).join("");
+      <td>${esc(q.reuse ? `재사용 (${q.reuse})` : taskStatus("C-103"))}</td></tr>`).join("");
   const purposeRows = PURPOSES.map((p) => {
     const ready = p.items.filter((i) => i.ready).length;
     const missing = p.items.filter((i) => !i.ready).map((i) => esc(i.doc)).join(", ") || "-";
@@ -20,5 +22,6 @@ export const docsScreen = (): string => {
     <section class="panel"><div class="panel-h"><h2>공급사 자료 요청</h2><span class="count">${REQUESTS.length}건</span></div>
       <table class="grid"><thead><tr><th>번호</th><th>요청 항목</th><th>공급사</th><th>기간</th><th>상태</th></tr></thead><tbody>${reqRows}</tbody></table></section>
     <section class="panel"><div class="panel-h"><h2>제출 자료 묶음</h2><span class="count">항목 예시 · 실제 공고 기준으로 조정</span></div>
-      <table class="grid"><thead><tr><th>제출 목적</th><th class="n">준비</th><th>부족한 자료</th><th></th></tr></thead><tbody>${purposeRows}</tbody></table></section>`;
+      <table class="grid"><thead><tr><th>제출 목적</th><th class="n">준비</th><th>부족한 자료</th><th></th></tr></thead><tbody>${purposeRows}</tbody></table></section>
+    ${evidenceView("buyer")}`;
 };

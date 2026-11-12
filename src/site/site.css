@@ -244,3 +244,38 @@ h3{font-size:21px;margin:0 0 10px}
 .talk-title{font-size:14.5px;margin-bottom:8px}
 .talk-rows li{grid-template-columns:72px 1fr;font-size:13.5px}
 .talk-btn{margin-top:12px;padding:8px;font-size:13.5px}
+
+/* 휴대폰·태블릿: 한 줄로 쌓고 양옆 여백 16px */
+@media (max-width:820px){
+  :root{--nav-h:60px}
+  body{font-size:16px}
+  .wrap{padding:0 16px}
+  .nav{gap:12px;padding:0 16px}
+  .nav nav{display:none}
+  .logo{font-size:22px}
+  .nav-cta .btn{min-height:38px;padding:6px 12px;font-size:14px}
+  .hero{grid-template-columns:minmax(0,1fr);gap:44px;padding:44px 16px 64px}
+  .hero h1{font-size:2rem}
+  .lead{font-size:17px}
+  .lead span{display:inline;white-space:normal}
+  .hero .row .btn{flex:1 1 100%}
+  .chatroom{justify-self:start;max-width:100%}
+  .talk{width:auto;flex:1;min-width:0}
+  .sec,.shot{padding:64px 0}
+  .shot-head h2{white-space:normal}
+  .big{font-size:17px}
+  .why-stats,.why-cases,.plans{grid-template-columns:minmax(0,1fr)}
+  .why-stats div{padding:18px 0;border-bottom:1px solid var(--line)}
+  .why-stats div:last-child{border-bottom:0}
+  .why-cases{gap:28px}
+  .plans{gap:24px}
+  .plan{padding:24px 20px}
+  .closing{padding:72px 16px}
+  .closing h2{font-size:1.45rem}
+  .talk-rows li{grid-template-columns:62px 1fr;font-size:13px}
+  .foot-in{padding:40px 16px 20px;gap:28px}
+  .foot-legal{padding:12px 16px 40px}
+  .faq-page{padding:40px 0 64px}
+  .faq-item summary{font-size:16px;padding:18px 4px;gap:12px}
+  .answer{padding:16px 16px 18px 4px}
+}
