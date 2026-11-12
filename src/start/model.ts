@@ -2,6 +2,13 @@
 
 export type StartPath = "A" | "B";
 export type ShareScope = "result" | "result+summary";
+export type AlertChannel = "kakao" | "email" | "sms";
+
+export const ALERT_CHANNELS: readonly Readonly<{ id: AlertChannel; label: string }>[] = [
+  { id: "kakao", label: "카카오톡 알림톡" },
+  { id: "email", label: "이메일" },
+  { id: "sms", label: "문자" },
+];
 
 export interface Extracted {
   key: string;
@@ -26,6 +33,8 @@ export interface StartState {
   readonly email: string;
   readonly approver: string;
   readonly category: string;
+  readonly phone: string;
+  readonly channels: readonly AlertChannel[];
   readonly uploaded: boolean;
   readonly extracted: readonly Extracted[];
   readonly checklist: readonly string[];
@@ -41,7 +50,7 @@ export const STEP_TITLES = ["시작 방식", "회사·담당자", "약정 가져
 export const LAST_STEP = STEP_TITLES.length - 1;
 
 export const INITIAL: StartState = {
-  step: 0, path: null, company: "", manager: "", email: "", approver: "", category: "",
+  step: 0, path: null, company: "", manager: "", email: "", approver: "", category: "", phone: "", channels: ["kakao", "email"],
   uploaded: false, extracted: [], checklist: [], invites: [{ company: "", email: "" }],
   shareScope: "result", erpUploaded: false, mapping: {}, measureConsent: false, done: false,
 };

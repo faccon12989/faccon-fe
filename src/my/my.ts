@@ -2,16 +2,17 @@
 import "../site/site.css";
 import "./my.css";
 import { type FlowStep, flowFor, type TaskId } from "./flows";
-import { contractsScreen, detailScreen, docsScreen, homeScreen, type MyState } from "./screens";
+import { CHANNELS, contractsScreen, detailScreen, docsScreen, homeScreen, type MyState } from "./screens";
+import type { Channel } from "../types";
 
 const TABS = [
-  { id: "home", label: "홈", icon: "⌂" },
-  { id: "contracts", label: "내 약정", icon: "≡" },
-  { id: "docs", label: "자료", icon: "▤" },
+  { id: "home", label: "홈" },
+  { id: "contracts", label: "내 약정" },
+  { id: "docs", label: "자료" },
 ] as const;
 const TOAST_MS = 2000;
 
-let state: MyState = { tab: "home", detail: null, doneTasks: [] };
+let state: MyState = { tab: "home", detail: null, doneTasks: [], channels: ["kakao", "email"] };
 let flow: { id: TaskId; steps: FlowStep[]; at: number } | null = null;
 let lastFocus: HTMLElement | null = null;
 let toastTimer: number | undefined;
@@ -35,7 +36,7 @@ const render = (): void => {
     : homeScreen(state);
   byId("tabbar").innerHTML = TABS.map((t) => {
     const on = t.id === state.tab;
-    return `<button data-tab="${t.id}" class="${on ? "on" : ""}" ${on ? 'aria-current="page"' : ""}><span aria-hidden="true">${t.icon}</span>${t.label}</button>`;
+    return `<button data-tab="${t.id}" class="${on ? "on" : ""}" ${on ? 'aria-current="page"' : ""}>${t.label}</button>`;
   }).join("");
 };
 
@@ -91,6 +92,12 @@ const advance = (): void => {
   toast("할 일을 처리했어요");
 };
 
+const toggleChannel = (id: Channel, label: string): void => {
+  const on = state.channels.includes(id);
+  setState({ channels: on ? state.channels.filter((c) => c !== id) : [...state.channels, id] });
+  toast(on ? `${label} 알림을 껐어요` : `${label}로도 알려드릴게요`);
+};
+
 document.addEventListener("click", (e) => {
   const el = e.target instanceof Element ? e.target : null;
   if (!el) return;
@@ -107,6 +114,9 @@ document.addEventListener("click", (e) => {
   if (task && (tid === "C-101" || tid === "C-102" || tid === "C-103")) { openFlow(tid, task); return; }
   if (el.closest("[data-advance]")) { advance(); return; }
   if (el.closest("[data-close]") || el.id === "sheet-bg") { closeFlow(); return; }
+  const chan = el.closest<HTMLElement>("[data-channel]");
+  const picked = CHANNELS.find((ch) => ch.id === chan?.dataset.channel);
+  if (picked) { toggleChannel(picked.id, picked.label); return; }
   const t = el.closest<HTMLElement>("[data-toast]");
   if (t?.dataset.toast) toast(t.dataset.toast);
 });

@@ -2,7 +2,7 @@
 import "../site/site.css";
 import "./start.css";
 import {
-  AUTO_MAPPING, ERP_FIELDS, INITIAL, LAST_STEP, MOCK_EXTRACTION, STEP_TITLES,
+  ALERT_CHANNELS, AUTO_MAPPING, ERP_FIELDS, INITIAL, LAST_STEP, MOCK_EXTRACTION, STEP_TITLES,
   type ShareScope, type StartState, update, validate,
 } from "./model";
 import { renderDone, renderStep } from "./steps";
@@ -56,6 +56,8 @@ const readForm = (s: StartState): StartState => {
       return update(s, {
         company: text("company", s.company), manager: text("manager", s.manager), email: text("email", s.email),
         approver: text("approver", s.approver), category: text("category", s.category),
+        phone: text("phone", s.phone),
+        channels: ALERT_CHANNELS.filter((ch) => data.getAll("channel").includes(ch.id)).map((ch) => ch.id),
       });
     case 2: {
       if (s.path === "B") return update(s, { checklist: data.getAll("checklist").map(String) });

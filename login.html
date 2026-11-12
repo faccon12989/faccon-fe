@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>기업 로그인 · Faccon</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap">
+</head>
+<body class="login-body">
+<header class="nav">
+  <a class="logo" href="./">Faccon</a>
+  <div class="nav-cta"><a class="btn ghost" href="./start.html">파일럿 신청</a></div>
+</header>
+<main class="login">
+  <section class="login-card" aria-labelledby="login-h">
+    <p class="sec-no">기업 로그인</p>
+    <h1 id="login-h">기업 대시보드</h1>
+    <p class="muted">파일럿을 신청한 기업 담당자 계정으로 들어갑니다.</p>
+    <div class="role-pick" role="radiogroup" aria-label="기업 유형">
+      <label><input type="radio" name="role" value="buyer" checked> 구매기업</label>
+      <label><input type="radio" name="role" value="supplier"> 공급기업</label>
+    </div>
+    <form id="login-form" novalidate>
+      <label class="fld">업무 이메일<input name="email" type="email" autocomplete="username" value="kim.buyer@a-precision.example"></label>
+      <label class="fld">비밀번호<input name="password" type="password" autocomplete="current-password" value="demo-password"></label>
+      <p class="err-msg" id="login-err" role="alert"></p>
+      <button class="btn solid lg wide" type="submit">대시보드 열기</button>
+    </form>
+    <p class="demo-note">데모 계정이 미리 채워져 있습니다. 입력값은 어디로도 전송되지 않습니다.</p>
+  </section>
+  <aside class="login-side" aria-label="로그인하면 보이는 것">
+    <p class="sec-no">대시보드에서</p>
+    <ol>
+      <li><b>이번 달 확인할 일</b>갱신 기한, 발주 미반영, 빠진 자료</li>
+      <li><b>조정 차액 합계</b>어떤 약정을 더했는지까지</li>
+      <li><b>누가 올리고 승인했는지</b>약정마다 기록</li>
+      <li><b>어디에 낼 자료인지</b>목적별 준비 현황</li>
+    </ol>
+  </aside>
+</main>
+<script type="module" src="/src/login/login.ts"></script>
+</body>
+</html>

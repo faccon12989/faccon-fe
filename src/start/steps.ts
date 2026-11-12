@@ -1,7 +1,7 @@
 /* 단계별 화면. 모든 사용자 입력은 esc로 이스케이프해서 넣는다. */
 import { esc } from "../ui";
 import {
-  AUTO_MAPPING, B_CHECKLIST, CSV_COLUMNS, ERP_FIELDS, type StartState,
+  ALERT_CHANNELS, AUTO_MAPPING, B_CHECKLIST, CSV_COLUMNS, ERP_FIELDS, type StartState,
 } from "./model";
 
 const field = (name: string, label: string, value: string, opts: { type?: string; hint?: string; required?: boolean; ac?: string } = {}): string => `
@@ -39,8 +39,13 @@ const stepCompany = (s: StartState): string => {
       ${field("category", "시작할 품목군", s.category, { hint: "예: 알루미늄 가공품" })}
       ${field("manager", "구매 담당자", s.manager, { required: true, ac: "name" })}
       ${field("email", "담당자 이메일", s.email, { type: "email", required: true, ac: "email" })}
-      ${field("approver", "예산 승인자 (선택)", s.approver, { hint: "도입 결정에 참여하실 분" })}
-    </div>`;
+      ${field("approver", "예산 승인자 (선택)", s.approver, { hint: "결과를 확정하는 분 · 도입 결정에도 참여" })}
+      ${field("phone", "휴대폰 (선택)", s.phone, { type: "tel", hint: "알림톡·문자를 받을 번호", ac: "tel" })}
+    </div>
+    <fieldset class="notify"><legend>알림 받을 곳</legend>
+      <p class="hint-s">화면을 열지 않아도 갱신 기한, 조정 시점, 지표 급변을 근거와 함께 보내드려요.</p>
+      <div class="chan-pick">${ALERT_CHANNELS.map((ch) => `<label><input type="checkbox" name="channel" value="${ch.id}" ${s.channels.includes(ch.id) ? "checked" : ""}> ${ch.label}</label>`).join("")}</div>
+    </fieldset>`;
 };
 
 const stepUploadA = (s: StartState): string => {
@@ -134,6 +139,7 @@ const stepReview = (s: StartState): string => {
       <dt>회사 · 담당자</dt><dd>${esc(s.company)} · ${esc(s.manager)}</dd>
       <dt>품목군</dt><dd>${esc(s.category) || "-"}</dd>
       <dt>공급기업</dt><dd>${invites} · ${s.shareScope === "result" ? "산정 결과만" : "결과 + 요약 근거"}</dd>
+      <dt>알림</dt><dd>${ALERT_CHANNELS.filter((ch) => s.channels.includes(ch.id)).map((ch) => ch.label).join(", ") || "받지 않음"}</dd>
       <dt>ERP 파일</dt><dd>${s.erpUploaded ? "발주 파일 연결 · 열 매핑 저장" : "나중에 연결"}</dd>
     </dl>
     <h2 class="h2-s">6주 파일럿 일정</h2>
@@ -158,6 +164,7 @@ export const renderDone = (s: StartState): string => {
       <span class="done-mark" aria-hidden="true">✓</span>
       <h1>${esc(s.company)}의 파일럿을 준비했습니다</h1>
       <p class="lead-s">공급기업 초대 메일이 발송되고, 담당 매니저가 1주차 업무 재현 일정을 잡기 위해 연락드립니다 (데모 — 실제 발송 없음).</p>
-      <div class="row"><a class="btn solid" href="./my.html">내 업무 화면으로 →</a><a class="btn ghost" href="./">소개로 돌아가기</a></div>
+      <div class="row"><a class="btn solid" href="./my.html">기업 대시보드 열기 →</a><a class="btn ghost" href="./">소개로 돌아가기</a></div>
+      <p class="hint-s">다음부터는 소개 페이지의 <b>기업 로그인</b>으로 같은 대시보드에 들어옵니다.</p>
     </div>`;
 };

@@ -27,6 +27,7 @@ const STATUS: Readonly<Record<ContractStatus, readonly [string, string]>> = {
   ok: ["p-ok", "운영 중"],
   draft: ["p-info", "신규 약정 준비"],
   renew: ["p-warn", "갱신 검토 필요"],
+  nolink: ["p-mute", "미연동 합의"],
 };
 
 export const statusPill = (s: ContractStatus): string => {

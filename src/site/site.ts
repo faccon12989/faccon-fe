@@ -1,7 +1,9 @@
 /* 서비스 소개 페이지: 계산 예시, 이용자 탭 */
 import "./site.css";
 import { adjust, pct, signedWon, won } from "../calc";
+import { CONTRACTS, isCounted, RECONCILE } from "../data";
 import type { Contract } from "../types";
+import { esc } from "../ui";
 
 /** 소개용 가상 거래 (기획서 부록 A 예시와 같은 조건) */
 const SAMPLE: Readonly<Contract> = {
@@ -76,5 +78,28 @@ const setupSlider = (): void => {
   renderCalc(Number(input.value));
 };
 
+/** 첫 화면 변동표: 앱과 같은 가상 데이터로 그린다 */
+const renderLedger = (): void => {
+  const body = byId<HTMLElement>("ledger-rows");
+  const foot = byId<HTMLElement>("ledger-foot");
+  if (!body || !foot) return;
+  const rows = CONTRACTS.filter(isCounted).map((c) => {
+    const r = adjust(c);
+    const po = RECONCILE.find((x) => x.contract === c.id)?.poPrice ?? null;
+    const missed = po !== null && po !== r.price;
+    const state = c.status === "renew" ? ["warn", "갱신 확인"] : missed ? ["bad", "발주 미반영"] : ["ok", "일치"];
+    return { c, r, po, missed, state };
+  });
+  body.innerHTML = rows.map(({ c, r, po, missed, state }) => `<tr class="${missed ? "hit" : ""}">
+      <td><b>${esc(c.id)}</b><small>${esc(c.item)}</small></td>
+      <td class="n">${r.it} <small>${r.rate > 0 ? "+" : ""}${pct(r.rate)}</small></td>
+      <td class="n">${won(r.price)}</td>
+      <td class="n ${missed ? "strike" : ""}">${po === null ? "-" : won(po)}</td>
+      <td><span class="st ${state[0]}">${state[1]}</span></td></tr>`).join("");
+  const missedTotal = rows.filter((x) => x.missed).reduce((a, x) => a + x.r.total, 0);
+  foot.innerHTML = `미반영 ${rows.filter((x) => x.missed).length}건 · 차액 후보 <b>${signedWon(missedTotal)}</b> · 갱신 확인 ${rows.filter((x) => x.c.status === "renew").length}건`;
+};
+
+renderLedger();
 setupSlider();
 setupTabs();

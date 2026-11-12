@@ -1,5 +1,5 @@
 import { adjust, signedWon, won } from "../calc";
-import { RECONCILE, SELF_SUPPLIER, TODOS } from "../data";
+import { isCounted, RECONCILE, SELF_SUPPLIER, TODOS } from "../data";
 import type { Role, TodoKind } from "../types";
 import { adjustPill, esc, findContract, supplierName, visibleContracts } from "../ui";
 
@@ -12,8 +12,8 @@ const TODO_ICON: Readonly<Record<TodoKind, readonly [string, string]>> = {
 export const dashboardView = (role: Role): string => {
   const list = visibleContracts(role);
   const results = list.map((c) => ({ c, r: adjust(c) }));
-  // 약정 전(초안) 계약은 예상액 합계에서 뺀다.
-  const signed = results.filter((x) => x.c.status !== "draft");
+  // 약정 전(초안)·미연동 합의 계약은 예상액 합계에서 뺀다.
+  const signed = results.filter((x) => isCounted(x.c));
   const up = signed.filter((x) => x.r.total > 0).reduce((sum, x) => sum + x.r.total, 0);
   const down = signed.filter((x) => x.r.total < 0).reduce((sum, x) => sum + x.r.total, 0);
   const unapplied = RECONCILE.filter((row) => {
@@ -36,7 +36,7 @@ export const dashboardView = (role: Role): string => {
   const rows = results.map(({ c, r }) => `
     <tr class="click" data-go="#/contracts/${esc(c.id)}"><td><b>${esc(c.id)}</b><br><small style="color:var(--mute)">${esc(c.item)}</small></td>
     <td>${adjustPill(r)}</td>
-    <td class="num ${r.total > 0 && c.status !== "draft" ? "diff-up" : ""}">${!r.triggered ? "-" : c.status === "draft" ? `<small style="color:var(--mute)">약정 전 · 참고</small> ${signedWon(r.total)}` : signedWon(r.total)}</td></tr>`).join("");
+    <td class="num ${r.total > 0 && isCounted(c) ? "diff-up" : ""}">${c.status === "nolink" ? `<small style="color:var(--mute)">미연동 합의</small>` : !r.triggered ? "-" : c.status === "draft" ? `<small style="color:var(--mute)">약정 전 · 참고</small> ${signedWon(r.total)}` : signedWon(r.total)}</td></tr>`).join("");
 
   const heading = role === "supplier" ? "우리 회사 거래 현황" : "이번 달 운영 현황";
   const sub = role === "supplier"
@@ -47,7 +47,7 @@ export const dashboardView = (role: Role): string => {
     <h1>${heading}</h1>
     <p class="sub">${sub}</p>
     <div class="grid g4">
-      <div class="card kpi"><small>운영 중인 약정</small><b>${list.filter((c) => c.status !== "draft").length}건</b><span>신규 준비 ${list.filter((c) => c.status === "draft").length}건</span></div>
+      <div class="card kpi"><small>운영 중인 약정</small><b>${list.filter(isCounted).length}건</b><span>신규 준비 ${list.filter((c) => c.status === "draft").length}건</span></div>
       <div class="card kpi up"><small>이번 달 인상 예상액</small><b>${won(up)}</b><span>약정 체결 계약만 합산</span></div>
       <div class="card kpi down"><small>이번 달 인하 예상액</small><b>${won(Math.abs(down))}</b><span>하락분도 약정대로 반영</span></div>
       <div class="card kpi"><small>발주 미반영</small><b>${unapplied}건</b><span>계산단가 ≠ 발주단가</span></div>
