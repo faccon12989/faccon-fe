@@ -14,6 +14,7 @@ export default defineConfig({
         my: resolve(__dirname, "my.html"),
         login: resolve(__dirname, "login.html"),
         consult: resolve(__dirname, "consult.html"),
+        faq: resolve(__dirname, "faq.html"),
       },
     },
   },
