@@ -30,7 +30,7 @@
 .kpi span{font-size:14px;color:var(--mute)}
 .kpi b{font-size:28px;letter-spacing:-.02em}
 .kpi small{font-size:15px;font-weight:500;color:var(--mute);margin-left:2px}
-.kpi.warn{border-color:var(--mark);box-shadow:inset 4px 0 0 var(--mark)}
+.kpi.warn{border-color:var(--mark)}
 
 /* 패널과 표 */
 .cols{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
