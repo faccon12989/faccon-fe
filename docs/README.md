@@ -1,15 +1,15 @@
 # 팀원용 수정본 실행 및 AI 인수인계
 
-2026-11-12 / 업무요약 통합 작업 브랜치: `feat/unify-work-summary` / 검토 대상: `main`
+2026-11-12 / 기준 브랜치: `main` / 일반 변경은 검증 후 직접 반영
 
-현재 브랜치는 가상 데이터로 구성된 화면 데모입니다. 공유 브랜치를 받으면 수정 화면을 실행할 수 있습니다. `main`에 병합되기 전에는 공개 사이트에 반영되지 않습니다.
+가상 데이터로 구성된 화면 데모입니다. 최신 main을 받으면 팀이 공유하는 수정 화면을 실행할 수 있습니다. main 푸시 후 자동 검증·배포가 완료되면 공개 사이트에 반영됩니다.
 
 ## 1. 처음 받는 경우
 
 Git과 Node.js 22 LTS를 준비한 뒤 PowerShell에서 실행합니다.
 
 ```powershell
-git clone --branch feat/unify-work-summary https://github.com/faccon12989/faccon-fe.git
+git clone --branch main https://github.com/faccon12989/faccon-fe.git
 cd faccon-fe
 npm.cmd ci
 npm.cmd run dev
@@ -23,8 +23,8 @@ npm.cmd run dev
 
 ```powershell
 git fetch origin
-git switch feat/unify-work-summary
-git pull --ff-only origin feat/unify-work-summary
+git switch main
+git pull --ff-only origin main
 npm.cmd ci
 npm.cmd run dev
 ```
@@ -50,24 +50,29 @@ AI에는 먼저 루트의 `AGENTS.md`와 위 문서 3개를 읽게 한 뒤 맡�
 
 ## 5. 팀 작업 방법
 
-수정할 때는 현재 브랜치에서 개인 작업 브랜치를 만들고, 검사 후 별도 PR로 검토받습니다. PR #2에서 새 디자인과 기존 기능을 이미 통합했습니다. 새 작업은 최신 main을 기준으로 별도 브랜치에서 시작합니다.
+2026-11-12 팀 협업 방침에 따라 일반 변경은 PR 없이 검증 후 main에 직접 반영합니다. 미완료 작업이 있으면 먼저 별도 브랜치에 보존하고 진행합니다. 각 팀원은 본인의 GitHub 계정으로 커밋하고 푸시합니다.
 
 ```powershell
-git switch -c fix/your-task
+git switch main
+git pull --ff-only origin main
 # 파일 수정 후
 npm.cmd run check
+# 수정한 화면의 주요 이용 흐름 확인
 git add 수정한파일경로
 git commit -m "fix: 수정 내용"
-git push -u origin fix/your-task
+git fetch origin
+# origin/main에 새 변경이 있으면 통합하고 재검증
+git push origin main
 ```
 
-`main` 병합 시 공개 사이트가 자동 배포됩니다. 팀 검토가 끝난 PR만 병합합니다. `.env`, API 키, 지갑 개인키, 실제 고객 문서는 업로드하지 않습니다.
+푸시가 거절되면 강제 푸시하지 않습니다. 최신 팀원 변경을 반영하고 필요한 검증을 다시 수행합니다. 패키지·잠금 파일·Vite·TypeScript·GitHub Actions 설정 변경은 별도 PR과 개발 담당자 확인을 유지합니다.
 
-## 6. PR·메일 협업
+`main` 푸시 시 공개 사이트가 자동 배포됩니다. GitHub Actions의 성공 여부를 확인합니다. `.env`, API 키, 지갑 개인키, 실제 고객 문서는 업로드하지 않습니다.
 
-- 리뷰 요청과 변경 이유는 GitHub PR에 기록합니다. 카카오톡은 PR 링크 안내에 사용하면 됩니다.
-- 패키지·잠금 파일·Vite·TypeScript·GitHub Actions 설정은 팀 합의 없이 바꾸지 않습니다. 이번 브랜치는 WASM 교체 없이 네이티브 Rollup 구성으로 검사했습니다.
-- 리뷰 요청·멘션·참여 중인 PR의 댓글은 수신자의 GitHub 알림 설정에 따라 이메일로도 전달됩니다. 특정 Gmail로 실제 전달되었는지는 여기서 확인할 수 없습니다.
-- GitHub 알림은 일반적으로 notifications@github.com에서 발송되며, 직접 작성한 Gmail 메일과 구분합니다.
+## 6. 변경 공유
+
+- 일반 변경은 커밋 메시지와 변경내역 문서에 목적·검증 결과를 기록하고 커밋 링크를 공유합니다.
+- PR이 필요한 설정 변경은 리뷰 요청과 변경 이유를 PR에 기록합니다.
+- 직접 푸시가 모든 팀원에게 이메일로 전달된다고 가정하지 않습니다. 알림 여부는 각자의 GitHub 구독 설정에 따릅니다.
+- 기존 변경내역 문서의 PR 안내는 당시 작업 방식의 기록이며, 현재 협업 규칙은 루트 AGENTS.md를 따릅니다.
 - [GitHub 알림 안내](https://docs.github.com/en/subscriptions-and-notifications/concepts/about-notifications)
-- [GitHub 이메일 헤더](https://docs.github.com/en/subscriptions-and-notifications/reference/email-notification-headers)
