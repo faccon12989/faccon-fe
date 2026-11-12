@@ -194,9 +194,9 @@ h3{font-size:21px;margin:0 0 10px}
 /* 도입 방식: 파일럿 · 구매기업 · 공급기업 */
 .sec-label{margin:0 0 10px;font-size:16px;font-weight:700;color:var(--accent)}
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
-.plan{border:1px solid var(--line);border-radius:20px;padding:28px}
+.plan{position:relative;border:1px solid var(--line);border-radius:20px;padding:28px}
 .plan.feat{background:var(--accent-bg);border:2px solid var(--accent);color:var(--ink)}
-.plan-k{display:inline-block;margin:0 0 12px;font-size:13.5px;font-weight:700;background:var(--accent);color:#fff;border-radius:6px;padding:3px 9px}
+.plan-k{position:absolute;top:-14px;right:22px;font-size:13.5px;font-weight:700;background:var(--accent);color:#fff;border-radius:999px;padding:4px 12px}
 .plan h3{font-size:22px;margin:0 0 6px}
 .plan .pp{margin:0 0 18px;font-size:17px;font-weight:700;color:var(--accent)}
 .plan.feat .pp{color:var(--accent)}
