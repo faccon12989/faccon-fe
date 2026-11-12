@@ -195,11 +195,11 @@ h3{font-size:21px;margin:0 0 10px}
 .sec-label{margin:0 0 10px;font-size:16px;font-weight:700;color:var(--accent)}
 .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
 .plan{border:1px solid var(--line);border-radius:20px;padding:28px}
-.plan.feat{background:var(--accent);border-color:var(--accent);color:#fff}
-.plan-k{display:inline-block;margin:0 0 12px;font-size:13.5px;font-weight:700;background:var(--mark);color:#1A1F2B;border-radius:6px;padding:3px 9px}
+.plan.feat{background:var(--accent-bg);border:2px solid var(--accent);color:var(--ink)}
+.plan-k{display:inline-block;margin:0 0 12px;font-size:13.5px;font-weight:700;background:var(--accent);color:#fff;border-radius:6px;padding:3px 9px}
 .plan h3{font-size:22px;margin:0 0 6px}
 .plan .pp{margin:0 0 18px;font-size:17px;font-weight:700;color:var(--accent)}
-.plan.feat .pp{color:#C9D6EE}
+.plan.feat .pp{color:var(--accent)}
 .plan ul{margin:0;padding-left:20px;font-size:16.5px}
 .plan li{margin:7px 0;color:var(--soft)}
-.plan.feat li{color:#E6EBF3}
+.plan.feat li{color:var(--soft)}
