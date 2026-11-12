@@ -87,5 +87,42 @@ const fitPreview = (): void => {
   new ResizeObserver(resize).observe(frame);
 };
 
+/** '왜 필요한가' 숫자: 화면에 들어오면 0%에서 원래 값까지 올라간다 */
+const COUNT_MS = 1400;
+const easeOut = (t: number): number => 1 - (1 - t) ** 3;
+
+const countUp = (el: HTMLElement): void => {
+  const match = /^([\d.]+)(.*)$/.exec(el.textContent?.trim() ?? "");
+  if (!match?.[1]) return;
+  const target = Number(match[1]);
+  const digits = match[1].split(".")[1]?.length ?? 0;
+  const suffix = match[2] ?? "";
+  const start = performance.now();
+  const tick = (now: number): void => {
+    const t = Math.min(1, (now - start) / COUNT_MS);
+    el.textContent = `${(target * easeOut(t)).toFixed(digits)}${suffix}`;
+    if (t < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+};
+
+const setupCounters = (): void => {
+  const nums = [...document.querySelectorAll<HTMLElement>(".why-stats b")];
+  if (!nums.length || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const finals = nums.map((n) => n.textContent ?? "");
+  nums.forEach((n, i) => { n.textContent = (finals[i] ?? "").replace(/[\d.]+/, (v) => (0).toFixed(v.split(".")[1]?.length ?? 0)); });
+  const seen = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const el = entry.target as HTMLElement;
+      el.textContent = finals[nums.indexOf(el)] ?? "";
+      countUp(el);
+      seen.unobserve(el);
+    });
+  }, { threshold: 0.6 });
+  nums.forEach((n) => seen.observe(n));
+};
+
 renderChat();
 fitPreview();
+setupCounters();
