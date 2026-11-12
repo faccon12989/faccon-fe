@@ -124,3 +124,6 @@
 .chan-pick input{width:20px;height:20px}
 .rail li:not(:last-child)::after{content:none}
 .fld{align-content:start}
+
+/* 휴대폰: 넓은 내용이 화면 밖으로 밀리지 않게 */
+@media (max-width:820px){.start{grid-template-columns:minmax(0,1fr)}.rail,.pane{min-width:0}.pane{padding:20px 16px}}

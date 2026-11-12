@@ -54,7 +54,7 @@ const taskTable = (open: readonly Todo[]): string => {
   }).join("");
   return `<section class="panel">
     <div class="panel-h"><h2>처리할 업무</h2><span class="count">${open.length}건 · 기한 빠른 순</span></div>
-    <table class="grid"><thead><tr><th>약정</th><th>내용</th><th class="n">기한</th><th>영향</th><th></th></tr></thead><tbody>${rows}</tbody></table>
+    <table class="grid task-grid"><thead><tr><th>약정</th><th>내용</th><th class="n">기한</th><th>영향</th><th></th></tr></thead><tbody>${rows}</tbody></table>
   </section>`;
 };
 
