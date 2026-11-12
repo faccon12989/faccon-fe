@@ -83,14 +83,7 @@ h3{font-size:21px;margin:0 0 10px}
 .need .note{margin:12px 0 0;font-size:16px;color:var(--soft)}
 
 /* 5. 질문 */
-.faq-in{display:grid;grid-template-columns:.8fr 1.2fr;gap:64px;align-items:start}
-.qa{margin:0}
-.qa dt{font-size:20px;font-weight:700;padding-top:22px;border-top:1px solid var(--line)}
-.qa dt:first-child{border-top:0;padding-top:0}
-.qa dd{margin:8px 0 22px;color:var(--soft);font-size:18px}
 
-.foot{background:var(--surface-2);font-size:15px;color:var(--mute)}
-.foot-in{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:32px;padding-bottom:44px}
 
 /* 큰 모니터: 폭과 높이가 모두 충분할 때만 비율대로 키운다 */
 @media (min-width:1680px) and (min-height:990px){:root{--z:1.1}}
@@ -160,3 +153,27 @@ h3{font-size:21px;margin:0 0 10px}
 .why-cases h3{font-size:20px;margin:0 0 8px}
 .why-cases p{margin:0;color:var(--soft);font-size:17px}
 .why-close{margin:48px 0 0;padding-top:28px;border-top:1px solid var(--line);font-size:20px;font-weight:600}
+
+/* 자주 묻는 질문: 질문 | 답변 표 */
+.qa-table{width:100%;border-collapse:collapse;margin-top:28px;font-size:17px}
+.qa-table th{background:var(--surface);text-align:left;font-size:16px;font-weight:700;padding:14px 18px;border:1px solid var(--line)}
+.qa-table td{padding:16px 18px;border:1px solid var(--line);vertical-align:top;line-height:1.6}
+.qa-table th:first-child,.qa-table td:first-child{width:34%}
+.qa-table td:first-child{font-weight:600}
+.qa-table td:last-child{color:var(--soft)}
+
+/* 마무리 띠 */
+.closing{text-align:center;padding:120px 24px;border-top:1px solid var(--line)}
+.closing h2{font-size:clamp(1.6rem,1.2rem + 1.1vw,2.2rem);margin:0 auto 36px;max-width:none;line-height:1.45}
+
+/* 하단바: 왼쪽 회사 정보, 오른쪽 바로가기와 연락 안내 */
+.foot{border-top:1px solid var(--line);color:var(--mute)}
+.foot-in{max-width:1120px;margin:0 auto;padding:56px 32px 24px;display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap}
+.foot-logo{margin:0 0 20px;font-size:34px;font-weight:800;letter-spacing:-.04em;color:#C8CBD1}
+.foot-info{margin:0;font-size:14.5px;line-height:1.7}
+.foot-links{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:12px}
+.foot-links a{display:flex;align-items:center;gap:10px;font-size:16px;color:var(--ink);text-decoration:none}
+.foot-links a:hover{color:var(--accent)}
+.foot-links svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.foot-hours{margin:0;font-size:14.5px}
+.foot-legal{max-width:1120px;margin:0 auto;padding:16px 32px 48px;font-size:13.5px;line-height:1.7;color:#9AA0A8}
