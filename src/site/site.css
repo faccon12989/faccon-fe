@@ -50,13 +50,13 @@ h3{font-size:21px;margin:0 0 10px}
 .nav-cta{margin-left:auto;display:flex;gap:8px}
 .nav-cta .btn{min-height:42px;padding:8px 16px;font-size:16px;border-radius:10px}
 
-/* 구역 하나 = 화면 하나 */
-.sec{min-height:calc(100vh / var(--z) - var(--nav-h));display:flex;align-items:center;padding:64px 0}
-.sec>.wrap{width:100%}
+/* 구역은 내용 길이대로, 사이 여백은 넉넉하게 */
+.sec{padding:112px 0}
+.sec+.sec{border-top:1px solid var(--line)}
 .big{font-size:20px;color:var(--soft);margin:0 0 32px;max-width:30em}
 
 /* 1. 첫 화면: 제목 + 실제 받게 될 알림 */
-.hero{max-width:1120px;min-height:calc(100vh / var(--z) - var(--nav-h));margin:0 auto;padding:40px 32px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:64px;align-items:center}
+.hero{max-width:1120px;margin:0 auto;padding:104px 32px 120px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:64px;align-items:center}
 .hero h1{font-size:clamp(2.2rem,1.4rem + 2vw,3rem);font-weight:800;letter-spacing:-.04em;margin:0 0 24px}
 .lead{font-size:20px;color:var(--soft);max-width:28em;margin:0 0 36px}
 .inbox{margin:0;display:grid;gap:14px}
@@ -71,8 +71,8 @@ h3{font-size:21px;margin:0 0 10px}
 .msg.old{border-left-color:var(--line);opacity:.8}
 
 /* 2. 대시보드 화면: 이 페이지의 중심 */
-.shot{background:var(--surface);padding:40px 0}
-.shot .wrap{max-width:944px}
+.shot{background:var(--surface);padding:104px 0}
+.shot+.sec{border-top:0}
 .shot-head{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:24px}
 .shot-head h2{margin:0}
 .shot-head p{margin:0;color:var(--soft);font-size:18px}
