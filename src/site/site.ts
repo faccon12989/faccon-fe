@@ -28,7 +28,7 @@ const message = (title: string, rows: readonly Row[], time: string, action?: str
           <div class="talk-body">
             <p class="talk-title">${esc(title)}</p>
             <ul class="talk-rows">${rowsHtml(rows)}</ul>
-            ${action ? `<a class="talk-btn" href="./login.html">${esc(action)}</a>` : ""}
+            ${action ? `<a class="talk-btn" href="./my.html">${esc(action)}</a>` : ""}
           </div>
         </div>
         <time>${esc(time)}</time>
@@ -123,6 +123,29 @@ const setupCounters = (): void => {
   nums.forEach((n) => seen.observe(n));
 };
 
+/** '알림을 누르면 열리는 화면': 대시보드의 발주 미반영 처리 화면과 같은 내용 */
+const renderFixCard = (): void => {
+  const box = document.getElementById("fix-card");
+  const c = findContract(ALERT_CONTRACT);
+  const po = RECONCILE.find((x) => x.contract === ALERT_CONTRACT);
+  if (!box || !c || !po) return;
+  const r = adjust(c);
+  const rise = Math.round(r.rate * 100);
+  const gap = (r.price - po.poPrice) * po.qty;
+  box.innerHTML = `
+    <p class="fc-label">발주 미반영 · ${esc(c.item)}</p>
+    <p class="fc-title">발주에 옛 단가가 남아 있어요</p>
+    <div class="fc-compare">
+      <div><small>약정대로 계산한 단가</small><b>${won(r.price)}</b></div>
+      <span aria-hidden="true">≠</span>
+      <div><small>11월 발주 ${esc(po.po)}</small><b class="old">${won(po.poPrice)}</b></div>
+    </div>
+    <p class="fc-why"><b>왜 바뀌었나요?</b> 알루미늄 지수가 ${rise}% 올라 약정 요건(±${c.threshold}%)을 넘었어요. 원재료비 ${won(c.m0)}의 ${rise}%인 ${won(r.price - c.p0)}이 올라갑니다.</p>
+    <p class="fc-impact">그대로 두면 ${po.qty.toLocaleString()}개 기준 <b>${won(gap)}</b>이 반영되지 않아요.</p>
+    <a class="btn solid" href="./my.html">단가 반영 요청</a>`;
+};
+
 renderChat();
+renderFixCard();
 fitPreview();
 setupCounters();
