@@ -63,3 +63,11 @@ npm.cmd run dev
 ```
 
 수정 중인 파일이 있다면 먼저 `git status`로 확인하고 자기 작업을 보존한 뒤 최신 main을 통합합니다. 충돌 시 reset/강제 덮어쓰기를 사용하지 않습니다. 이번 변경은 의존성 변경이 없어 재설치가 필요하지 않으며, 처음 받는 환경만 `npm.cmd install`을 실행합니다.
+
+## 반영·배포 기록
+
+- 앱 변경 커밋: `d93e44fe101058b2ce510eb641fe81b00f23ac3a`
+- 작성자·커미터·푸시 인증: 개인 계정 `2bwfkjpr25-lab`
+- [자동 검사·배포 성공](https://github.com/faccon12989/faccon-fe/actions/runs/43198584339)
+- [배포 사이트](https://faccon.naegoworks.com/my.html)에서도 위 양사 왕복·갱신·다운로드·설정·모바일 13개 확인 항목 통과. JavaScript 오류 0건.
+- 전체 내부 요구사항은 지정된 프로젝트 자료 폴더에 별도 보관하며, 공개 저장소에는 [구현 기준](./implementation-contract.md)만 포함합니다.
