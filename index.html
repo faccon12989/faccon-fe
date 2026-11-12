@@ -35,7 +35,6 @@
         <a class="btn solid lg" href="./start.html">파일럿 신청</a>
         <a class="btn ghost lg" href="./login.html">기업 대시보드 보기</a>
       </div>
-      <p class="fine">ERP는 그대로 · 한 품목군, 파일 입출력으로 시작</p>
     </div>
 
     <figure class="ledger" aria-labelledby="ledger-cap">
@@ -70,14 +69,14 @@
       <p class="sec-no">02 — 쓰는 법</p>
       <h2 id="how-h">새로 약정하지 않고, 지금 있는 약정에서 시작합니다</h2>
       <ol class="flow">
-        <li><span>01</span><b>기존 약정 가져오기</b><p>약정서·확인서를 올리면 조건을 뽑아 원문 위치와 함께 보여줍니다. 담당자가 맞는지 확인합니다.</p></li>
-        <li><span>02</span><b>매달 지표 확인·계산</b><p>약정한 주기에 지표를 보고, 요건을 넘으면 정해진 산식으로 계산합니다. 인상도 인하도 같습니다.</p></li>
-        <li><span>03</span><b>발주·청구 반영 대조</b><p>ERP에서 내려받은 파일과 비교해 옛 단가로 남은 건을 찾습니다.</p></li>
-        <li><span>04</span><b>목적별 제출자료</b><p>포상·조사·지원사업 보고마다 필요한 자료가 무엇이고 무엇이 준비됐는지 보여줍니다.</p></li>
+        <li><span>01</span><b>기존 약정 가져오기</b><p>약정서를 올리면 조건을 찾아 보여줍니다.</p></li>
+        <li><span>02</span><b>매달 지표 확인·계산</b><p>요건을 넘으면 약정 산식대로 계산합니다.</p></li>
+        <li><span>03</span><b>발주·청구 반영 대조</b><p>옛 단가로 남은 발주를 찾습니다.</p></li>
+        <li><span>04</span><b>목적별 제출자료</b><p>목적별로 필요한 자료를 묶습니다.</p></li>
       </ol>
 
       <div class="alert-strip">
-        <div><b>화면을 열지 않아도 먼저 알려드립니다</b><p>갱신 기한, 약정한 조정 시점, 지표가 크게 움직인 날 — 근거와 함께 보냅니다.</p></div>
+        <div><b>갱신 기한·조정 시점은 먼저 알려드립니다</b></div>
         <ul aria-label="알림 채널"><li>카카오톡 알림톡</li><li>이메일</li><li>문자</li></ul>
       </div>
 
@@ -85,7 +84,7 @@
         <div>
           <p class="sec-no">직접 계산해 보기</p>
           <h3 id="calc-title">지표가 움직이면 단가는 이렇게 바뀝니다</h3>
-          <p class="muted">기준단가 10,000원, 제품당 원재료비 4,000원, 요건 ±5%로 약정한 가상 거래입니다. 계산은 AI가 아니라 고정된 규칙으로 합니다.</p>
+          <p class="muted">기준단가 10,000원 · 원재료비 4,000원 · 요건 ±5% (가상)</p>
           <label class="slider" for="site-it">이번 달 지표 <output id="site-it-out" for="site-it">108</output></label>
           <input type="range" id="site-it" min="88" max="112" step="0.5" value="108">
         </div>
@@ -99,9 +98,9 @@
       <p class="sec-no">03 — 역할</p>
       <h2 id="roles-h">올리는 사람, 확인하는 사람, 승인하는 사람이 다릅니다</h2>
       <ol class="roles">
-        <li><span class="r-k">올림</span><b>구매 담당자 또는 공급기업</b><p>약정서, 확인서, ERP 발주 파일을 올립니다. AI는 여기서 값을 찾아 표시만 합니다.</p></li>
-        <li><span class="r-k">확인</span><b>상대 기업 담당자</b><p>찾은 값과 계산 결과가 맞는지 원문과 대조해 확인합니다. 원가 원문은 공유하지 않습니다.</p></li>
-        <li><span class="r-k">승인</span><b>결재권자 (예: 구매팀장)</b><p>확인된 결과를 확정합니다. 서비스나 AI가 대신 승인하지 않고, 누가 언제 했는지 남습니다.</p></li>
+        <li><span class="r-k">올림</span><b>구매 담당자 또는 공급기업</b><p>약정서·발주 파일 등록</p></li>
+        <li><span class="r-k">확인</span><b>상대 기업 담당자</b><p>값과 계산 결과 확인</p></li>
+        <li><span class="r-k">승인</span><b>결재권자 (예: 구매팀장)</b><p>최종 확정 · 기록이 남습니다</p></li>
       </ol>
       <div class="tabs" role="tablist" aria-label="이용자 유형">
         <button role="tab" aria-selected="true" aria-controls="tab-buyer" id="t-buyer" data-tab="buyer">구매기업</button>
@@ -128,18 +127,10 @@
       <p class="sec-no">04 — 자료 보호</p>
       <h2 id="trust-h">원가 원문은 공급기업 것입니다</h2>
       <dl class="trust">
-        <div><dt>원문 기본 비공개</dt><dd>구매기업이 이용료를 내도 공급기업의 상세 원가를 볼 수 없습니다. 공유할 결과와 원문 접근을 따로 승인하고, 열람 기록이 남습니다.</dd></div>
-        <div><dt>계산은 규칙으로</dt><dd>AI는 문서에서 값을 찾아 출처와 함께 보여주는 데까지만 씁니다. 금액은 약정 산식대로 계산 프로그램이 냅니다.</dd></div>
-        <div><dt>사람이 확정</dt><dd>입력값, 규칙, 계산 버전, 승인자가 연결되지 않은 보고서는 확정본으로 내지 않습니다.</dd></div>
+        <div><dt>원문 기본 비공개</dt><dd>구매기업도 공급기업의 상세 원가는 볼 수 없습니다.</dd></div>
+        <div><dt>계산은 규칙으로</dt><dd>금액은 AI가 아니라 약정 산식으로 계산합니다.</dd></div>
+        <div><dt>사람이 확정</dt><dd>승인자가 없는 결과는 확정하지 않습니다.</dd></div>
       </dl>
-      <div class="cmp">
-        <p class="sec-no">이미 쓰는 방법과 함께</p>
-        <dl>
-          <div><dt>정부 체결지원·전문기관</dt><dd>받은 원가 확인서와 약정을 다시 입력하지 않고 매달 운영에 이어 씁니다.</dd></div>
-          <div><dt>엑셀·기존 ERP</dt><dd>ERP는 그대로 둡니다. 발주·청구 파일을 받아 대조만 합니다.</dd></div>
-          <div><dt>연동 모듈이 있는 SRM</dt><dd>이미 만족스럽게 쓰고 있다면 교체를 권하지 않습니다.</dd></div>
-        </dl>
-      </div>
     </div>
   </section>
 

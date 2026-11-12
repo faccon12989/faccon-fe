@@ -43,7 +43,6 @@ const stepCompany = (s: StartState): string => {
       ${field("phone", "휴대폰 (선택)", s.phone, { type: "tel", hint: "알림톡·문자를 받을 번호", ac: "tel" })}
     </div>
     <fieldset class="notify"><legend>알림 받을 곳</legend>
-      <p class="hint-s">화면을 열지 않아도 갱신 기한, 조정 시점, 지표 급변을 근거와 함께 보내드려요.</p>
       <div class="chan-pick">${ALERT_CHANNELS.map((ch) => `<label><input type="checkbox" name="channel" value="${ch.id}" ${s.channels.includes(ch.id) ? "checked" : ""}> ${ch.label}</label>`).join("")}</div>
     </fieldset>`;
 };
@@ -165,6 +164,6 @@ export const renderDone = (s: StartState): string => {
       <h1>${esc(s.company)}의 파일럿을 준비했습니다</h1>
       <p class="lead-s">공급기업 초대 메일이 발송되고, 담당 매니저가 1주차 업무 재현 일정을 잡기 위해 연락드립니다 (데모 — 실제 발송 없음).</p>
       <div class="row"><a class="btn solid" href="./my.html">기업 대시보드 열기 →</a><a class="btn ghost" href="./">소개로 돌아가기</a></div>
-      <p class="hint-s">다음부터는 소개 페이지의 <b>기업 로그인</b>으로 같은 대시보드에 들어옵니다.</p>
+
     </div>`;
 };

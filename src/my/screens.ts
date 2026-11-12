@@ -38,7 +38,7 @@ const alertBar = (s: MyState): string => {
     return `<button class="chan ${on ? "on" : ""}" data-channel="${ch.id}" aria-pressed="${on}">${ch.label}</button>`;
   }).join("");
   return `<section class="alerts" aria-label="알림 받을 곳">
-    <p><b>화면을 안 열어도 알려드려요</b><small>갱신 기한, 조정 시점, 지표 급변을 아래로 보내요</small></p>
+    <p><b>알림 받을 곳</b></p>
     <div class="chans">${chips}</div>
   </section>`;
 };
@@ -59,7 +59,7 @@ const monthBlock = (): string => {
         <div><small>올라간 금액 합계</small><b class="up">${signedWon(up)}</b></div>
         <div><small>내려간 금액 합계</small><b class="down">${won(down)}</b></div>
       </div>
-      <p class="tiny">약정 ${counted.length}건을 더한 값 · 약정별 (조정단가 − 기준단가) × 적용 수량 · 양사 간 주고받는 금액</p>
+      <p class="tiny">약정 ${counted.length}건 합계</p>
       <details class="breakdown"><summary>어떤 약정을 더했나요?</summary>
         <table><tbody>${rows}</tbody></table>
         <p class="tiny">빠진 약정 ${excluded.length}건: ${excluded.map((c) => `${esc(c.item)} (${c.status === "nolink" ? "미연동 합의" : "약정 준비 중"})`).join(", ")}</p>
@@ -71,9 +71,9 @@ const noticeBlock = (): string => {
   const items = NOTICES.map((n) => `<li>
       <span class="n-date">${esc(n.date)}</span>
       <b>${esc(n.title)}</b><p>${esc(n.body)}</p>
-      <small>내 약정 영향 · ${esc(n.impact)}</small></li>`).join("");
+      <small>${esc(n.impact)}</small></li>`).join("");
   return `<section class="notices"><h2>제도 소식</h2><ul>${items}</ul>
-    <p class="tiny">법령 원문과 시행일은 운영팀이 확인한 뒤 올려요. 내 거래에 맞는지는 담당자가 최종 판단해요.</p></section>`;
+</section>`;
 };
 
 export const homeScreen = (s: MyState): string => {
@@ -121,20 +121,19 @@ export const contractsScreen = (): string => {
 const trailBlock = (id: string): string => {
   const t = TRAILS.find((x) => x.contract === id);
   if (!t) return "";
-  const step = (label: string, who: string | null, note: string): string => `<li class="${who ? "done" : "wait"}">
-      <span class="tr-l">${label}</span><b>${esc(who ?? "아직 안 됨")}</b><small>${note}</small></li>`;
+  const step = (label: string, who: string | null): string => `<li class="${who ? "done" : "wait"}">
+      <span class="tr-l">${label}</span><b>${esc(who ?? "아직 안 됨")}</b></li>`;
   return `<section class="facts trail"><h2>누가 했나요?</h2><ol>
-      ${step("올림", t.uploaded, "약정서·자료 등록")}
-      ${step("확인", t.checked, "상대 기업이 값이 맞는지 확인")}
-      ${step("승인", t.approved, "결재권자가 확정 · AI나 서비스가 대신하지 않아요")}
+      ${step("올림", t.uploaded)}
+      ${step("확인", t.checked)}
+      ${step("승인", t.approved)}
     </ol></section>`;
 };
 
 const noLinkDetail = (c: Contract): string => `
     <div class="price-hero flat"><small>이 거래는</small><b>연동하지 않음</b><span>양사가 서면으로 합의 · ${esc(c.noLink?.agreedOn)}</span></div>
     <section class="explain"><h2>왜 연동하지 않나요?</h2><p>${esc(c.noLink?.reason)}</p>
-      <p class="formula-s">보관 문서 · ${esc(c.noLink?.doc)}</p>
-      <p class="tiny">미연동 합의도 사유와 서면을 남겨야 해요. 조사·보고 때 이 기록을 같이 묶어 드려요.</p></section>`;
+      <p class="formula-s">보관 문서 · ${esc(c.noLink?.doc)}</p></section>`;
 
 const adjustDetail = (c: Contract): string => {
   const r = adjust(c);
@@ -150,8 +149,7 @@ const adjustDetail = (c: Contract): string => {
       <p class="formula-s">${c.p0.toLocaleString()} + ${c.m0.toLocaleString()} × (${r.it} − ${c.i0}) ÷ ${c.i0} = ${r.price.toLocaleString()}</p></section>
     <section class="facts"><h2>약정 내용</h2>
       <dl><dt>원재료</dt><dd>${esc(c.material)}</dd><dt>지표</dt><dd>${esc(c.index)}</dd>
-      <dt>확인 주기</dt><dd>${esc(c.cycle)}</dd><dt>적용</dt><dd>${esc(c.applyDay)}</dd><dt>계약 종료</dt><dd>${esc(c.end)}</dd></dl>
-      <p class="tiny">공급기업의 원가 원문은 보이지 않아요. 양사가 합의한 값만 보여요.</p></section>`;
+      <dt>확인 주기</dt><dd>${esc(c.cycle)}</dd><dt>적용</dt><dd>${esc(c.applyDay)}</dd><dt>계약 종료</dt><dd>${esc(c.end)}</dd></dl></section>`;
 };
 
 export const detailScreen = (id: string): string => {
@@ -173,13 +171,12 @@ export const docsScreen = (): string => {
     const ready = p.items.filter((i) => i.ready).length;
     const list = p.items.map((i) => `<li class="${i.ready ? "ok" : "todo"}"><span>${i.ready ? "준비됨" : "필요"}</span>${esc(i.doc)}</li>`).join("");
     return `<details class="purpose-d"><summary><b>${esc(p.name)}</b><span class="cnt">${ready}/${p.items.length}</span></summary>
-      <p class="tiny">${esc(p.note)}</p><ul class="need">${list}</ul>
+      <ul class="need">${list}</ul>
       <button class="btn solid sm" data-toast="${esc(p.name)} 자료 묶음을 만들었어요 (데모)">자료 묶음 만들기</button></details>`;
   }).join("");
   return `<section class="hello"><h1>자료</h1><p class="date">요청한 자료와 제출할 자료</p></section>
     <div class="cols"><div class="col-main"><h2 class="col-h">공급기업과 주고받은 요청</h2><ul class="docs">${items}</ul></div>
     <aside class="col-side"><section class="month"><h2>어디에 낼 자료인가요?</h2>
-      <p class="tiny">목적을 고르면 필요한 자료와 지금 준비된 것을 보여드려요. 실제 요구 항목은 공고마다 달라서, 공고 파일을 올리면 그 기준으로 다시 맞춰요.</p>
       ${purposes}
     </section></aside></div>`;
 };
