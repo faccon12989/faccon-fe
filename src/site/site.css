@@ -198,27 +198,3 @@ h3{font-size:21px;margin:0 0 10px}
 /* 첫 화면: 누구를 위한 서비스인지 */
 .for-who{margin:0 0 14px;font-size:17px;font-weight:700;color:var(--accent)}
 
-/* 알림을 누르면 열리는 화면 + 누가 무엇을 */
-.how-in{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start}
-.how-in h2{margin-bottom:28px}
-.fix-card{background:var(--paper);border:1px solid var(--line);border-left:5px solid var(--mark);border-radius:18px;padding:26px 28px;box-shadow:0 20px 44px -28px rgba(26,31,43,.3)}
-.fc-label{margin:0 0 6px;font-size:14.5px;font-weight:700;color:var(--up)}
-.fc-title{margin:0 0 18px;font-size:22px;font-weight:800}
-.fc-compare{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;background:var(--surface);border-radius:14px;padding:16px 18px;margin-bottom:16px}
-.fc-compare small{display:block;font-size:13.5px;color:var(--mute)}
-.fc-compare b{font-size:22px}
-.fc-compare b.old{text-decoration:line-through;color:var(--mute)}
-.fc-compare span{font-size:24px;font-weight:800;color:var(--up)}
-.fc-why{margin:0 0 12px;font-size:16.5px;color:var(--soft)}
-.fc-why b{color:var(--ink)}
-.fc-impact{margin:0 0 18px;background:var(--up-bg);border-radius:10px;padding:12px 14px;font-size:16.5px}
-.fc-impact b{color:var(--up)}
-.how-sub{font-size:20px;margin:6px 0 20px}
-.who-does{list-style:none;margin:0;padding:0;border-top:2px solid var(--ink)}
-.who-does li{display:grid;grid-template-columns:76px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid var(--line)}
-.who-does b{font-size:18px}
-.who-does p{margin:4px 0 0;color:var(--soft);font-size:16.5px}
-.by{align-self:start;text-align:center;font-size:13.5px;font-weight:700;border-radius:8px;padding:4px 0}
-.by.me{background:var(--surface);color:var(--soft)}
-.by.fc{background:var(--accent);color:#fff}
-.how-note{margin:18px 0 0;font-size:16px;color:var(--soft)}
