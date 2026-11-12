@@ -10,8 +10,8 @@ const err = document.getElementById("login-err");
 
 /** 넘어갈 수 없는 이유. 없으면 null. */
 const problemOf = (email: string, password: string): string | null => {
-  if (!EMAIL_RE.test(email)) return "업무 이메일 형식을 확인해 주세요.";
-  if (password.length === 0) return "비밀번호를 입력해 주세요.";
+  if (!EMAIL_RE.test(email)) return "업무 이메일 형식을 확인해 주십시오.";
+  if (password.length === 0) return "비밀번호를 입력해 주십시오.";
   return null;
 };
 

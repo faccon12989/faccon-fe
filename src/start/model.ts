@@ -88,27 +88,27 @@ export const update = (s: StartState, patch: Partial<StartState>): StartState =>
 export const validate = (s: StartState): string | null => {
   switch (s.step) {
     case 0:
-      return s.path ? null : "시작 방식을 골라 주세요.";
+      return s.path ? null : "시작 방식을 골라 주십시오.";
     case 1:
-      if (!s.company.trim()) return "회사명을 입력해 주세요.";
-      if (!s.manager.trim()) return "담당자 이름을 입력해 주세요.";
-      if (!EMAIL_RE.test(s.email.trim())) return "담당자 이메일을 확인해 주세요.";
+      if (!s.company.trim()) return "회사명을 입력해 주십시오.";
+      if (!s.manager.trim()) return "담당자 이름을 입력해 주십시오.";
+      if (!EMAIL_RE.test(s.email.trim())) return "담당자 이메일을 확인해 주십시오.";
       return null;
     case 2:
-      if (s.path === "B") return s.checklist.length ? null : "준비할 수 있는 자료를 하나 이상 골라 주세요.";
-      if (!s.uploaded) return "약정 파일을 올려 주세요.";
-      return s.extracted.every((x) => x.confirmed) ? null : "추출된 값을 원문과 비교해 모두 확인해 주세요.";
+      if (s.path === "B") return s.checklist.length ? null : "준비할 수 있는 자료를 하나 이상 골라 주십시오.";
+      if (!s.uploaded) return "약정 파일을 올려 주십시오.";
+      return s.extracted.every((x) => x.confirmed) ? null : "추출된 값을 원문과 비교해 모두 확인해 주십시오.";
     case 3: {
       const filled = s.invites.filter((i) => i.company.trim() || i.email.trim());
-      if (!filled.length) return "공급기업을 한 곳 이상 초대해 주세요.";
+      if (!filled.length) return "공급기업을 한 곳 이상 초대해 주십시오.";
       const bad = filled.find((i) => !i.company.trim() || !EMAIL_RE.test(i.email.trim()));
-      return bad ? "초대할 공급기업의 회사명과 이메일을 확인해 주세요." : null;
+      return bad ? "초대할 공급기업의 회사명과 이메일을 확인해 주십시오." : null;
     }
     case 4:
-      if (!s.erpUploaded) return "발주 파일을 올려 주세요. 없으면 '나중에 연결'을 누르세요.";
-      return ERP_FIELDS.every((f) => s.mapping[f]) ? null : "필수 항목의 열을 모두 골라 주세요.";
+      if (!s.erpUploaded) return "발주 파일을 올려 주십시오. 없으면 '나중에 연결'을 누르십시오.";
+      return ERP_FIELDS.every((f) => s.mapping[f]) ? null : "필수 항목의 열을 모두 골라 주십시오.";
     case 5:
-      return s.measureConsent ? null : "파일럿 효과 측정에 동의해 주세요.";
+      return s.measureConsent ? null : "파일럿 효과 측정에 동의해 주십시오.";
     default:
       return null;
   }

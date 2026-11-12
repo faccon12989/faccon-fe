@@ -94,19 +94,19 @@ const advance = (): void => {
   const done = flow.id;
   closeFlow();
   setState({ doneTasks: [...state.doneTasks, done] });
-  toast("할 일을 처리했어요");
+  toast("업무를 처리했습니다");
 };
 
 const toggleEvent = (id: string, label: string): void => {
   const on = state.events.includes(id);
   setState({ events: on ? state.events.filter((e) => e !== id) : [...state.events, id] });
-  toast(on ? `${label} 알림을 껐어요` : `${label} 알림을 켰어요`);
+  toast(on ? `${label} 알림을 껐습니다` : `${label} 알림을 켰습니다`);
 };
 
 const toggleChannel = (id: Channel, label: string): void => {
   const on = state.channels.includes(id);
   setState({ channels: on ? state.channels.filter((c) => c !== id) : [...state.channels, id] });
-  toast(on ? `${label} 알림을 껐어요` : `${label}로도 알려드릴게요`);
+  toast(on ? `${label} 알림을 껐습니다` : `${label}로도 알림을 보냅니다`);
 };
 
 document.addEventListener("click", (e) => {

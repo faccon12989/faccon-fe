@@ -43,7 +43,7 @@ h3{font-size:21px;margin:0 0 10px}
 
 /* 상단 메뉴 */
 .nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:32px;padding:0 32px;height:var(--nav-h);background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.logo{display:flex;align-items:center;font-weight:800;font-size:23px;text-decoration:none;letter-spacing:-.04em}
+.logo{display:flex;align-items:center;font-weight:800;font-size:26px;text-decoration:none;letter-spacing:-.04em}
 .nav nav{display:flex;gap:4px}
 .nav nav a{text-decoration:none;color:var(--soft);font-size:17px;padding:8px 12px;border-radius:10px}
 .nav nav a:hover{color:var(--ink);background:var(--surface)}
@@ -69,7 +69,7 @@ h3{font-size:21px;margin:0 0 10px}
 .shot-frame{display:block;border-radius:20px;overflow:hidden;background:var(--paper);box-shadow:0 24px 60px -24px rgba(26,31,43,.3),0 0 0 1px rgba(26,31,43,.07);transition:transform .25s var(--ease)}
 .shot-frame:hover{transform:translateY(-4px)}
 /* 실제 대시보드(1440×900)를 칸 폭에 맞게 축소해서 보여준다. 미리보기라 클릭은 링크가 받는다 */
-.shot-frame{position:relative;aspect-ratio:1170/620}
+.shot-frame{position:relative;aspect-ratio:1170/720}
 .shot-frame iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;transform-origin:0 0;pointer-events:none}
 .shot-cap{margin:16px 0 0;font-size:15px;color:var(--mute);text-align:center}
 .shot-cap a{color:var(--accent);font-weight:600}

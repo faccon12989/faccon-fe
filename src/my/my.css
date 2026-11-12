@@ -5,7 +5,7 @@
 
 /* 왼쪽 메뉴 */
 .sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:20px;padding:24px 16px;background:var(--paper);border-right:1px solid var(--line)}
-.sidebar .logo{font-size:22px;padding:0 8px}
+.sidebar .logo{font-size:26px;padding:0 8px}
 .org{display:grid;padding:12px;background:var(--surface);border-radius:10px}
 .org b{font-size:15px}
 .org span,.me span{font-size:13px;color:var(--mute)}
@@ -106,11 +106,11 @@
 .sheet h2{font-size:21px;margin:4px 0 14px;outline:none}
 .sheet-body{margin-bottom:20px;color:var(--soft)}
 .btn.wide{width:100%}
-.cmp-box{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;background:var(--bg);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.cmp-box{display:grid;grid-template-columns:1fr 48px 1fr;gap:0;align-items:end;text-align:center;background:var(--bg);border-radius:var(--r);padding:16px;margin-bottom:12px}
 .cmp-box small{display:block;font-size:14px;color:var(--mute)}
 .cmp-box b{font-size:20px;color:var(--ink);font-variant-numeric:tabular-nums}
 .cmp-box .strike{text-decoration:line-through;color:var(--mute)}
-.vs{font-size:22px;color:var(--up);font-weight:800}
+.vs{font-size:22px;line-height:1.3;color:var(--up);font-weight:800;text-align:center}
 .why{margin:0 0 10px}
 .impact{background:var(--up-bg);color:var(--ink);border-radius:var(--r);padding:10px 12px;margin:0}
 .todo-list{list-style:none;padding:0;margin:0 0 14px;border-top:1px solid var(--line)}

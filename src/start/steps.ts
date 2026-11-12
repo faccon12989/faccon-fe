@@ -18,21 +18,21 @@ const stepPath = (s: StartState): string => {
       <small>첫 결과: ${first}</small>
     </label>`;
   return `
-    <h1>어디서 시작할까요?</h1>
+    <h1>시작 방식을 선택해 주십시오</h1>
     <p class="lead-s">이미 맺은 약정이 있으면 원가를 다시 낼 필요 없이 바로 운영을 시작합니다.</p>
     <div class="choices">
-      ${card("A", "기존 약정이 있어요", "서명된 약정서, 전문기관 확인서, 지표·산식을 가져와 매달 운영합니다.", "조건 확인 후 바로 모니터링")}
-      ${card("B", "새로 약정을 준비해요", "대상 확인부터 원가자료 정리, 산정 초안, 필요하면 전문 검토까지 돕습니다.", "산정 초안 → 필요시 전문 검토 → 약정")}
+      ${card("A", "기존 약정이 있습니다", "서명된 약정서, 전문기관 확인서, 지표·산식을 가져와 매달 운영합니다.", "조건 확인 후 바로 모니터링")}
+      ${card("B", "새로 약정을 준비합니다", "대상 확인부터 원가자료 정리, 산정 초안, 필요하면 전문 검토까지 돕습니다.", "산정 초안 → 필요시 전문 검토 → 약정")}
     </div>
-    <details class="pre-check"><summary>우리 거래가 연동 대상인지 모르겠어요</summary>
+    <details class="pre-check"><summary>우리 거래가 연동 대상인지 확인이 필요합니다</summary>
       <p>주요 원재료(비용이 납품대금의 10% 이상)가 있는지, 위탁기업이 소기업이거나 90일 이내·1억 원 이하 거래인지에 따라 달라집니다. 여기서 결론 내리지 않고, 시작 후 거래별로 근거와 함께 “대상 / 예외 / 추가 확인”으로 분류합니다.</p>
     </details>`;
 };
 
 const stepCompany = (s: StartState): string => {
   return `
-    <h1>회사와 담당자를 알려주세요</h1>
-    <p class="lead-s">파일럿은 한 품목군에서 시작합니다. 결재하실 분이 따로 있으면 함께 적어 주세요.</p>
+    <h1>회사와 담당자 정보를 입력해 주십시오</h1>
+    <p class="lead-s">파일럿은 한 품목군에서 시작합니다. 결재하실 분이 따로 있으면 함께 적어 주십시오.</p>
     <div class="grid2">
       ${field("company", "회사명", s.company, { required: true, ac: "organization" })}
       ${field("category", "시작할 품목군", s.category, { hint: "예: 알루미늄 가공품" })}
@@ -65,7 +65,7 @@ const stepUploadA = (s: StartState): string => {
       <td><label class="ck"><input type="checkbox" name="confirm" value="${esc(x.key)}" ${x.confirmed ? "checked" : ""}> 원문과 같음</label></td></tr>`;
   }).join("");
   return `
-    <h1>뽑아낸 조건을 확인해 주세요</h1>
+    <h1>추출한 조건을 확인해 주십시오</h1>
     <p class="lead-s"><b>약정서_AL-001_v1.1.pdf</b>, <b>비중확인서_2026.pdf</b>에서 찾은 값입니다 (가상).</p>
     <div class="tbl-s"><table>
       <thead><tr><th>항목</th><th>찾은 값</th><th>원문 위치</th><th>신뢰도</th><th>확인</th></tr></thead>
@@ -77,8 +77,8 @@ const stepUploadA = (s: StartState): string => {
 const stepUploadB = (s: StartState): string => {
   const items = B_CHECKLIST.map((c) => `<label class="ck row-ck"><input type="checkbox" name="checklist" value="${esc(c)}" ${s.checklist.includes(c) ? "checked" : ""}> ${esc(c)}</label>`).join("");
   return `
-    <h1>지금 준비할 수 있는 자료를 골라 주세요</h1>
-    <p class="lead-s">없는 자료는 비워 두세요. 빠진 항목만 공급기업에 이유와 기간을 밝혀 요청합니다.</p>
+    <h1>지금 준비할 수 있는 자료를 선택해 주십시오</h1>
+    <p class="lead-s">없는 자료는 비워 두십시오. 빠진 항목만 공급기업에 이유와 기간을 밝혀 요청합니다.</p>
     <div class="check-list">${items}</div>
     <p class="hint-s">원가 비중·지표·산식 확인이 어려우면 전문기관 검토로 연결합니다. 전문기관 명의 확인서는 그 기관이 발급합니다.</p>`;
 };
@@ -117,7 +117,7 @@ const stepErp = (s: StartState): string => {
       </select></td>
       <td>${s.mapping[f] === AUTO_MAPPING[f] ? '<span class="badge">자동 추천</span>' : ""}</td></tr>`).join("");
   return `
-    <h1>열 이름을 한 번만 맞춰 주세요</h1>
+    <h1>열 이름을 한 번만 맞춰 주십시오</h1>
     <p class="lead-s"><b>PO_2026-11.csv</b> · 1,284행 (가상). 이 설정은 저장되어 다음 달부터는 파일만 올리면 됩니다.</p>
     <div class="tbl-s"><table><thead><tr><th>필요한 항목</th><th>파일의 열</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
 };
