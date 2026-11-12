@@ -69,6 +69,7 @@ export interface DataRequest {
 }
 
 export interface AccessLog {
+  contract: string;
   when: string;
   who: string;
   what: string;
@@ -101,6 +102,24 @@ export interface AdjustResult {
 
 export interface AppState {
   readonly role: Role;
+  readonly deposited: boolean;
+  readonly paid: boolean;
+}
+
+export interface TaskRequest {
+  readonly id: string;
+  readonly choice: string;
+  readonly detail: string;
+}
+export interface DemoState {
+  readonly version: 2;
+  readonly requests: readonly TaskRequest[];
+  readonly po: boolean;
+  readonly invoice: boolean;
+  readonly payment: boolean;
+  readonly setup: EntryPath | null;
+  readonly draftApproved: boolean;
+  readonly draftM0: number;
   readonly deposited: boolean;
   readonly paid: boolean;
 }

@@ -1,6 +1,7 @@
 /* 화면 공통 헬퍼 */
 import { adjust, pct } from "./calc";
-import { CONTRACTS, SELF_SUPPLIER, SUPPLIERS } from "./data";
+import { SELF_SUPPLIER, SUPPLIERS } from "./data";
+import { demoContracts } from "./demo";
 import type { AdjustResult, Contract, ContractStatus, Role } from "./types";
 
 const ESCAPES: Readonly<Record<string, string>> = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" };
@@ -15,12 +16,13 @@ export const supplierName = (id: string): string => {
 };
 
 export const findContract = (id: string): Contract | undefined => {
-  return CONTRACTS.find((c) => c.id === id);
+  return demoContracts().find((c) => c.id === id);
 };
 
 /** 공급기업은 자사 계약만 본다. */
 export const visibleContracts = (role: Role): readonly Contract[] => {
-  return role === "supplier" ? CONTRACTS.filter((c) => c.supplier === SELF_SUPPLIER) : CONTRACTS;
+  const contracts = demoContracts();
+  return role === "supplier" ? contracts.filter((c) => c.supplier === SELF_SUPPLIER) : contracts;
 };
 
 const STATUS: Readonly<Record<ContractStatus, readonly [string, string]>> = {
@@ -37,8 +39,8 @@ export const statusPill = (s: ContractStatus): string => {
 export const adjustPill = (r: AdjustResult): string => {
   if (!r.triggered) return `<span class="pill p-mute">요건 미충족</span>`;
   return r.diffPerUnit > 0
-    ? `<span class="pill p-bad">인상 ${pct(r.rate)}</span>`
-    : `<span class="pill p-info">인하 ${pct(r.rate)}</span>`;
+    ? `<span class="pill p-bad">지표 상승 ${pct(r.rate)}</span>`
+    : `<span class="pill p-info">지표 하락 ${pct(r.rate)}</span>`;
 };
 
 export const pill = (cls: string, label: string): string => {

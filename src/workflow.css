@@ -1,0 +1,70 @@
+.journey{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:18px 0}
+.journey span{background:#e9f2fb;border:1px solid #ccdeed;padding:12px;border-radius:8px;font-size:13px;color:#244966;font-weight:650}
+.review-field{display:grid;gap:8px;margin:16px 0;color:#243a49;font-weight:600}
+.review-field input{padding:12px;border:1px solid #a4b5c3;border-radius:8px;font:inherit;width:100%;background:white;color:#192d3d}
+.review-check{display:flex;align-items:flex-start;gap:10px;margin:14px 0;font-size:14px;line-height:1.6}
+.review-check input{margin-top:5px;accent-color:#0f766e;flex-shrink:0;width:17px;height:17px}
+.source-preview{margin:16px 0;background:#f4f8fb;padding:14px;border:1px solid #d7e1e8;border-radius:8px}
+.source-preview summary{cursor:pointer;font-weight:650}
+.form-error{color:#9f3028;font-size:14px;min-height:1em}
+.evidence-print{margin:18px 0;background:#fff;padding:20px;border:1px solid #d9e0e5;border-radius:12px;overflow:hidden}
+.evidence-print table{width:100%;border-collapse:collapse;font-size:13px}
+.evidence-print td,.evidence-print th{padding:12px 10px;text-align:left;border-bottom:1px solid #e0e5e9;min-width:85px}
+.evidence-print th{background:#f3f7fa;color:#456079;font-weight:600}
+.evidence-print .tbl{overflow:auto}
+.evidence-print h2{font-size:17px;margin-bottom:12px}
+.evidence-print p,.evidence-print li{font-size:13px;line-height:1.7;color:#526271}
+.evidence-print .between{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.evidence-print .row{display:flex;gap:10px;flex-wrap:wrap}
+.evidence-print .btn{font:inherit;font-size:13px;padding:9px 12px;border:1px solid #c8d5de;border-radius:6px;background:white;color:#243a49;cursor:pointer}
+.evidence-print .btn.pri{background:#0f766e;color:white}
+.demo-context{margin:8px 20px 18px;padding:12px 16px;background:#edf4fa;color:#33516c;font-size:12px;border-radius:8px;line-height:1.9}
+.demo-context button{font:inherit;background:transparent;color:inherit;border:0;text-decoration:underline;cursor:pointer;padding:0}
+.my-main .tiny{color:#5a6872}
+.my-main .hello{grid-column:1/-1}
+@media(min-width:900px){
+ .my-shell{max-width:1120px;padding-bottom:100px}
+ .my-main{padding:18px 32px 40px}
+ .my-main .tasks{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:20px}
+ .my-main .task{grid-template-columns:36px 1fr;padding:18px;align-items:start}
+ .my-main .task-go{display:none}
+ .my-main .task-ic{width:36px;height:36px}
+ .my-main .clist{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .my-top{padding:20px 32px}
+ .tabbar{width:min(1120px,100%)}
+ .sheet{bottom:auto;top:50%;transform:translate(-50%,-50%);border-radius:18px;animation:none}
+}
+@media(max-width:760px){
+ .journey{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #view{padding:20px 16px 45px}
+ .side{padding:12px}
+ .side .brand{margin:0;padding:0 6px 12px}
+ #nav{display:flex;gap:4px;overflow-x:auto;padding:6px 0}
+ #nav a{flex-shrink:0;font-size:12px}
+ #nav .sep,.side-foot{display:none}
+ .side>.btn{display:inline-block;align-self:flex-start;margin:4px!important}
+ .top{position:static;padding:12px 16px}
+ .role span{display:none}
+ .role button{font-size:12px}
+ .todo{grid-template-columns:32px 1fr}
+ .todo .btn{grid-column:2}
+ .kpi b{font-size:22px}
+ .cc-top{flex-wrap:wrap}
+ .my-top{flex-wrap:wrap;gap:8px}
+ .evidence-print{padding:16px}
+}
+@media print{
+ @page{size:A4 landscape;margin:12mm}
+ body,.my-body{background:white!important;color:black}
+ .demo-banner,.side,.top,.my-top,.demo-context,.tabbar,.no-print,.toast,.my-toast,#sheet,#sheet-bg{display:none!important}
+ .shell,.my-shell{display:block;max-width:none;box-shadow:none;padding:0}
+ #view,.my-main{padding:0;max-width:none}
+ #view>*:not(.evidence-print),.my-main>*:not(.evidence-print){display:none!important}
+ .evidence-print{border:0;padding:0;margin:0;overflow:visible}
+ .evidence-print .tbl{overflow:visible}
+ .evidence-print table{font-size:9pt;table-layout:fixed}
+ .evidence-print th,.evidence-print td{min-width:0;padding:6px;overflow-wrap:anywhere}
+ .evidence-print tr{break-inside:avoid}
+ .evidence-print thead{display:table-header-group}
+ .evidence-print h2{break-after:avoid}
+}

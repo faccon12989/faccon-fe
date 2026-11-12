@@ -7,7 +7,7 @@ const STEPS = ["등록", "검토", "보완", "약정", "모니터링", "조정·
 
 export const contractsView = (role: Role): string => {
   const actions = role === "buyer"
-    ? `<div class="row"><button class="btn" data-toast="CSV 매핑 화면은 데모에서 생략했습니다">기존 약정 파일 가져오기</button><button class="btn pri" data-toast="신규 약정 준비(B 경로)는 데모에서 생략했습니다">신규 약정 준비</button></div>`
+    ? `<div class="row"><a class="btn" href="./start.html?path=A">기존 약정 가져오기</a><a class="btn pri" href="./start.html?path=B">신규 약정 검토</a></div>`
     : "";
   const rows = visibleContracts(role).map((c) => `
     <tr class="click" data-go="#/contracts/${esc(c.id)}">
@@ -45,15 +45,15 @@ const indexChart = (series: readonly number[], threshold: number): string => {
 export const resultBlock = (c: Readonly<Contract>, r: AdjustResult): string => {
   const cls = !r.triggered ? "flat" : r.diffPerUnit < 0 ? "down" : "";
   return `<div class="result ${cls}">
-    <div><small>변동률</small><br><b>${pct(r.rate)}</b></div>
-    <div><small>변경 단가 Pt</small><br><b>${won(r.price)}</b></div>
+    <div><small>원재료 지표 변동률</small><br><b>${pct(r.rate)}</b></div>
+    <div><small>${c.status === "draft" ? "초안 예상 단가 · 미확정" : c.status === "renew" ? "종료 약정 참고 단가" : "산출 단가 · 반영 확인 별도"}</small><br><b>${won(r.price)}</b><small> · 단가 ${pct(r.diffPerUnit / c.p0)}</small></div>
     <div><small>차액 (× ${c.qty.toLocaleString()}개)</small><br><b>${r.triggered ? signedWon(r.total) : "조정 없음"}</b></div>
     <div>${adjustPill(r)}</div></div>`;
 };
 
 export const contractDetailView = (role: Role, id: string): string => {
   const c = findContract(id);
-  if (!c || !visibleContracts(role).includes(c)) return `<div class="card empty">볼 수 있는 계약이 아닙니다</div>`;
+  if (!c || !visibleContracts(role).some((item: Contract): boolean => item.id === c.id)) return `<div class="card empty">볼 수 있는 계약이 아닙니다</div>`;
   const r = adjust(c);
   const steps = STEPS.map((s, i) => {
     const n = i + 1;
@@ -61,6 +61,7 @@ export const contractDetailView = (role: Role, id: string): string => {
     return `<div class="${cls}"><b>0${n}</b>${s}</div>`;
   }).join("");
   const m0Shown = role === "supplier" || c.path === "A" ? won(c.m0) : "공유 승인 전";
+  if (c.status === "draft") return `<h1>${esc(c.id)} · 신규 약정 준비</h1><section class="card"><h2>투입량 보완 및 양사 확인 전입니다</h2><p>초안 값을 확정 단가로 적용하지 않습니다. 근거 자료 확인과 산출표 검토를 먼저 진행해 주세요.</p><a class="btn pri" href="./start.html?path=B">자료 검토·산출표 열기</a></section>`;
   const lock = role === "buyer"
     ? `<div class="lock" style="margin-top:14px"><span aria-hidden="true">🔒</span><div>공급기업 원가 원문(매입처·상세 단가)은 기본 비공개입니다. 구매기업은 양사가 합의한 산정 결과만 봅니다.</div></div>`
     : "";
@@ -94,7 +95,7 @@ export const contractDetailView = (role: Role, id: string): string => {
         ${indexChart(INDEX_SERIES[c.id] ?? [], c.threshold)}
         <h2 style="margin-top:18px">버전·승인 이력</h2>
         <div class="tbl"><table><tbody>
-          <tr><td class="mono">${esc(c.version)}</td><td>현재 약정</td><td>양사 서명</td></tr>
+          <tr><td class="mono">${esc(c.version)}</td><td>${c.status === "renew" ? "종료 약정 · 갱신 확인 필요" : "현재 약정"}</td><td>가상 승인 이력</td></tr>
           <tr><td class="mono">v1.0</td><td>최초 약정 (전문기관 확인서 반영)</td><td><span class="pill p-mute">대체됨</span></td></tr>
           <tr><td class="mono">calc-11</td><td>11월 계산 실행 · 규칙 v2026.10</td><td><span class="pill p-ok">기록됨</span></td></tr>
         </tbody></table></div>

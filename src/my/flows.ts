@@ -44,7 +44,7 @@ const unappliedFlow = (): FlowStep[] => {
         </ul>
         <label class="pick">받는 사람
           <select name="to"><option>ERP 담당 박OO (구매팀)</option><option>회계팀 이OO</option></select></label>
-        <p class="note-s">공급기업 동양알루텍에도 같은 변동표가 공유돼요. 원가 원문은 포함되지 않아요.</p>`,
+        <p class="note-s">공급기업 동양알루텍 (가상)에도 같은 변동표가 공유돼요. 원가 원문은 포함되지 않아요.</p>`,
       cta: "수정 요청 보내기",
     },
     {
@@ -64,7 +64,7 @@ const renewFlow = (): FlowStep[] => {
       body: `<ul class="todo-list">
           <li><span>계약</span><b>${esc(c.id)} · ${esc(c.item)}</b></li>
           <li><span>계약 종료일</span><b>${esc(c.end)}</b></li>
-          <li><span>종료 후 발주</span><b>2건 (11/04, 11/18)</b></li>
+          <li><span>종료 후 발주</span><b>2건 (11/04, 11/10)</b></li>
         </ul>
         <p class="why">위반이 확정된 건 아니에요. 계약이 연장됐다면 연동약정도 같이 갱신돼 있는지 확인해 주세요.</p>`,
       cta: "다음",
@@ -80,7 +80,7 @@ const renewFlow = (): FlowStep[] => {
     },
     {
       title: "갱신 확인을 시작했어요",
-      body: `<div class="ok-box"><span aria-hidden="true">✓</span><p>영남프레스에 약정 갱신 서명 요청을 보냈어요 (데모). 서명이 끝나면 버전 기록에 v1.1로 남아요.</p></div>`,
+      body: `<div class="ok-box"><span aria-hidden="true">✓</span><p>영남프레스 (가상)에 약정 갱신 서명 요청을 보냈어요 (데모). 서명이 끝나면 버전 기록에 v1.1로 남아요.</p></div>`,
       cta: "완료",
     },
   ];

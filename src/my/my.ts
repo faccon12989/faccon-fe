@@ -1,6 +1,10 @@
 /* 사용자 앱: 탭 이동, 할 일 해결 시트 */
 import "../site/site.css";
 import "./my.css";
+import "../workflow.css";
+import { downloadEvidence } from "../evidence";
+import { requestTask, resetDemo } from "../demo";
+import { esc } from "../ui";
 import { type FlowStep, flowFor, type TaskId } from "./flows";
 import { contractsScreen, detailScreen, docsScreen, homeScreen, type MyState } from "./screens";
 
@@ -11,9 +15,11 @@ const TABS = [
 ] as const;
 const TOAST_MS = 2000;
 
-let state: MyState = { tab: "home", detail: null, doneTasks: [] };
+let state: MyState = { tab: "home", detail: null };
 let flow: { id: TaskId; steps: FlowStep[]; at: number } | null = null;
 let lastFocus: HTMLElement | null = null;
+let requestChoice = "extend";
+let requestDetail = "";
 let toastTimer: number | undefined;
 
 const byId = (id: string): HTMLElement => {
@@ -32,7 +38,7 @@ const render = (): void => {
   screen.innerHTML = state.detail ? detailScreen(state.detail)
     : state.tab === "contracts" ? contractsScreen()
     : state.tab === "docs" ? docsScreen()
-    : homeScreen(state);
+    : homeScreen();
   byId("tabbar").innerHTML = TABS.map((t) => {
     const on = t.id === state.tab;
     return `<button data-tab="${t.id}" class="${on ? "on" : ""}" ${on ? 'aria-current="page"' : ""}><span aria-hidden="true">${t.icon}</span>${t.label}</button>`;
@@ -63,6 +69,7 @@ const renderSheet = (): void => {
 
 const openFlow = (id: TaskId, opener: HTMLElement): void => {
   lastFocus = opener;
+  requestChoice = "extend"; requestDetail = "";
   flow = { id, steps: flowFor(id), at: 0 };
   byId("sheet-bg").hidden = false;
   byId("sheet").hidden = false;
@@ -75,25 +82,36 @@ const closeFlow = (): void => {
   byId("sheet-bg").hidden = true;
   byId("sheet").hidden = true;
   document.body.classList.remove("locked");
-  lastFocus?.focus();
+  if (lastFocus?.isConnected) lastFocus.focus(); else byId("screen").focus();
 };
 
 const advance = (): void => {
   if (!flow) return;
+  if (flow.at === 1) {
+    requestChoice = document.querySelector<HTMLInputElement>('input[name="renew"]:checked')?.value ?? "request";
+    requestDetail = document.querySelector<HTMLSelectElement>('select[name="to"],select[name="due"]')?.value ?? "계약 담당자 확인";
+    requestTask(flow.id, requestChoice, requestDetail);
+    const message = flow.id === "C-101" ? (requestChoice === "end" ? "거래 종료 의사를 기록했어요. 남은 발주 2건의 취소·이행 여부를 확인할 때까지 대기합니다." : requestChoice === "check" ? "계약 담당자에게 확인할 항목을 기록했어요. 회신 대기 상태로 남습니다." : "갱신 확인 요청을 기록했어요. 갱신본과 서명이 확인되기 전에는 완료로 바뀌지 않습니다.")
+      : flow.id === "C-102" ? `수정 요청 대상: ${requestDetail}. 발주 파일에서 변경 단가가 확인될 때 완료 처리합니다.` : `보완 요청 기한: ${requestDetail}. 자료 회신·검토 후에 처리합니다.`;
+    flow = { ...flow, steps: flow.steps.map((step: FlowStep, i: number): FlowStep => i === 2 ? { title: "요청을 기록했어요 · 처리 대기", body: `<p>${esc(message)}</p><p class="note-s">가상 시나리오만 저장됩니다. 실제 메일은 보내지 않습니다.</p><a href="./app.html#/${flow?.id === "C-102" ? "reconcile" : flow?.id === "C-103" ? "review" : "contracts/ST-005"}">후속 업무 확인 →</a>`, cta: "대기 상태로 돌아가기" } : step) };
+  }
   if (flow.at < flow.steps.length - 1) {
     flow = { ...flow, at: flow.at + 1 };
     renderSheet();
     return;
   }
-  const done = flow.id;
   closeFlow();
-  setState({ doneTasks: [...state.doneTasks, done] });
-  toast("할 일을 처리했어요");
+  render();
+  byId("screen").focus();
+  toast("요청을 기록하고 처리 대기 상태로 유지합니다");
 };
 
 document.addEventListener("click", (e) => {
   const el = e.target instanceof Element ? e.target : null;
   if (!el) return;
+  if (el.closest("[data-reset]")) { if (window.confirm("가상 시나리오를 초기화할까요?")) { resetDemo(); render(); } return; }
+  if (el.closest("[data-export-csv]")) { downloadEvidence("buyer"); return; }
+  if (el.closest("[data-print]")) { window.print(); return; }
   const tab = el.closest<HTMLElement>("[data-tab]");
   if (tab?.dataset.tab === "home" || tab?.dataset.tab === "contracts" || tab?.dataset.tab === "docs") {
     setState({ tab: tab.dataset.tab, detail: null });
@@ -113,6 +131,14 @@ document.addEventListener("click", (e) => {
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && flow) closeFlow();
+  if (e.key === "Tab" && flow) {
+    const focusable = Array.from(byId("sheet").querySelectorAll<HTMLElement>('button:not(:disabled), input, select, a[href]'));
+    const first = focusable[0]; const last = focusable[focusable.length - 1];
+    if (e.shiftKey && (document.activeElement === first || document.activeElement === byId("sheet-title"))) { e.preventDefault(); last?.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+  }
 });
 
 render();
+
+window.addEventListener("storage", (): void => { if (!flow) render(); });
