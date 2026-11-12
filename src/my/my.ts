@@ -2,13 +2,15 @@
 import "../site/site.css";
 import "./my.css";
 import { type FlowStep, flowFor, type TaskId } from "./flows";
-import { CHANNELS, contractsScreen, detailScreen, docsScreen, homeScreen, type MyState } from "./screens";
+import { contractsScreen, detailScreen } from "./contract-views";
+import { docsScreen } from "./docs-view";
+import { CHANNELS, homeScreen, type MyState } from "./screens";
 import type { Channel } from "../types";
 
 const TABS = [
   { id: "home", label: "홈" },
-  { id: "contracts", label: "내 약정" },
-  { id: "docs", label: "자료" },
+  { id: "contracts", label: "약정" },
+  { id: "docs", label: "자료·제출" },
 ] as const;
 const TOAST_MS = 2000;
 
