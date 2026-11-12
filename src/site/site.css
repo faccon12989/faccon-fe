@@ -53,28 +53,20 @@ h3{font-size:21px;margin:0 0 10px}
 .sec>.wrap{width:100%}
 .big{font-size:20px;color:var(--soft);margin:0 0 32px;max-width:30em}
 
-/* 1. 첫 화면 */
-.hero{max-width:1120px;min-height:calc(100vh / var(--z) - var(--nav-h));margin:0 auto;padding:40px 32px;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:48px;align-items:center}
-.hero h1{font-size:clamp(2.2rem,1.4rem + 2.2vw,3.05rem);font-weight:800;letter-spacing:-.04em;margin:0 0 24px}
+/* 1. 첫 화면: 제목 + 실제 받게 될 알림 */
+.hero{max-width:1120px;min-height:calc(100vh / var(--z) - var(--nav-h));margin:0 auto;padding:40px 32px;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:64px;align-items:center}
+.hero h1{font-size:clamp(2.2rem,1.4rem + 2vw,3rem);font-weight:800;letter-spacing:-.04em;margin:0 0 24px}
 .lead{font-size:20px;color:var(--soft);max-width:28em;margin:0 0 36px}
-.ledger{margin:0;background:var(--surface);border-radius:24px;padding:20px}
-.ledger figcaption{display:flex;justify-content:space-between;align-items:baseline;margin:2px 6px 14px;font-weight:700;font-size:19px}
-.ledger figcaption .mono{font-weight:500;font-size:15px;color:var(--mute)}
-.ledger-scroll{background:var(--paper);border-radius:16px;overflow-x:auto}
-.ledger table{width:100%;border-collapse:collapse;font-size:16px}
-.ledger th{font-size:14px;font-weight:600;color:var(--mute);text-align:left;padding:14px 10px 10px;white-space:nowrap}
-.ledger td{padding:14px 10px;border-top:1px solid var(--line);vertical-align:top}
-.ledger td small{display:block;color:var(--mute);font-size:14px;white-space:nowrap}
-.ledger .n,.ledger td:first-child{white-space:nowrap}
-.ledger .n{text-align:right}
-.ledger tr.hit td{background:var(--up-bg)}
-.ledger .strike{text-decoration:line-through;color:var(--mute)}
-.st{font-size:14px;font-weight:700;border-radius:8px;padding:4px 9px;white-space:nowrap}
-.st.ok{background:var(--ok-bg);color:var(--ok)}
-.st.bad{background:var(--up-bg);color:var(--up)}
-.st.warn{background:var(--warn-bg);color:var(--warn)}
-.ledger-foot{margin:14px 6px 2px;font-size:16px;color:var(--soft)}
-.ledger-foot b{color:var(--up)}
+.inbox{margin:0;display:grid;gap:14px}
+.inbox-cap{font-size:15px;color:var(--mute);margin-bottom:2px}
+.msg{background:var(--surface);border-radius:18px;padding:18px 20px}
+.msg-top{display:flex;justify-content:space-between;font-size:14px;color:var(--mute);margin-bottom:8px}
+.msg-top b{color:var(--ink);font-size:15px}
+.msg p{margin:0;font-size:16.5px;line-height:1.65;color:var(--ink)}
+.msg .num{font-weight:700}
+.msg .loss{color:var(--up);font-weight:700}
+.msg a{display:inline-block;margin-top:12px;font-size:15px;font-weight:600;color:var(--accent);text-decoration:none}
+.msg.old{opacity:.75}
 
 /* 2. 대시보드 화면: 이 페이지의 중심 */
 .shot{background:var(--surface);padding:40px 0}

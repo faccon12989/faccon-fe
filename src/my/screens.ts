@@ -18,16 +18,12 @@ export const CHANNELS: readonly Readonly<{ id: Channel; label: string }>[] = [
   { id: "sms", label: "문자" },
 ];
 
-const ICON: Readonly<Record<Todo["kind"], string>> = { unapplied: "₩", renew: "↻", missing: "?" };
-const TONE: Readonly<Record<Todo["kind"], string>> = { unapplied: "red", renew: "amber", missing: "blue" };
-
 const todoCard = (t: Todo): string => {
   const c = findContract(t.contract);
-  return `<button class="task ${TONE[t.kind]}" data-task="${esc(t.code)}">
-    <span class="task-ic" aria-hidden="true">${ICON[t.kind]}</span>
-    <span class="task-t"><b>${esc(t.title)}</b><small>${esc(c?.item)} · ${esc(t.reason)}</small>
-      <span class="sent">${esc(t.notified)} 발송</span></span>
-    <span class="task-go" aria-hidden="true">›</span>
+  return `<button class="task" data-task="${esc(t.code)}">
+    <span class="task-t"><b>${esc(t.title)}</b><small>${esc(c?.item)}, ${esc(t.reason)}</small>
+      <span class="sent">보낸 알림: ${esc(t.notified)}</span></span>
+    <span class="task-go">처리하기</span>
   </button>`;
 };
 
@@ -35,10 +31,10 @@ const todoCard = (t: Todo): string => {
 const alertBar = (s: MyState): string => {
   const chips = CHANNELS.map((ch) => {
     const on = s.channels.includes(ch.id);
-    return `<button class="chan ${on ? "on" : ""}" data-channel="${ch.id}" aria-pressed="${on}">${ch.label}</button>`;
+    return `<label class="chan"><input type="checkbox" data-channel="${ch.id}" ${on ? "checked" : ""}> ${ch.label}</label>`;
   }).join("");
   return `<section class="alerts" aria-label="알림 받을 곳">
-    <p><b>알림 받을 곳</b></p>
+    <h2>알림 받을 곳</h2>
     <div class="chans">${chips}</div>
   </section>`;
 };
@@ -54,7 +50,7 @@ const monthBlock = (): string => {
       <td class="n">${r.triggered ? `${signedWon(r.diffPerUnit)} × ${c.qty.toLocaleString()}개` : "요건 미달"}</td>
       <td class="n ${r.total > 0 ? "up" : r.total < 0 ? "down" : ""}">${r.triggered ? signedWon(r.total) : "0원"}</td></tr>`).join("");
   return `<section class="month">
-      <h2>이번 달 조정 차액 <span class="basis">합계</span></h2>
+      <h2>이번 달 조정 차액 합계</h2>
       <div class="month-row">
         <div><small>올라간 금액 합계</small><b class="up">${signedWon(up)}</b></div>
         <div><small>내려간 금액 합계</small><b class="down">${won(down)}</b></div>

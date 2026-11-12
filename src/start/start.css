@@ -106,3 +106,21 @@
 .pane{border:0;border-radius:24px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
 .rail li.now span{background:var(--accent);border-color:var(--accent)}
 .rail li.done span{background:var(--ok);border-color:var(--ok)}
+
+/* 진행 단계: 번호 원·연결선 대신 글자 목록 */
+.rail li{padding:8px 0;font-size:17px}
+.rail li::after{content:none}
+.rail li span,.rail li.done span,.rail li.now span{width:auto;height:auto;border:0;background:none;color:inherit;font-size:16px;font-weight:600;border-radius:0}
+.rail li span::after{content:"."}
+.rail li.done span{font-size:16px}
+.rail li.done span::before{content:none}
+.rail li.done{color:var(--mute)}
+.rail li.now{color:var(--accent)}
+.done{text-align:left;padding:8px 0}
+.done .row{justify-content:flex-start}
+.rail li span,.rail li.done span,.rail li.now span{display:inline;min-width:0}
+.fld-l{display:flex;align-items:baseline;gap:6px}
+.chan-pick label,.chan-pick label:has(input:checked){border:0;background:none;padding:4px 0;margin-right:16px;color:var(--ink);font-weight:400}
+.chan-pick input{width:20px;height:20px}
+.rail li:not(:last-child)::after{content:none}
+.fld{align-content:start}

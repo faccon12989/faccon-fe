@@ -23,3 +23,6 @@
 
 .login-body{background:var(--surface-2)}
 .login-side ol{border-top:0}
+
+.login{grid-template-columns:minmax(0,480px);justify-content:center}
+.login-card h1{margin-bottom:24px}

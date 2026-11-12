@@ -5,7 +5,7 @@ import {
 } from "./model";
 
 const field = (name: string, label: string, value: string, opts: { type?: string; hint?: string; required?: boolean; ac?: string } = {}): string => `
-  <label class="fld">${label}${opts.required ? ' <span class="req">필수</span>' : ""}
+  <label class="fld"><span class="fld-l">${label}${opts.required ? ' <span class="req">필수</span>' : ""}</span>
     <input name="${name}" type="${opts.type ?? "text"}" value="${esc(value)}" ${opts.ac ? `autocomplete="${opts.ac}"` : ""}>
     ${opts.hint ? `<small>${opts.hint}</small>` : ""}
   </label>`;
@@ -14,7 +14,6 @@ const stepPath = (s: StartState): string => {
   const card = (v: "A" | "B", title: string, desc: string, first: string): string => `
     <label class="choice ${s.path === v ? "on" : ""}">
       <input type="radio" name="path" value="${v}" ${s.path === v ? "checked" : ""}>
-      <span class="ch-tag">${v === "A" ? "추천" : "준비 지원"}</span>
       <b>${title}</b><span>${desc}</span>
       <small>첫 결과: ${first}</small>
     </label>`;
@@ -160,7 +159,6 @@ export const renderStep = (s: StartState): string => {
 export const renderDone = (s: StartState): string => {
   return `
     <div class="done">
-      <span class="done-mark" aria-hidden="true">✓</span>
       <h1>${esc(s.company)}의 파일럿을 준비했습니다</h1>
       <p class="lead-s">공급기업 초대 메일이 발송되고, 담당 매니저가 1주차 업무 재현 일정을 잡기 위해 연락드립니다 (데모 — 실제 발송 없음).</p>
       <div class="row"><a class="btn solid" href="./my.html">기업 대시보드 열기 →</a><a class="btn ghost" href="./">소개로 돌아가기</a></div>
