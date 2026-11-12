@@ -74,14 +74,6 @@ h3{font-size:21px;margin:0 0 10px}
 .shot-cap{margin:16px 0 0;font-size:15px;color:var(--mute);text-align:center}
 .shot-cap a{color:var(--accent);font-weight:600}
 
-/* 3. 한 달 흐름 */
-.month-in{display:grid;grid-template-columns:.75fr 1.25fr;gap:64px;align-items:start}
-.timeline{list-style:none;margin:0;padding:0}
-.timeline li{display:grid;grid-template-columns:150px 1fr;gap:24px;padding:22px 0;border-top:1px solid var(--line)}
-.timeline li:last-child{border-bottom:1px solid var(--line)}
-.timeline time{font-weight:700;color:var(--accent);font-size:17px}
-.timeline p{margin:0;color:var(--soft);font-size:18px}
-.timeline b{color:var(--ink)}
 
 /* 4. 도입 */
 .start-in{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center}
@@ -156,3 +148,15 @@ h3{font-size:21px;margin:0 0 10px}
 .talk-title{font-size:13.5px;margin-bottom:6px}
 .talk-rows li{grid-template-columns:64px 1fr;font-size:12.5px}
 .talk-btn{margin-top:10px;padding:7px;font-size:12.5px}
+
+/* 왜 필요한가: 숫자는 크게, 근거는 바로 아래 */
+.why-stats{display:grid;grid-template-columns:repeat(3,1fr);border-top:2px solid var(--ink);border-bottom:1px solid var(--line);margin:36px 0 48px}
+.why-stats div{padding:28px 28px 28px 0}
+.why-stats div+div{padding-left:28px;border-left:1px solid var(--line)}
+.why-stats b{display:block;font-size:clamp(2.6rem,1.8rem + 2vw,3.4rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;color:var(--accent)}
+.why-stats p{margin:12px 0 6px;font-size:17px;font-weight:600}
+.why-stats small{font-size:14px;color:var(--mute)}
+.why-cases{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.why-cases h3{font-size:20px;margin:0 0 8px}
+.why-cases p{margin:0;color:var(--soft);font-size:17px}
+.why-close{margin:48px 0 0;padding-top:28px;border-top:1px solid var(--line);font-size:20px;font-weight:600}
