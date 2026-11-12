@@ -76,11 +76,6 @@ h3{font-size:21px;margin:0 0 10px}
 
 
 /* 4. 도입 */
-.start-in{display:grid;grid-template-columns:1.1fr .9fr;gap:64px;align-items:center}
-.need{background:var(--surface);border-radius:24px;padding:32px}
-.need ul{margin:0 0 20px;padding-left:22px;font-size:18px}
-.need li{margin:6px 0}
-.need .note{margin:12px 0 0;font-size:16px;color:var(--soft)}
 
 /* 5. 질문 */
 
@@ -92,9 +87,6 @@ h3{font-size:21px;margin:0 0 10px}
 @media (min-width:3200px) and (min-height:1700px){:root{--z:1.9}}
 
 /* 도입: 누가 돈을 내는지 크게 */
-.who-pays{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 28px}
-.who-pays span{font-size:17px;font-weight:700;background:var(--surface);border-radius:10px;padding:8px 14px}
-.who-pays span:first-child{background:var(--accent);color:#fff}
 
 
 /* 첫 화면: 알림이 도착하는 대화방 */
@@ -198,3 +190,16 @@ h3{font-size:21px;margin:0 0 10px}
 /* 첫 화면: 누구를 위한 서비스인지 */
 .for-who{margin:0 0 14px;font-size:17px;font-weight:700;color:var(--accent)}
 
+
+/* 도입 방식: 파일럿 · 구매기업 · 공급기업 */
+.sec-label{margin:0 0 10px;font-size:16px;font-weight:700;color:var(--accent)}
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
+.plan{border:1px solid var(--line);border-radius:20px;padding:28px}
+.plan.feat{background:var(--accent);border-color:var(--accent);color:#fff}
+.plan-k{display:inline-block;margin:0 0 12px;font-size:13.5px;font-weight:700;background:var(--mark);color:#1A1F2B;border-radius:6px;padding:3px 9px}
+.plan h3{font-size:22px;margin:0 0 6px}
+.plan .pp{margin:0 0 18px;font-size:17px;font-weight:700;color:var(--accent)}
+.plan.feat .pp{color:#C9D6EE}
+.plan ul{margin:0;padding-left:20px;font-size:16.5px}
+.plan li{margin:7px 0;color:var(--soft)}
+.plan.feat li{color:#E6EBF3}
