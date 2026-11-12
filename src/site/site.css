@@ -68,7 +68,9 @@ h3{font-size:21px;margin:0 0 10px}
 .shot-head p{margin:0;color:var(--soft);font-size:18px}
 .shot-frame{display:block;border-radius:20px;overflow:hidden;background:var(--paper);box-shadow:0 24px 60px -24px rgba(26,31,43,.3),0 0 0 1px rgba(26,31,43,.07);transition:transform .25s var(--ease)}
 .shot-frame:hover{transform:translateY(-4px)}
-.shot-frame img{display:block;width:100%;height:auto}
+/* 실제 대시보드(1440×900)를 칸 폭에 맞게 축소해서 보여준다. 미리보기라 클릭은 링크가 받는다 */
+.shot-frame{position:relative;aspect-ratio:1440/900}
+.shot-frame iframe{position:absolute;top:0;left:0;width:1440px;height:900px;border:0;transform-origin:0 0;transform:scale(var(--frame-scale,.73));pointer-events:none}
 .shot-cap{margin:16px 0 0;font-size:15px;color:var(--mute);text-align:center}
 .shot-cap a{color:var(--accent);font-weight:600}
 

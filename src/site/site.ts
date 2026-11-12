@@ -72,4 +72,15 @@ const renderChat = (): void => {
   playArrival(box);
 };
 
+/** 대시보드 미리보기를 칸 폭에 맞춰 축소한다 */
+const DASH_WIDTH = 1440;
+const fitPreview = (): void => {
+  const frame = document.querySelector<HTMLElement>(".shot-frame");
+  if (!frame) return;
+  const resize = (): void => frame.style.setProperty("--frame-scale", String(frame.clientWidth / DASH_WIDTH));
+  resize();
+  new ResizeObserver(resize).observe(frame);
+};
+
 renderChat();
+fitPreview();
