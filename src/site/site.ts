@@ -72,12 +72,17 @@ const renderChat = (): void => {
   playArrival(box);
 };
 
-/** 대시보드 미리보기를 칸 폭에 맞춰 축소한다 */
-const DASH_WIDTH = 1440;
+/** 대시보드 미리보기: 왼쪽 메뉴를 빼고 '요약 + 처리할 업무' 부분만 잘라 칸 폭에 맞춘다 */
+const CROP_X = 250;
+const CROP_W = 1170;
 const fitPreview = (): void => {
   const frame = document.querySelector<HTMLElement>(".shot-frame");
-  if (!frame) return;
-  const resize = (): void => frame.style.setProperty("--frame-scale", String(frame.clientWidth / DASH_WIDTH));
+  const iframe = frame?.querySelector<HTMLIFrameElement>("iframe");
+  if (!frame || !iframe) return;
+  const resize = (): void => {
+    const scale = frame.clientWidth / CROP_W;
+    iframe.style.transform = `translateX(${-CROP_X * scale}px) scale(${scale})`;
+  };
   resize();
   new ResizeObserver(resize).observe(frame);
 };

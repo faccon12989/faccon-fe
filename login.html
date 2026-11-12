@@ -11,21 +11,19 @@
 <body class="login-body">
 <header class="nav">
   <a class="logo" href="./">Faccon</a>
-  <div class="nav-cta"><a class="btn ghost" href="./start.html">파일럿 신청</a></div>
+  <div class="nav-cta"><a class="btn ghost" href="./consult.html">파일럿 상담 신청</a></div>
 </header>
 <main class="login">
   <section class="login-card" aria-labelledby="login-h">
     <h1 id="login-h">기업 로그인</h1>
-    <div class="role-pick" role="radiogroup" aria-label="기업 유형">
-      <label><input type="radio" name="role" value="buyer" checked> 구매기업</label>
-      <label><input type="radio" name="role" value="supplier"> 공급기업</label>
-    </div>
     <form id="login-form" novalidate>
       <label class="fld">업무 이메일<input name="email" type="email" autocomplete="username" value="kim.buyer@a-precision.example"></label>
       <label class="fld">비밀번호<input name="password" type="password" autocomplete="current-password" value="demo-password"></label>
       <p class="err-msg" id="login-err" role="alert"></p>
       <button class="btn solid lg wide" type="submit">대시보드 열기</button>
     </form>
+    <p class="no-account">계정이 없으신가요? <a href="./consult.html">파일럿 상담 신청</a></p>
+    <p class="no-account">공급기업은 구매기업이 보낸 초대 메일의 링크로 들어옵니다.</p>
     <p class="demo-note">데모 계정이 미리 채워져 있습니다. 입력값은 어디로도 전송되지 않습니다.</p>
   </section>
 </main>

@@ -26,3 +26,6 @@
 
 .login{grid-template-columns:minmax(0,480px);justify-content:center}
 .login-card h1{margin-bottom:24px}
+.no-account{margin:16px 0 0;font-size:15px;color:var(--soft)}
+.no-account a{color:var(--accent);font-weight:600}
+.no-account+.no-account{margin-top:4px}
