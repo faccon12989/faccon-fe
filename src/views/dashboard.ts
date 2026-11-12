@@ -1,6 +1,8 @@
+import { activeSupplier } from "../context";
 import { adjust, signedWon, won } from "../calc";
-import { isCounted, SELF_SUPPLIER, TODOS } from "../data";
+import { isCounted, TODOS } from "../data";
 import { demoRows, taskDone, taskStatus } from "../demo";
+import { readWork } from "../workflow";
 import type { TodoKind } from "../types";
 import { adjustPill, esc, findContract, supplierName, visibleContracts } from "../ui";
 
@@ -29,7 +31,7 @@ export const supplierOverview = (): string => {
         return `<div class="todo">
           <div class="ic pill ${cls}" style="border-radius:9px;padding:0" aria-hidden="true">${letter}</div>
           <div class="t"><b>${esc(t.code)} · ${esc(t.title)} <span class="tag">${esc(taskStatus(t.code))}</span></b><small>${esc(t.contract)} ${esc(findContract(t.contract)?.item)} — ${esc(t.reason)}</small></div>
-          <a class="btn" href="${esc(t.go)}">${esc(t.next)} →</a>
+          <a class="btn" href="${esc(t.contract === "AL-004" ? "#/review" : t.contract === "ST-005" ? "#/contracts/ST-005" : t.go)}">${esc(t.next)} →</a>
         </div>`;
       }).join("")
     : `<div class="empty">처리할 항목이 없습니다</div>`;
@@ -40,7 +42,7 @@ export const supplierOverview = (): string => {
     <td class="num ${r.total > 0 && isCounted(c) ? "diff-up" : ""}">${c.status === "nolink" ? `<small style="color:var(--mute)">미연동 합의</small>` : !r.triggered ? "-" : c.status === "draft" ? `<small style="color:var(--mute)">약정 전 · 참고</small> ${signedWon(r.total)}` : signedWon(r.total)}</td></tr>`).join("");
 
   const heading = "우리 회사 거래 현황";
-  const sub = `${esc(supplierName(SELF_SUPPLIER))} · A정밀 (가상)과의 연동 거래만 보입니다`;
+  const sub = `${esc(supplierName(activeSupplier()))} · A정밀 (가상)과의 연동 거래만 보입니다`;
 
   return `
     <h1>${heading}</h1>
@@ -54,7 +56,7 @@ export const supplierOverview = (): string => {
     <div class="grid g2" style="margin-top:16px">
       <section class="card">
         <div class="between"><h2>지금 처리할 항목</h2><span class="tag">알림은 위반 확정이 아니라 재검토 요청</span></div>
-        ${todoHtml}
+        ${todoHtml}${activeSupplier() === "S-04" && readWork().phase === "active" ? `<p><a class="btn pri" href="#/reconcile">AL-004 발주·청구·지급근거 확인 →</a></p>` : ""}
       </section>
       <section class="card">
         <h2>계약별 이번 달 조정</h2>

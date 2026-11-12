@@ -2,6 +2,9 @@
 import "../site/site.css";
 import "./my.css";
 import "../workflow.css";
+import { setContext } from "../context";
+import { downloadMonthly } from "../monthly";
+import { readWork, saveWork, transition } from "../workflow";
 import { downloadEvidence } from "../evidence";
 import { requestTask, resetDemo } from "../demo";
 import { taskDetailHref } from "../detail-navigation";
@@ -21,7 +24,16 @@ const TABS = [
 ] as const;
 const TOAST_MS = 2000;
 
-let state: MyState = { tab: "home", detail: null, channels: ["kakao", "email"], events: ALERT_EVENTS.map((e) => e.id) };
+setContext("buyer");
+const loadPreferences = (): Pick<MyState, "channels" | "events"> => {
+  const defaults: Pick<MyState, "channels" | "events"> = { channels: ["kakao", "email"], events: ALERT_EVENTS.map((e) => e.id) };
+  try {
+    const x: unknown = JSON.parse(localStorage.getItem("faccon-alerts-v1") ?? "null");
+    if (typeof x !== "object" || x === null || !("channels" in x) || !("events" in x) || !Array.isArray(x.channels) || !Array.isArray(x.events)) return defaults;
+    return { channels: CHANNELS.filter((c): boolean => (x.channels as unknown[]).includes(c.id)).map((c): Channel => c.id), events: ALERT_EVENTS.filter((e): boolean => (x.events as unknown[]).includes(e.id)).map((e): string => e.id) };
+  } catch { return defaults; }
+};
+let state: MyState = { tab: "home", detail: null, ...loadPreferences() };
 let flow: { id: TaskId; steps: FlowStep[]; at: number } | null = null;
 let lastFocus: HTMLElement | null = null;
 let requestChoice = "extend";
@@ -36,6 +48,7 @@ const byId = (id: string): HTMLElement => {
 
 const setState = (patch: Partial<MyState>): void => {
   state = { ...state, ...patch };
+  localStorage.setItem("faccon-alerts-v1", JSON.stringify({ channels: state.channels, events: state.events }));
   render();
 };
 
@@ -98,6 +111,7 @@ const advance = (): void => {
     requestChoice = document.querySelector<HTMLInputElement>('input[name="renew"]:checked')?.value ?? "request";
     requestDetail = document.querySelector<HTMLSelectElement>('select[name="to"],select[name="due"]')?.value ?? "계약 담당자 확인";
     requestTask(flow.id, requestChoice, requestDetail);
+    if (flow.id === "C-103" && readWork().phase === "draft") saveWork(transition(readWork(), { action: "request", role: "buyer", supplier: "S-04", revision: readWork().revision }));
     const message = flow.id === "C-101" ? (requestChoice === "end" ? "거래 종료 의사를 기록했습니다. 남은 발주 2건의 취소·이행 여부를 확인할 때까지 대기합니다." : requestChoice === "check" ? "계약 담당자에게 확인할 항목을 기록했습니다. 회신이 올 때까지 대기합니다." : "갱신 확인 요청을 기록했습니다. 갱신본과 서명이 확인되기 전에는 완료로 바뀌지 않습니다.")
       : flow.id === "C-102" ? `수정 요청 대상: ${requestDetail}. 발주 파일에서 변경 단가가 확인될 때 완료 처리합니다.` : `보완 요청 기한: ${requestDetail}. 자료 회신·검토 후에 처리합니다.`;
     flow = { ...flow, steps: flow.steps.map((step: FlowStep, i: number): FlowStep => i === 2 ? { title: "요청을 기록했습니다 · 처리 대기", body: `<p>${esc(message)}</p><p class="note-s">가상 시나리오만 저장됩니다. 실제 메일은 보내지 않습니다.</p><a href="${esc(taskDetailHref(flow?.id ?? ""))}">후속 업무 확인 →</a>`, cta: "대기 상태로 돌아가기" } : step) };
@@ -121,13 +135,15 @@ const toggleEvent = (id: string, label: string): void => {
 const toggleChannel = (id: Channel, label: string): void => {
   const on = state.channels.includes(id);
   setState({ channels: on ? state.channels.filter((c) => c !== id) : [...state.channels, id] });
-  toast(on ? `${label} 알림을 껐습니다` : `${label}로도 알림을 보냅니다`);
+  toast(on ? `${label} 알림을 껐습니다` : `${label} 수신 설정을 저장했습니다 (실제 발송 없음)`);
 };
 
 document.addEventListener("click", (e) => {
   const el = e.target instanceof Element ? e.target : null;
   if (!el) return;
   if (el.closest("[data-reset]")) { if (window.confirm("가상 시나리오를 처음 상태로 되돌리시겠습니까?")) { resetDemo(); render(); } return; }
+  const monthly = el.closest<HTMLElement>("[data-monthly]");
+  if (monthly) { downloadMonthly(monthly.dataset.monthly || undefined); return; }
   if (el.closest("[data-export-csv]")) { downloadEvidence("buyer"); return; }
   if (el.closest("[data-print]")) { window.print(); return; }
   const tab = el.closest<HTMLElement>("[data-tab]");

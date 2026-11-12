@@ -1,17 +1,18 @@
+import { activeSupplier } from "./context";
 import { adjust, signedWon, won } from "./calc";
 import { demoContracts, demoRows } from "./demo";
 import { esc, supplierName } from "./ui";
 import type { Contract, Role } from "./types";
-import { SELF_SUPPLIER } from "./data";
+
 
 export const evidenceRows = (role: Role): readonly (readonly string[])[] => demoContracts()
-  .filter((c: Contract): boolean => role === "buyer" || c.supplier === SELF_SUPPLIER)
+  .filter((c: Contract): boolean => role === "buyer" || c.supplier === activeSupplier())
   .map((c: Contract): readonly string[] => {
     const r = adjust(c);
     const row = demoRows().find((item): boolean => item.contract === c.id);
     const active = c.status === "ok";
     return [c.id, supplierName(c.supplier), c.version,
-      c.status === "draft" ? "초안·미확정" : c.status === "renew" ? "종료·갱신 검토" : "운영 중 (가상)",
+      c.status === "draft" ? "초안·미확정" : c.status === "renew" ? "종료·갱신 검토" : c.status === "nolink" ? "미연동 합의" : "운영 중 (가상)",
       active ? won(r.price) : "확정 산출 제외", active ? signedWon(r.total) : "집계 제외",
       row ? won(row.poPrice) : "미등록", row ? won(row.invPrice) : "미등록",
       row?.paid ? "가상 지급근거 확인" : "미확인",

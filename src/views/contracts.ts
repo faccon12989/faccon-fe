@@ -1,3 +1,5 @@
+import { renewalPanel } from "./work-panels";
+import { readWork } from "../workflow";
 import { adjust, pct, signedWon, won } from "../calc";
 import { INDEX_SERIES, MONTHS } from "../data";
 import type { AdjustResult, Contract, Role } from "../types";
@@ -60,8 +62,9 @@ export const contractDetailView = (role: Role, id: string): string => {
     const cls = n < c.stepNow ? "done" : n === c.stepNow ? "now" : "";
     return `<div class="${cls}"><b>0${n}</b>${s}</div>`;
   }).join("");
-  const m0Shown = role === "supplier" || c.path === "A" ? won(c.m0) : "공유 승인 전";
-  if (c.status === "draft") return `<h1>${esc(c.id)} · 신규 약정 준비</h1><section class="card"><h2>투입량 보완 및 양사 확인 전입니다</h2><p>초안 값을 확정 단가로 적용하지 않습니다. 근거 자료 확인과 산출표 검토를 먼저 진행해 주십시오.</p><a class="btn pri" href="./start.html?path=B">자료 검토·산출표 열기</a></section>`;
+  const m0Shown = role === "supplier" || c.path === "A" || c.status === "ok" ? won(c.m0) : "공유 승인 전";
+  const historyRows = readWork().log.filter((line: string): boolean => line.startsWith(c.id)).map((line: string): string => `<tr><td colspan="3">${esc(line)}</td></tr>`).join("");
+  if (c.status === "draft") return `<h1>${esc(c.id)} · 신규 약정 준비</h1><section class="card"><h2>투입량 보완 및 양사 확인 전입니다</h2><p>초안 값을 확정 단가로 적용하지 않습니다. 근거 자료 확인과 산출표 검토를 먼저 진행해 주십시오.</p><a class="btn pri" href="#/review">자료 검토·산출표 열기</a></section>`;
   const lock = role === "buyer"
     ? `<div class="lock" style="margin-top:14px"><span aria-hidden="true">🔒</span><div>공급기업 원가 원문(매입처·상세 단가)은 기본 비공개입니다. 구매기업은 양사가 합의한 산정 결과만 봅니다.</div></div>`
     : "";
@@ -70,7 +73,7 @@ export const contractDetailView = (role: Role, id: string): string => {
     <div class="between"><div><h1>${esc(c.id)} · ${esc(c.item)}</h1>
       <p class="sub">${esc(supplierName(c.supplier))} · ${esc(c.material)} · 약정 ${esc(c.version)} ${statusPill(c.status)}</p></div>
       <a class="btn" href="#/contracts">← 목록</a></div>
-    <div class="steps" aria-label="진행 단계">${steps}</div>
+    <div class="steps" aria-label="진행 단계">${steps}</div>${c.id === "ST-005" ? renewalPanel(role) : ""}
     <div class="grid g2">
       <section class="card">
         <h2>약정 조건</h2>
@@ -96,8 +99,8 @@ export const contractDetailView = (role: Role, id: string): string => {
         <h2 style="margin-top:18px">버전·승인 이력</h2>
         <div class="tbl"><table><tbody>
           <tr><td class="mono">${esc(c.version)}</td><td>${c.status === "renew" ? "종료 약정 · 갱신 확인 필요" : "현재 약정"}</td><td>가상 승인 이력</td></tr>
-          <tr><td class="mono">v1.0</td><td>최초 약정 (전문기관 확인서 반영)</td><td><span class="pill p-mute">대체됨</span></td></tr>
-          <tr><td class="mono">calc-11</td><td>11월 계산 실행 · 규칙 v2026.10</td><td><span class="pill p-ok">기록됨</span></td></tr>
+          ${historyRows || '<tr><td colspan="3">추가 처리 이력이 없습니다. 위 약정은 가상 기본 자료입니다.</td></tr>'}
+          <tr><td class="mono">calc-11</td><td>11월 지표로 계산한 화면 예시</td><td>실제 실행 증명 아님</td></tr>
         </tbody></table></div>
         ${lock}
       </section>

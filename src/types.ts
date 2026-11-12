@@ -167,3 +167,19 @@ export interface DetailRoute {
   readonly page: DetailPage | "summary";
   readonly id?: string;
 }
+
+export interface DemoContext { readonly role: Role; readonly supplier: string; }
+export type DraftPhase = "draft" | "requested" | "submitted" | "returned" | "active";
+export type RenewPhase = "none" | "proposed" | "accepted" | "returned" | "active";
+export interface WorkState {
+  readonly phase: DraftPhase; readonly revision: number; readonly m0: number;
+  readonly scope: "result" | "summary"; readonly note: string;
+  readonly renew: RenewPhase; readonly evidence: number;
+  readonly log: readonly string[];
+}
+export type WorkAction = "request" | "submit" | "return" | "approve" | "proposeRenew" | "acceptRenew" | "returnRenew" | "confirmRenew" | "po" | "invoice" | "payment";
+export interface WorkCommand {
+  readonly action: WorkAction; readonly role: Role; readonly supplier: string;
+  readonly revision: number; readonly m0?: number; readonly checked?: boolean;
+  readonly scope?: "result" | "summary"; readonly note?: string;
+}

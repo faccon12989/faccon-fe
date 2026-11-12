@@ -1,6 +1,6 @@
 /* 기업 대시보드: 자료 요청 · 제출 자료 */
 import { PURPOSES, REQUESTS } from "../data";
-import { taskStatus } from "../demo";
+import { demoContracts, demoRows, taskStatus } from "../demo";
 import { evidenceView } from "../evidence";
 import { esc, supplierName } from "../ui";
 
@@ -12,10 +12,11 @@ export const docsScreen = (): string => {
       <td>${esc(q.period)}</td>
       <td>${esc(q.reuse ? `재사용 (${q.reuse})` : taskStatus("C-103"))}</td></tr>`).join("");
   const purposeRows = PURPOSES.map((p) => {
-    const ready = p.items.filter((i) => i.ready).length;
-    const missing = p.items.filter((i) => !i.ready).map((i) => esc(i.doc)).join(", ") || "-";
+    const items = p.items.map((i) => ({ ...i, ready: i.ready || (i.doc.includes("갱신") ? demoContracts().find((c): boolean => c.id === "ST-005")?.status === "ok" : i.doc.includes("반영") ? demoRows().every((row): boolean => row.invPrice !== null && row.poPrice === row.invPrice) : false) }));
+    const ready = items.filter((i) => i.ready).length;
+    const missing = items.filter((i) => !i.ready).map((i) => esc(i.doc)).join(", ") || "-";
     return `<tr><td><b>${esc(p.name)}</b></td><td class="n">${ready} / ${p.items.length}</td><td>${missing}</td>
-      <td class="act"><button class="btn ghost sm" data-toast="${esc(p.name)} 자료 묶음을 만들었습니다 (데모)">묶음 만들기</button></td></tr>`;
+      <td class="act"><a class="btn ghost sm" href="./app.html?purpose=${esc(p.id)}#/packages">요약·누락자료 확인</a></td></tr>`;
   }).join("");
   return `
     <header class="page-h"><div><h1>자료·제출</h1><p>공급사 자료 요청과 제출용 자료 묶음</p></div></header>

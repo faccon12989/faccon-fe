@@ -1,4 +1,5 @@
 /* 기업 대시보드: 홈 (요약 · 처리할 업무 · 이번 달 조정 금액 · 알림 설정 · 제도 변경) */
+import { setupStatus } from "../setup-status";
 import { adjust, pct, signedWon, won } from "../calc";
 import { isCounted, NOTICES, TODOS } from "../data";
 import { demoContracts, demoRows, taskDone, taskStatus } from "../demo";
@@ -89,7 +90,8 @@ export const homeScreen = (): string => {
   const open = TODOS.filter((t) => !taskDone(t.code));
   return `
     <header class="page-h"><div><h1>업무요약</h1><p>2026년 11월 · 지표 기준일 11월 1일</p></div>
-      <button class="btn ghost sm" data-toast="11월 변동표 엑셀을 내려받았습니다 (데모)">11월 변동표 내려받기</button></header>
+      <button class="btn ghost sm" data-monthly>11월 변동표 내려받기</button></header>
+    ${setupStatus()}
     ${summary(open)}
     <div class="cols">
       <div class="col-main">${taskTable(open)}${adjustTable()}</div>

@@ -97,7 +97,7 @@ export const validate = (s: StartState): string | null => {
     case 2:
       if (s.path === "B") return s.checklist.length ? null : "준비할 수 있는 자료를 하나 이상 골라 주십시오.";
       if (!s.uploaded) return "약정 파일을 올려 주십시오.";
-      return s.extracted.every((x) => x.confirmed && x.confidence >= 0.8) ? null : "추출된 값을 원문과 비교해 모두 확인해 주십시오.";
+      return s.extracted.every((x) => x.confirmed && x.confidence >= 0.8) ? null : "미확정 적용일은 아래 보완합의서에서 확정하고, 나머지 항목도 원문과 대조해 주십시오.";
     case 3: {
       const filled = s.invites.filter((i) => i.company.trim() || i.email.trim());
       if (!filled.length) return null;

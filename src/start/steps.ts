@@ -71,7 +71,7 @@ const stepUploadA = (s: StartState): string => {
       <thead><tr><th>항목</th><th>찾은 값</th><th>원문 위치</th><th>신뢰도</th><th>확인</th></tr></thead>
       <tbody>${rows}</tbody></table></div>
     <button type="button" class="btn ghost sm" id="confirm-all">확인 가능한 항목만 표시</button>
-    <details class="pre-check"><summary>가상 원문과 보완 내용 보기</summary><p>약정서 p.2: 기준 납품단가 10,000원/개. 확인서 p.1: 원재료비 4,000원/개.<br>약정서 p.3: 지수 100, ±5% 이상, 월 1회.<br>p.4: “익월”만 기재되어 있어 적용 대상의 보완이 필요합니다.<br>양사 보완합의서 p.1 (가상): 익월 1일 이후 검수분에 적용.</p><button type="button" class="btn ghost" id="resolve-apply">보완합의서 확인 후 적용일 확정 (가상)</button></details>
+    <details class="pre-check" open><summary>가상 원문과 보완 내용 보기 · 미확정 적용일을 여기서 보완합니다</summary><p>약정서 p.2: 기준 납품단가 10,000원/개. 확인서 p.1: 원재료비 4,000원/개.<br>약정서 p.3: 지수 100, ±5% 이상, 월 1회.<br>p.4: “익월”만 기재되어 있어 적용 대상의 보완이 필요합니다.<br>양사 보완합의서 p.1 (가상): 익월 1일 이후 검수분에 적용.</p><button type="button" class="btn ghost" id="resolve-apply">보완합의서 확인 후 적용일 확정 (가상)</button></details>
     <p class="hint-s">AI가 찾은 값은 초안입니다. 금액 계산은 확인된 값으로 고정된 규칙이 합니다. “다시 확인” 항목은 필요하면 공급기업에 그 항목만 보완 요청합니다.</p>`;
 };
 
@@ -159,6 +159,7 @@ export const renderStep = (s: StartState): string => {
 };
 
 export const renderDone = (_s: StartState): string => {
+  if (_s.path === "B") return `<h1>신규 약정 준비 설정을 마쳤습니다</h1><p>이제 AL-004 가상 거래를 구매기업 요청 → 대구캐스팅 보완·공유 승인 → 구매기업 확인 순서로 체험합니다. 실제 초대·ERP 연결은 수행하지 않습니다.</p><a class="btn solid" href="./app.html?role=buyer#/review">AL-004 자료 요청부터 시작 →</a>`;
   return `
     <div class="done">
       <span class="done-mark" aria-hidden="true">✓</span>

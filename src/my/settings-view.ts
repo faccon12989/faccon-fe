@@ -27,6 +27,6 @@ export const settingsScreen = (s: MyState): string => {
     <section class="panel"><h2>알림 받을 일</h2>
       <table class="grid"><tbody>${events}</tbody></table></section>
     <section class="panel"><div class="panel-h"><h2>받는 사람</h2>
-      <button class="btn ghost sm" data-toast="받는 사람 추가 화면을 엽니다 (데모)">사람 추가</button></div>
+      <span class="foot-note">가상 담당자 예시 · 추가 기능 준비 중</span></div>
       <table class="grid"><thead><tr><th>이름</th><th>역할</th><th>받는 알림</th></tr></thead><tbody>${people}</tbody></table></section>`;
 };

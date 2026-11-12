@@ -1,72 +1,26 @@
-/* 신규 약정 검토 예시. AI 호출·실제 문서 업로드 없이 합성자료로만 동작한다. */
 import { pct, won } from "../calc";
-import { readDemo, saveDemo } from "../demo";
+import { activeSupplier } from "../context";
+import { readWork } from "../workflow";
 import { esc } from "../ui";
+import type { Role } from "../types";
+import { workButton, workCheck, workTrail } from "./work-panels";
 
-let quantity = "";
-let checked = false;
-const MATERIAL_UNIT_PRICE = 2800;
-const BASE_PRICE = 22000;
-const MAX_QUANTITY = BASE_PRICE / MATERIAL_UNIT_PRICE;
-
-export const reviewView = (): string => {
-  const s = readDemo();
-  if (s.draftApproved) return `<h1>AL-004 · 운영 준비 완료</h1><section class="card"><h2>검토한 산출값과 약정 조건을 저장했습니다</h2><p>구매·공급기업의 확인을 가정한 데모 상태입니다. 법률계약이나 전자서명이 생성된 것은 아닙니다.</p><dl class="calc"><dt>공유 승인된 원재료비</dt><dd>${won(s.draftM0)} / 개</dd><dt>약정 버전</dt><dd>v1.0 (데모 승인)</dd></dl><div class="row"><a class="btn pri" href="#/contracts/AL-004">약정·계산 확인</a><a class="btn" href="#/packages">증빙 요약 보기</a><a class="btn" href="./my.html">내 업무</a></div></section>`;
-  const q = Number(quantity);
-  const valid = quantity.trim() !== "" && Number.isFinite(q) && q > 0 && q <= MAX_QUANTITY;
-  const m0 = valid ? Math.round(q * MATERIAL_UNIT_PRICE) : null;
-  return `<div class="between"><div><h1>신규 약정 검토</h1><p class="sub">AL-004 · A정밀 (가상) ↔ 대구캐스팅 (가상) · 다이캐스팅 하우징</p></div><a class="btn" href="#/contracts">목록으로</a></div>
-    <div class="journey"><span>01 자료 확인</span><span>02 보완·산출</span><span>03 공유·양사 확인</span><span>04 운영 시작</span></div>
-    <p class="note">합성자료로 양사의 검토 절차를 한곳에서 체험합니다. 아래 원가자료 입력은 공급기업 화면의 예시이며, 실제 구매기업에 매입단가·투입량 원문을 공개하는 설계가 아닙니다. AI 분석·기관 검토·서명·메일 전송은 수행하지 않습니다.</p>
-    <div class="grid g2"><section class="card"><h2>1. 어떤 근거로 검토하나요?</h2>
-      <div class="tbl"><table><thead><tr><th>자료에서 찾은 사실</th><th>출처 (가상)</th><th>확인</th></tr></thead><tbody>
-        <tr><td>제조 위탁 · 계약금액 ${won(132000000)}</td><td>계약서 p.1, 3조</td><td>담당자 확인 필요</td></tr>
-        <tr><td>거래기간 120일</td><td>계약서 p.2, 5조</td><td>기간 확인 필요</td></tr>
-        <tr><td>알루미늄 매입 단가 ${won(MATERIAL_UNIT_PRICE)} / kg</td><td>매입명세 합성자료 p.1</td><td>기간·단위 대조</td></tr>
-        <tr><td>제품당 투입량 미확정</td><td>소요량 산출표 p.1</td><td><strong>보완 필요</strong></td></tr>
-        <tr><td>위탁기업 규모·적용 법률</td><td>기업 확인자료 미첨부</td><td>추가 검토</td></tr>
-      </tbody></table></div>
-      <details class="source-preview"><summary>가상 원문 발췌 확인</summary><p>계약서 3조: 하우징 6,000개 × ${won(BASE_PRICE)}.<br>5조: 2026-11-01부터 120일간 제조 위탁.<br>매입명세: 알루미늄 ${won(MATERIAL_UNIT_PRICE)}/kg, 부가세 제외.<br>보완 소요량 산출표: 하우징 1개당 투입량 <b>4kg</b>. 실제 증빙이 아닌 예시입니다.</p></details>
-      <p class="note"><b>적용 대상 검토: 추가 자료 필요</b><br>원재료 비중만으로 법적 의무를 확정하지 않습니다. 거래 유형·기업 규모·예외 사유를 담당자가 확인하는 초안을 제공합니다.</p>
-    </section><section class="card"><h2>2. 빠진 값만 보완하고 계산합니다</h2>
-      <label class="review-field" for="review-quantity">제품당 알루미늄 투입량 (kg/개)<input id="review-quantity" type="number" min="0.01" max="${MAX_QUANTITY}" step="0.01" value="${esc(quantity)}" placeholder="가상 원문 발췌: 4kg"></label>
-      <button class="btn" data-review-calc>산출표 초안 계산</button>
-      <p id="review-error" class="form-error" role="alert"></p>
-      <div class="formula">원재료비 = 투입량 × kg당 매입 단가<br>${valid ? `${esc(quantity)} × ${won(MATERIAL_UNIT_PRICE)} = ${won(m0)}` : "투입량 보완 후 계산합니다"}</div>
-      <dl class="calc"><dt>기준 납품단가</dt><dd>${won(BASE_PRICE)} / 개</dd><dt>제품당 원재료비</dt><dd>${won(m0)}</dd><dt>원재료비 비중</dt><dd>${m0 === null ? "산출 전" : pct(m0 / BASE_PRICE)}</dd><dt>계산 기준</dt><dd>부가세 제외 · 원 단위 반올림</dd></dl>
-      <p class="note">LLM은 항목·출처 정리를 돕고, 이 계산은 고정된 프로그램이 수행합니다. 여기서 작성하는 것은 검토용 초안이며 전문기관 명의 확인서가 아닙니다.</p>
-      <label class="review-check"><input id="review-source" type="checkbox" ${checked ? "checked" : ""}> 보완한 투입량과 단위를 가상 원문 발췌와 대조했습니다</label>
-    </section></div>
-    <section class="card" style="margin-top:16px"><h2>3. 공개할 결과와 운영 조건 확인</h2>
-      <div class="grid g3"><div><b>공급기업 → 구매기업</b><p>원재료비 산정 결과와 적용 산식만 공유합니다. 상세 매입처·매입명세 원문은 공유하지 않습니다.</p></div><div><b>양사 확인할 규칙</b><p>기준지수 100 · 비교지수 106 (가상)<br>±3% 이상 변동 시 월 1회 조정<br>익월 1일 이후 검수분에 적용</p></div><div><b>다음 단계</b><p>운영 현황·내 약정에 동일 버전 반영<br>발주·청구 대조는 별도로 확인<br>계약 종료 후에만 자료를 모을 필요 없이 증빙 요약 확인</p></div></div>
-      <label class="review-check"><input id="review-share" type="checkbox"> 공급기업 역할: 산정 결과의 양사 공유 범위를 확인합니다 (데모)</label>
-      <label class="review-check"><input id="review-buyer" type="checkbox"> 구매기업 역할: 입력값·산식·주기·적용일을 확인합니다 (데모)</label>
-      <label class="review-check"><input id="review-supplier" type="checkbox"> 공급기업 역할: 같은 조건과 약정 버전을 확인합니다 (데모)</label>
-      <p class="note">조건 자체가 바뀔 때 양사 확인을 받습니다. 약정대로 매달 계산할 때마다 새 계약을 체결하는 흐름은 아닙니다. 권한 분리와 실제 전자서명은 서버 연동 단계에서 구현합니다.</p>
-      <button class="btn pri" data-review-approve ${!valid || !checked ? "disabled" : ""}>데모 양사 확인 후 운영에 반영</button>
-      <p id="approval-error" class="form-error" role="alert"></p>
-    </section>`;
-};
-
-export const handleReview = (target: Element, rerender: () => void): boolean => {
-  if (!target.closest("[data-review-calc], [data-review-approve]")) return false;
-  const input = document.getElementById("review-quantity") as HTMLInputElement | null;
-  const source = document.getElementById("review-source") as HTMLInputElement | null;
-  const q = Number(input?.value);
-  if (!input?.value.trim() || !Number.isFinite(q) || q <= 0 || q > MAX_QUANTITY) {
-    const error = document.getElementById("review-error");
-    if (error) error.textContent = "투입량은 0보다 커야 하며, 이 단순 예제에서는 원재료비가 납품단가를 넘지 않도록 입력해 주십시오.";
-    return true;
+export const reviewView = (role: Role): string => {
+  const w = readWork();
+  if (role === "supplier" && activeSupplier() !== "S-04") return `<h1>신규 약정 준비</h1><section class="card"><p>선택한 회사의 요청이 아닙니다. AL-004 실습은 아래 회사 선택에서 대구캐스팅 (가상)을 선택해 주십시오.</p></section>`;
+  const labels = { draft: "구매기업 보완 요청 전", requested: "공급기업 자료 보완 대기", submitted: "구매기업 결과 확인 대기", returned: "공급기업 재제출 대기", active: "양사 확인 완료·운영 중" };
+  let body = "";
+  if (w.phase === "active") body = `<h2>같은 약정 v1.0을 양사가 확인했습니다</h2><p>원재료비 ${won(w.m0)} · 기준지수 100 · 월 1회 ±3% · 익월 1일 이후 검수분 적용.</p><a class="btn pri" href="#/reconcile">발주·청구·지급근거 처리로 이동</a><a class="btn" href="#/contracts/AL-004">약정 상세</a>`;
+  else if (role === "buyer") {
+    body = `<h2>구매기업이 확인할 내용</h2><p>제조 위탁 계약 132,000,000원 · 거래기간 120일 · AL-004. 거래 유형·기업 규모·예외 여부는 담당자가 추가 검토합니다. 원재료 비중만으로 법적 의무를 확정하지 않습니다.</p>`;
+    if (w.phase === "draft") body += `<p>공급기업이 보유한 소요량 산출표의 제품당 투입량을 보완 요청합니다. 구매기업에는 승인된 산정 결과만 전달됩니다.</p>${workButton("request", "대구캐스팅에 보완 요청 (가상)")}`;
+    if (["requested", "returned"].includes(w.phase)) body += `<p>대구캐스팅의 회신을 기다립니다. 아래 공급기업 체험 링크에서 같은 요청을 처리할 수 있습니다.</p><a class="btn" href="./app.html?role=supplier&supplier=S-04#/review">대구캐스팅으로 요청 확인 →</a>`;
+    if (w.phase === "submitted") body += `<dl class="calc"><dt>공유 승인된 원재료비</dt><dd>${won(w.m0)} / 개</dd><dt>납품단가 대비 비중</dt><dd>${pct(w.m0 / 22000)}</dd><dt>공유 범위</dt><dd>${w.scope === "summary" ? "산정 결과 + 근거 문서 종류·기준월" : "산정 결과만"}</dd><dt>제출 버전</dt><dd>제출 ${w.revision}차</dd></dl>${w.scope === "summary" ? "<p>근거 요약: 2026년 10월 매입명세·소요량 산출표. 상세 매입처·투입량 원문은 표시하지 않습니다.</p>" : ""}<p>양사 합의 규칙: 기준단가 22,000원, 지표 기준 100, 월 1회 ±3%, 익월 1일 이후 검수분에 적용.</p>${workCheck("공급기업이 승인한 이번 제출 결과와 위 약정 조건을 확인했습니다")}${workButton("approve", "확인한 버전으로 약정 운영 시작")}<label class="review-field">보완 요청 사유<textarea id="work-note" maxlength="300" placeholder="예: 기준월을 확인해 주십시오."></textarea></label>${workButton("return", "사유와 함께 보완 요청")}`;
+  } else {
+    body = `<h2>대구캐스팅이 받은 요청</h2><p>요청자: A정밀 (가상) · 자료: 제품당 투입량 · 목적: 원재료비 비중·산정 결과 확인. 공급기업 원문은 구매기업 화면에 표시하지 않습니다.</p>`;
+    if (w.phase === "draft") body += "<p>아직 구매기업 요청이 없습니다. 구매기업 역할에서 보완 요청을 시작합니다.</p>";
+    if (w.phase === "submitted") body += `<p>산정 결과 ${won(w.m0)}를 공유 승인했습니다. 구매기업 확인을 기다립니다.</p>`;
+    if (["requested", "returned"].includes(w.phase)) body += `${w.note ? `<p role="status">보완 요청: ${esc(w.note)}</p>` : ""}<details open><summary>가상 원문과 산출 근거</summary><p>매입명세 p.1: 알루미늄 2,800원/kg, 부가세 제외.<br>소요량 산출표 p.1: 제품당 4kg. 원재료비 = 4 × 2,800 = 11,200원 (50.91%).</p></details><label class="review-field">원문과 대조한 투입량 (kg/개)<input id="work-quantity" type="number" step="0.01" min="0.01" max="7.85" placeholder="가상 원문: 4"></label><button class="btn" data-work-preview>산정 결과 미리보기</button><div id="work-preview" role="status">투입량을 입력하고 미리보기를 확인해 주십시오.</div><label class="review-field">구매기업에 공유할 범위<select id="work-scope"><option value="result">산정 결과만</option><option value="summary">산정 결과 + 근거 문서 종류·기준월</option></select></label><p>제출 시 고정 산식으로 계산합니다. 공유하는 항목: 원재료비·비중·약정 조건. 상세 매입처·원문·투입량은 구매기업 화면에 표시하지 않습니다. 결과로부터 일부 원가를 추론할 가능성까지 없애는 구조는 아닙니다.</p><p>승인할 규칙: 기준단가 22,000원, 기준지수 100, 월 1회 ±3%, 익월 1일 이후 검수분 적용.</p>${workCheck("원문·단위·공유 범위·약정 조건을 확인하고 이 결과의 제출에 동의합니다 (가상)")}${workButton("submit", "계산 결과 확인·공유 승인하여 제출")}`;
   }
-  if (target.closest("[data-review-calc]")) {
-    quantity = input.value; checked = source?.checked === true; rerender(); return true;
-  }
-  const approved = ["review-source", "review-share", "review-buyer", "review-supplier"].every((id: string): boolean => (document.getElementById(id) as HTMLInputElement | null)?.checked === true);
-  const error = document.getElementById("approval-error");
-  if (!approved || input.value !== quantity) {
-    if (error) error.textContent = "값을 바꿨다면 다시 계산하고, 원문 대조·공유 범위·양사 확인을 모두 완료해 주십시오.";
-    return true;
-  }
-  saveDemo({ setup: "B", draftApproved: true, draftM0: Math.round(q * MATERIAL_UNIT_PRICE) });
-  rerender(); return true;
+  return `<h1>AL-004 신규 약정 준비</h1><p class="sub">A정밀 (가상) ↔ 대구캐스팅 (가상) · ${labels[w.phase]}</p><div class="journey"><span>01 구매기업 요청</span><span>02 공급기업 보완·공유 승인</span><span>03 구매기업 버전 확인</span><span>04 운영·반영·증빙</span></div><p class="note">양쪽 역할로 한 거래를 끝까지 체험합니다. 현재는 가상 데이터·브라우저 저장이며 실제 인증·파일·AI 분석·서명·전송은 없습니다. 서버 권한을 구현한 서비스가 아닙니다.</p><section class="card">${body}<p id="work-error" role="alert"></p></section>${workTrail("AL-004")}`;
 };

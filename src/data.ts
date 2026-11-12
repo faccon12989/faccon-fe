@@ -39,8 +39,8 @@ export const CONTRACTS: readonly Contract[] = [
     noLink: { reason: "60일 단기 계약 · 양사가 연동하지 않기로 서면 합의", agreedOn: "2026-11-02", doc: "미연동합의서_NL-006.pdf" } },
 ];
 
-/** 단가 조정 합계에 들어가는 약정: 운영 중이거나 갱신 검토 중인 것 (준비 중·미연동 합의 제외) */
-export const isCounted = (c: Readonly<Contract>): boolean => c.status === "ok" || c.status === "renew";
+/** 단가 조정 합계에 들어가는 약정: 운영 중인 것 (종료·준비 중·미연동 합의 제외) */
+export const isCounted = (c: Readonly<Contract>): boolean => c.status === "ok";
 
 /** 기획서 4.1 화면 예시: 담당자가 지금 처리할 항목 */
 export const TODOS: readonly Todo[] = [

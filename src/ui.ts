@@ -1,6 +1,7 @@
 /* 화면 공통 헬퍼 */
 import { adjust, pct } from "./calc";
-import { SELF_SUPPLIER, SUPPLIERS } from "./data";
+import { SUPPLIERS } from "./data";
+import { activeSupplier } from "./context";
 import { demoContracts } from "./demo";
 import type { AdjustResult, Contract, ContractStatus, Role } from "./types";
 
@@ -22,7 +23,7 @@ export const findContract = (id: string): Contract | undefined => {
 /** 공급기업은 자사 계약만 본다. */
 export const visibleContracts = (role: Role): readonly Contract[] => {
   const contracts = demoContracts();
-  return role === "supplier" ? contracts.filter((c) => c.supplier === SELF_SUPPLIER) : contracts;
+  return role === "supplier" ? contracts.filter((c) => c.supplier === activeSupplier()) : contracts;
 };
 
 const STATUS: Readonly<Record<ContractStatus, readonly [string, string]>> = {

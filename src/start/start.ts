@@ -10,8 +10,8 @@ import { renderDone, renderStep } from "./steps";
 
 const UPLOAD_DELAY_MS = 700;
 const requestedPath = new URLSearchParams(location.search).get("path");
-if (requestedPath === "B") location.replace("./app.html#/review");
-let state: StartState = { ...INITIAL, path: requestedPath === "A" ? "A" : null,
+
+let state: StartState = { ...INITIAL, path: requestedPath === "A" || requestedPath === "B" ? requestedPath : null,
   company: "A정밀 (가상)", manager: "김구매 (가상)", email: "buyer@example.invalid", category: "알루미늄 가공품" };
 
 const $ = (id: string): HTMLElement => {
@@ -124,12 +124,12 @@ document.addEventListener("change", (e) => {
 $("step-form").addEventListener("submit", (e) => {
   e.preventDefault();
   state = readForm(state);
-  if (state.step === 0 && state.path === "B") { location.href = "./app.html#/review"; return; }
+
   // ERP를 건너뛴 경우에는 4단계 검증을 통과시킨다.
   const skippedErp = state.step === 4 && !state.erpUploaded && document.getElementById("skip-erp") === null;
   const problem = skippedErp ? null : validate(state);
   if (problem) { $("err").textContent = problem; return; }
-  if (state.step === LAST_STEP) { saveDemo({ setup: state.path }); state = update(state, { done: true }); render(true); return; }
+  if (state.step === LAST_STEP) { localStorage.setItem("faccon-setup-meta", JSON.stringify({ invite: state.invites.some((i): boolean => i.company.trim().length > 0), erp: state.erpUploaded })); saveDemo({ setup: state.path }); state = update(state, { done: true }); render(true); return; }
   go(state.step + 1);
 });
 

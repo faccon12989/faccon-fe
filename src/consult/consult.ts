@@ -37,8 +37,8 @@ form?.addEventListener("submit", (e) => {
   if (err) err.textContent = problem ?? "";
   if (problem) return;
   card.innerHTML = `
-    <h1>신청이 접수됐습니다</h1>
-    <p class="consult-lead">${esc(consult.company)} ${esc(consult.name)}님, 영업일 기준 이틀 안에 ${esc(consult.contact)}(으)로 연락드리겠습니다.</p>
+    <h1>상담 신청 화면 체험을 마쳤습니다</h1>
+    <p class="consult-lead">${esc(consult.company)} ${esc(consult.name)}님, 입력 형식을 확인했습니다. 이 데모에서는 실제 접수·연락이 이루어지지 않습니다.</p>
     <p class="consult-lead">상담 때 서명된 연동약정서와 최근 발주 내역을 보여 주시면 바로 확인해 드릴 수 있습니다.</p>
     <div class="row"><a class="btn solid" href="./">소개로 돌아가기</a><a class="btn ghost" href="./login.html">데모 대시보드 보기</a></div>
     <p class="demo-note">데모 화면이라 실제로 접수되지는 않았습니다.</p>`;

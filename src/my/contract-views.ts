@@ -2,6 +2,7 @@
 import { adjust, pct, signedWon, won } from "../calc";
 import { TRAILS } from "../data";
 import { demoContracts } from "../demo";
+import { readWork } from "../workflow";
 import type { Contract } from "../types";
 import { applyFrom, esc, findContract, supplierName } from "../ui";
 
@@ -20,8 +21,8 @@ const statusTag = (c: Contract): string => {
 const priceNow = (c: Contract): string => {
   if (c.status === "nolink") return "-";
   const r = adjust(c);
-  if (!r.triggered) return won(c.p0);
-  return c.status === "draft" ? `${won(r.price)} <small>예상</small>` : won(r.price);
+  if (!r.triggered) return c.status === "renew" ? `${won(c.p0)} <small>종료 약정 참고</small>` : won(c.p0);
+  return c.status === "draft" ? `${won(r.price)} <small>예상</small>` : c.status === "renew" ? `${won(r.price)} <small>종료 약정 참고</small>` : won(r.price);
 };
 
 export const contractsScreen = (): string => {
@@ -36,7 +37,7 @@ export const contractsScreen = (): string => {
       <td class="n">${esc(c.end)}</td></tr>`).join("");
   return `
     <header class="page-h"><div><h1>약정</h1><p>공급사 ${demoContracts().length}곳 · 11월 지표 기준</p></div>
-      <button class="btn solid sm" data-toast="약정서 올리기 화면은 파일럿 신청에서 체험할 수 있습니다 (데모)">약정서 올리기</button></header>
+      <a class="btn solid sm" href="./start.html?path=A">약정서 올리기</a></header>
     <section class="panel">
       <table class="grid"><thead><tr><th>약정번호</th><th>품목</th><th>공급사</th><th>원재료 (비중)</th><th>상태</th><th class="n">기준 단가</th><th class="n">11월 단가</th><th class="n">계약 종료</th></tr></thead>
         <tbody>${rows}</tbody></table>
@@ -67,11 +68,15 @@ const calcPanel = (c: Contract): string => {
       <tr><td>산식</td><td class="n formula">${c.p0.toLocaleString()} + ${c.m0.toLocaleString()} × (${r.it} − ${c.i0}) ÷ ${c.i0}</td></tr>
       <tr><td>판정</td><td class="n">${verdict}</td></tr>
       <tr><td>적용</td><td class="n">${esc(applyFrom(c.applyDay))}</td></tr>
-      <tr><td>근거</td><td class="n"><button class="link" data-toast="${esc(c.index)} 11월 공표값 화면을 엽니다 (데모)">지표 출처 보기</button> · <button class="link" data-toast="약정서 ${esc(c.version)} 제5조(조정 요건) 원문을 엽니다 (데모)">약정서 제5조 보기</button></td></tr>
+      <tr><td>근거</td><td class="n"><button class="link" data-toast="가상 지표 ${esc(c.index)}: 기준 100, 비교 ${c.it}. 실제 외부 원문은 연결하지 않은 예시입니다.">지표 출처 보기</button> · <button class="link" data-toast="가상 약정 ${esc(c.version)} 제5조 예시: ±${c.threshold}% 이상 변동 시 ${esc(c.cycle)} 조정합니다.">약정서 제5조 보기</button></td></tr>
     </tbody></table></section>`;
 };
 
 const trailPanel = (id: string): string => {
+  if (id === "AL-004" || id === "ST-005") {
+    const rows = readWork().log.filter((line: string): boolean => line.startsWith(id));
+    return `<section class="panel"><h2>처리 기록 (가상)</h2><ol>${rows.map((line: string): string => `<li>${esc(line)}</li>`).join("") || "<li>아직 처리 이력이 없습니다.</li>"}</ol></section>`;
+  }
   const t = TRAILS.find((x) => x.contract === id);
   if (!t) return "";
   return `<section class="panel"><h2>처리 기록</h2>
@@ -91,10 +96,11 @@ const figures = (c: Contract): string => {
   }
   const r = adjust(c);
   const draft = c.status === "draft";
-  return `${draft ? `<p class="notice-bar">약정 체결 전입니다. 아래 금액은 초안 조건으로 계산한 예상치이며, 지급 근거가 되지 않습니다.</p>` : ""}
+  const ended = c.status === "renew";
+  return `${ended ? `<p class="notice-bar">종료된 약정의 참고 계산입니다. 양사 갱신 확인 전에는 운영 중 합계와 변동표에서 제외합니다.</p>` : ""}${draft ? `<p class="notice-bar">약정 체결 전입니다. 아래 금액은 초안 조건으로 계산한 예상치이며, 지급 근거가 되지 않습니다.</p>` : ""}
     <section class="figures">
       <div><span>기준 단가</span><b>${won(c.p0)}</b></div>
-      <div><span>11월 단가${draft ? " (예상)" : ""}</span><b class="${r.diffPerUnit > 0 ? "up" : r.diffPerUnit < 0 ? "down" : ""}">${won(r.price)}</b></div>
+      <div><span>11월 단가${draft ? " (예상)" : ended ? " (종료 약정 참고)" : ""}</span><b class="${r.diffPerUnit > 0 ? "up" : r.diffPerUnit < 0 ? "down" : ""}">${won(r.price)}</b></div>
       <div><span>개당 차이</span><b>${r.triggered ? signedWon(r.diffPerUnit) : "-"}</b></div>
       <div><span>적용 수량 ${c.qty.toLocaleString()}개 기준</span><b>${r.triggered ? signedWon(r.total) : "-"}</b></div>
     </section>`;
@@ -109,7 +115,7 @@ export const detailScreen = (id: string): string => {
   return `
     <button class="back" data-tab="contracts">‹ 약정 목록</button>
     <header class="page-h"><div><h1>${esc(c.item)} ${statusTag(c)}</h1><p>${esc(c.id)} · ${esc(supplierName(c.supplier))}</p></div>
-      <button class="btn ghost sm" data-toast="변동표를 내려받았습니다 (데모)">변동표 내려받기</button></header>
+      <button class="btn ghost sm" data-monthly="${esc(c.id)}">변동표 내려받기</button></header>
     ${figures(c)}
     <p><a class="btn ghost sm" href="./app.html#/contracts/${esc(encodeURIComponent(c.id))}">약정 상세 검토·계산 확인 →</a>${c.status === "draft" && c.id === "AL-004" ? ' <a class="btn solid sm" href="./app.html#/review">자료 보완·양사 확인 →</a>' : ""}</p>
     ${body}`;
