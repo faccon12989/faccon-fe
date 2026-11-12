@@ -68,20 +68,6 @@ const renderChat = (): void => {
   playArrival(box);
 };
 
-/** 대시보드 미리보기: 왼쪽 메뉴를 빼고 '요약 + 처리할 업무' 부분만 잘라 칸 폭에 맞춘다 */
-const CROP_X = 250;
-const CROP_W = 1170;
-const fitPreview = (): void => {
-  const frame = document.querySelector<HTMLElement>(".shot-frame");
-  const iframe = frame?.querySelector<HTMLIFrameElement>("iframe");
-  if (!frame || !iframe) return;
-  const resize = (): void => {
-    const scale = frame.clientWidth / CROP_W;
-    iframe.style.transform = `translateX(${-CROP_X * scale}px) scale(${scale})`;
-  };
-  resize();
-  new ResizeObserver(resize).observe(frame);
-};
 
 /** '왜 필요한가' 숫자: 화면에 들어오면 0%에서 원래 값까지 올라간다 */
 const COUNT_MS = 1400;
@@ -120,5 +106,4 @@ const setupCounters = (): void => {
 };
 
 renderChat();
-fitPreview();
 setupCounters();
