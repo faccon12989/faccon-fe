@@ -1,6 +1,7 @@
 /* 기업 대시보드: 약정 목록 · 약정 상세 */
 import { adjust, pct, signedWon, won } from "../calc";
-import { CONTRACTS, TRAILS } from "../data";
+import { TRAILS } from "../data";
+import { demoContracts } from "../demo";
 import type { Contract } from "../types";
 import { applyFrom, esc, findContract, supplierName } from "../ui";
 
@@ -24,7 +25,7 @@ const priceNow = (c: Contract): string => {
 };
 
 export const contractsScreen = (): string => {
-  const rows = CONTRACTS.map((c) => `<tr data-detail="${esc(c.id)}" class="link-row">
+  const rows = demoContracts().map((c) => `<tr data-detail="${esc(c.id)}" class="link-row">
       <td class="mono-cell">${esc(c.id)}</td>
       <td><b>${esc(c.item)}</b></td>
       <td>${esc(supplierName(c.supplier))}</td>
@@ -34,7 +35,7 @@ export const contractsScreen = (): string => {
       <td class="n">${priceNow(c)}</td>
       <td class="n">${esc(c.end)}</td></tr>`).join("");
   return `
-    <header class="page-h"><div><h1>약정</h1><p>공급사 ${CONTRACTS.length}곳 · 11월 지표 기준</p></div>
+    <header class="page-h"><div><h1>약정</h1><p>공급사 ${demoContracts().length}곳 · 11월 지표 기준</p></div>
       <button class="btn solid sm" data-toast="약정서 올리기 화면은 파일럿 신청에서 체험할 수 있습니다 (데모)">약정서 올리기</button></header>
     <section class="panel">
       <table class="grid"><thead><tr><th>약정번호</th><th>품목</th><th>공급사</th><th>원재료 (비중)</th><th>상태</th><th class="n">기준 단가</th><th class="n">11월 단가</th><th class="n">계약 종료</th></tr></thead>

@@ -32,7 +32,7 @@ const stepPath = (s: StartState): string => {
 const stepCompany = (s: StartState): string => {
   return `
     <h1>회사와 담당자 정보를 입력해 주십시오</h1>
-    <p class="lead-s">파일럿은 한 품목군에서 시작합니다. 결재하실 분이 따로 있으면 함께 적어 주십시오.</p>
+    <p class="lead-s">가상 정보가 미리 들어가 있습니다. 실제 개인정보나 회사 기밀은 입력하지 마십시오. 입력한 연락처는 전송·저장하지 않습니다.</p>
     <div class="grid2">
       ${field("company", "회사명", s.company, { required: true, ac: "organization" })}
       ${field("category", "시작할 품목군", s.category, { hint: "예: 알루미늄 가공품" })}
@@ -52,7 +52,7 @@ const stepUploadA = (s: StartState): string => {
       <h1>기존 약정을 가져옵니다</h1>
       <p class="lead-s">약정서와 확인서를 올리면 조건을 찾아 원문 위치와 함께 보여드립니다. 확정은 담당자가 합니다.</p>
       <button type="button" class="drop" id="mock-upload">
-        <b>약정서·확인서 파일 선택</b><span>PDF, HWP, 엑셀 · 데모에서는 가상 파일이 올라갑니다</span>
+        <b>가상 약정서·확인서 불러오기</b><span>PDF, HWP, 엑셀 · 데모에서는 가상 파일이 올라갑니다</span>
       </button>
       <p class="hint-s">원가 원문을 다시 낼 필요는 없습니다. 지표·산식·적용일이 불분명한 항목만 나중에 보완합니다.</p>`;
   }
@@ -62,7 +62,7 @@ const stepUploadA = (s: StartState): string => {
       <td><b>${esc(x.label)}</b></td><td>${esc(x.value)}</td>
       <td><span class="src">${esc(x.source)}</span></td>
       <td>${low ? '<span class="badge warn">다시 확인</span>' : `<span class="badge">${Math.round(x.confidence * 100)}%</span>`}</td>
-      <td><label class="ck"><input type="checkbox" name="confirm" value="${esc(x.key)}" ${x.confirmed ? "checked" : ""}> 원문과 같음</label></td></tr>`;
+      <td><label class="ck"><input type="checkbox" name="confirm" value="${esc(x.key)}" ${x.confirmed ? "checked" : ""} ${low ? "disabled" : ""}> 원문과 같음</label></td></tr>`;
   }).join("");
   return `
     <h1>추출한 조건을 확인해 주십시오</h1>
@@ -70,7 +70,8 @@ const stepUploadA = (s: StartState): string => {
     <div class="tbl-s"><table>
       <thead><tr><th>항목</th><th>찾은 값</th><th>원문 위치</th><th>신뢰도</th><th>확인</th></tr></thead>
       <tbody>${rows}</tbody></table></div>
-    <button type="button" class="btn ghost sm" id="confirm-all">모두 원문과 같음으로 표시</button>
+    <button type="button" class="btn ghost sm" id="confirm-all">확인 가능한 항목만 표시</button>
+    <details class="pre-check"><summary>가상 원문과 보완 내용 보기</summary><p>약정서 p.2: 기준 납품단가 10,000원/개. 확인서 p.1: 원재료비 4,000원/개.<br>약정서 p.3: 지수 100, ±5% 이상, 월 1회.<br>p.4: “익월”만 기재되어 있어 적용 대상의 보완이 필요합니다.<br>양사 보완합의서 p.1 (가상): 익월 1일 이후 검수분에 적용.</p><button type="button" class="btn ghost" id="resolve-apply">보완합의서 확인 후 적용일 확정 (가상)</button></details>
     <p class="hint-s">AI가 찾은 값은 초안입니다. 금액 계산은 확인된 값으로 고정된 규칙이 합니다. “다시 확인” 항목은 필요하면 공급기업에 그 항목만 보완 요청합니다.</p>`;
 };
 
@@ -80,7 +81,7 @@ const stepUploadB = (s: StartState): string => {
     <h1>지금 준비할 수 있는 자료를 선택해 주십시오</h1>
     <p class="lead-s">없는 자료는 비워 두십시오. 빠진 항목만 공급기업에 이유와 기간을 밝혀 요청합니다.</p>
     <div class="check-list">${items}</div>
-    <p class="hint-s">원가 비중·지표·산식 확인이 어려우면 전문기관 검토로 연결합니다. 전문기관 명의 확인서는 그 기관이 발급합니다.</p>`;
+    <p class="hint-s">원가 비중·지표·산식 확인이 어려우면 검토 필요 항목으로 표시하고, 고객이 확보한 전문가 검토 결과를 가져옵니다. 전문기관 명의 확인서는 그 기관이 발급합니다.</p>`;
 };
 
 const stepInvite = (s: StartState): string => {
@@ -93,11 +94,12 @@ const stepInvite = (s: StartState): string => {
     <h1>공급기업을 초대합니다</h1>
     <p class="lead-s">공급기업 참여는 무료입니다. 자기 거래의 계산 결과와 반영 상태를 같이 봅니다.</p>
     ${rows}
+    <button type="button" class="btn ghost sm" id="skip-invite">초대는 나중에</button>
     <button type="button" class="btn ghost sm" id="add-invite">+ 공급기업 추가</button>
-    <fieldset class="scope"><legend>공급기업에게 받을 범위</legend>
+    <fieldset class="scope"><legend>공급기업에게 요청할 범위 (상대방 승인 필요)</legend>
       <label class="ck row-ck"><input type="radio" name="scope" value="result" ${s.shareScope === "result" ? "checked" : ""}> 양사 합의한 산정 결과만 <small>(권장)</small></label>
       <label class="ck row-ck"><input type="radio" name="scope" value="result+summary" ${s.shareScope === "result+summary" ? "checked" : ""}> 산정 결과 + 요약 근거</label>
-      <p class="lock-s">🔒 상세 매입자료 원문은 어떤 경우에도 기본 비공개입니다. 미연동 동의나 포괄적 정보공유는 미리 체크해 두지 않습니다.</p>
+      <p class="lock-s">🔒 구매기업의 선택만으로 공개되지 않습니다. 공급기업이 별도로 공유 범위를 승인해야 합니다. 상세 매입자료 원문은 기본 비공개입니다. 미연동 동의나 포괄적 정보공유는 미리 체크해 두지 않습니다.</p>
     </fieldset>`;
 };
 
@@ -118,7 +120,7 @@ const stepErp = (s: StartState): string => {
       <td>${s.mapping[f] === AUTO_MAPPING[f] ? '<span class="badge">자동 추천</span>' : ""}</td></tr>`).join("");
   return `
     <h1>열 이름을 한 번만 맞춰 주십시오</h1>
-    <p class="lead-s"><b>PO_2026-11.csv</b> · 1,284행 (가상). 이 설정은 저장되어 다음 달부터는 파일만 올리면 됩니다.</p>
+    <p class="lead-s"><b>PO_2026-11.csv</b> · 가상 발주 4건 예시입니다. 이 데모의 연결 설정은 체험용이며 실제 파일을 읽지 않습니다.</p>
     <div class="tbl-s"><table><thead><tr><th>필요한 항목</th><th>파일의 열</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`;
 };
 
@@ -140,7 +142,7 @@ const stepReview = (s: StartState): string => {
       <dt>알림</dt><dd>${ALERT_CHANNELS.filter((ch) => s.channels.includes(ch.id)).map((ch) => ch.label).join(", ") || "받지 않음"}</dd>
       <dt>ERP 파일</dt><dd>${s.erpUploaded ? "발주 파일 연결 · 열 매핑 저장" : "나중에 연결"}</dd>
     </dl>
-    <h2 class="h2-s">6주 파일럿 일정</h2>
+    <h2 class="h2-s">도입 시 협의할 파일럿 일정</h2>
     <ol class="plan-s">${plan}</ol>
     <label class="ck row-ck consent"><input type="checkbox" name="consent" ${s.measureConsent ? "checked" : ""}> 같은 업무를 기존 방식과 이 서비스로 각각 해보고 걸린 시간을 기록하는 데 동의합니다. <small>가격은 이 측정 결과를 보고 제안합니다.</small></label>`;
 };
@@ -156,12 +158,12 @@ export const renderStep = (s: StartState): string => {
   }
 };
 
-export const renderDone = (s: StartState): string => {
+export const renderDone = (_s: StartState): string => {
   return `
     <div class="done">
-      <h1>${esc(s.company)}의 파일럿을 준비했습니다</h1>
-      <p class="lead-s">공급기업 초대 메일이 발송되고, 담당 매니저가 1주차 업무 재현 일정을 잡기 위해 연락드립니다 (데모 — 실제 발송 없음).</p>
-      <div class="row"><a class="btn solid" href="./my.html">기업 대시보드 열기 →</a><a class="btn ghost" href="./">처음 화면으로</a></div>
-
+      <span class="done-mark" aria-hidden="true">✓</span>
+      <h1>기존 약정 데모를 준비했습니다</h1>
+      <p class="lead-s">AL-001의 조건 확인을 마쳤습니다. 기업 대시보드와 운영 화면에서 같은 거래의 발주·청구 반영을 확인할 수 있습니다. 초대 메일 발송·상담 신청은 이루어지지 않습니다.</p>
+      <div class="row"><a class="btn solid" href="./my.html">기업 대시보드 열기 →</a><a class="btn ghost" href="./app.html#/contracts/AL-001">조건 확인한 약정 보기</a></div>
     </div>`;
 };

@@ -64,7 +64,7 @@ const renewFlow = (): FlowStep[] => {
       body: `<ul class="todo-list">
           <li><span>계약</span><b>${esc(c.id)} · ${esc(c.item)}</b></li>
           <li><span>계약 종료일</span><b>${esc(c.end)}</b></li>
-          <li><span>종료 후 발주</span><b>2건 (11/04, 11/18)</b></li>
+          <li><span>종료 후 발주</span><b>2건 (11/04, 11/10)</b></li>
         </ul>
         <p class="why">위반이 확정된 것은 아닙니다. 계약을 연장했다면 연동약정도 함께 갱신됐는지 확인해 주십시오.</p>`,
       cta: "다음",

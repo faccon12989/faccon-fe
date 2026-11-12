@@ -1,5 +1,6 @@
 import { adjust, signedWon, won } from "../calc";
-import { isCounted, RECONCILE, SELF_SUPPLIER, TODOS } from "../data";
+import { isCounted, SELF_SUPPLIER, TODOS } from "../data";
+import { demoRows, taskDone, taskStatus } from "../demo";
 import type { Role, TodoKind } from "../types";
 import { adjustPill, esc, findContract, supplierName, visibleContracts } from "../ui";
 
@@ -16,18 +17,18 @@ export const dashboardView = (role: Role): string => {
   const signed = results.filter((x) => isCounted(x.c));
   const up = signed.filter((x) => x.r.total > 0).reduce((sum, x) => sum + x.r.total, 0);
   const down = signed.filter((x) => x.r.total < 0).reduce((sum, x) => sum + x.r.total, 0);
-  const unapplied = RECONCILE.filter((row) => {
+  const unapplied = demoRows().filter((row) => {
     const c = findContract(row.contract);
-    return c !== undefined && list.includes(c) && adjust(c).price !== row.poPrice;
+    return c !== undefined && list.some((item) => item.id === c.id) && adjust(c).price !== row.poPrice;
   }).length;
-  const todos = TODOS.filter((t) => list.some((c) => c.id === t.contract));
+  const todos = TODOS.filter((t) => list.some((c) => c.id === t.contract) && !taskDone(t.code));
 
   const todoHtml = todos.length
     ? todos.map((t) => {
         const [cls, letter] = TODO_ICON[t.kind];
         return `<div class="todo">
           <div class="ic pill ${cls}" style="border-radius:9px;padding:0" aria-hidden="true">${letter}</div>
-          <div class="t"><b>${esc(t.code)} · ${esc(t.title)}</b><small>${esc(t.contract)} ${esc(findContract(t.contract)?.item)} — ${esc(t.reason)}</small></div>
+          <div class="t"><b>${esc(t.code)} · ${esc(t.title)} <span class="tag">${esc(taskStatus(t.code))}</span></b><small>${esc(t.contract)} ${esc(findContract(t.contract)?.item)} — ${esc(t.reason)}</small></div>
           <a class="btn" href="${esc(t.go)}">${esc(t.next)} →</a>
         </div>`;
       }).join("")
@@ -40,7 +41,7 @@ export const dashboardView = (role: Role): string => {
 
   const heading = role === "supplier" ? "우리 회사 거래 현황" : "이번 달 운영 현황";
   const sub = role === "supplier"
-    ? `${esc(supplierName(SELF_SUPPLIER))} · A정밀과의 연동 거래만 보입니다`
+    ? `${esc(supplierName(SELF_SUPPLIER))} · A정밀 (가상)과의 연동 거래만 보입니다`
     : "11월 지표 반영 기준 · 등록된 계약만 집계합니다";
 
   return `
@@ -48,7 +49,7 @@ export const dashboardView = (role: Role): string => {
     <p class="sub">${sub}</p>
     <div class="grid g4">
       <div class="card kpi"><small>운영 중인 약정</small><b>${list.filter(isCounted).length}건</b><span>신규 준비 ${list.filter((c) => c.status === "draft").length}건</span></div>
-      <div class="card kpi up"><small>이번 달 인상 예상액</small><b>${won(up)}</b><span>약정 체결 계약만 합산</span></div>
+      <div class="card kpi up"><small>이번 달 인상 예상액</small><b>${won(up)}</b><span>운영 중 약정의 계산값 · 지급액 아님</span></div>
       <div class="card kpi down"><small>이번 달 인하 예상액</small><b>${won(Math.abs(down))}</b><span>하락분도 약정대로 반영</span></div>
       <div class="card kpi"><small>발주 미반영</small><b>${unapplied}건</b><span>계산단가 ≠ 발주단가</span></div>
     </div>
