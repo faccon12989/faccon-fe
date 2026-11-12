@@ -1,7 +1,7 @@
 import { adjust, signedWon, won } from "../calc";
 import { isCounted, SELF_SUPPLIER, TODOS } from "../data";
 import { demoRows, taskDone, taskStatus } from "../demo";
-import type { Role, TodoKind } from "../types";
+import type { TodoKind } from "../types";
 import { adjustPill, esc, findContract, supplierName, visibleContracts } from "../ui";
 
 const TODO_ICON: Readonly<Record<TodoKind, readonly [string, string]>> = {
@@ -10,8 +10,8 @@ const TODO_ICON: Readonly<Record<TodoKind, readonly [string, string]>> = {
   missing: ["p-info", "보"],
 };
 
-export const dashboardView = (role: Role): string => {
-  const list = visibleContracts(role);
+export const supplierOverview = (): string => {
+  const list = visibleContracts("supplier");
   const results = list.map((c) => ({ c, r: adjust(c) }));
   // 약정 전(초안)·미연동 합의 계약은 예상액 합계에서 뺀다.
   const signed = results.filter((x) => isCounted(x.c));
@@ -39,10 +39,8 @@ export const dashboardView = (role: Role): string => {
     <td>${adjustPill(r)}</td>
     <td class="num ${r.total > 0 && isCounted(c) ? "diff-up" : ""}">${c.status === "nolink" ? `<small style="color:var(--mute)">미연동 합의</small>` : !r.triggered ? "-" : c.status === "draft" ? `<small style="color:var(--mute)">약정 전 · 참고</small> ${signedWon(r.total)}` : signedWon(r.total)}</td></tr>`).join("");
 
-  const heading = role === "supplier" ? "우리 회사 거래 현황" : "이번 달 운영 현황";
-  const sub = role === "supplier"
-    ? `${esc(supplierName(SELF_SUPPLIER))} · A정밀 (가상)과의 연동 거래만 보입니다`
-    : "11월 지표 반영 기준 · 등록된 계약만 집계합니다";
+  const heading = "우리 회사 거래 현황";
+  const sub = `${esc(supplierName(SELF_SUPPLIER))} · A정밀 (가상)과의 연동 거래만 보입니다`;
 
   return `
     <h1>${heading}</h1>

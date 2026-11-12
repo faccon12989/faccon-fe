@@ -1,4 +1,7 @@
 /* 기업 대시보드: B2B 업무 화면 */
+.detail-links{display:grid;gap:12px;margin-top:14px}
+.detail-links a,.task-detail{color:var(--accent);font-size:14px;text-underline-offset:3px}
+.task-detail{display:block;margin-top:10px;white-space:nowrap}
 .my-body{background:var(--surface-2);font-size:16px}
 .my-body.locked{overflow:hidden}
 .app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}

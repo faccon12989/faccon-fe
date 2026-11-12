@@ -4,6 +4,7 @@ import "./my.css";
 import "../workflow.css";
 import { downloadEvidence } from "../evidence";
 import { requestTask, resetDemo } from "../demo";
+import { taskDetailHref } from "../detail-navigation";
 import { esc } from "../ui";
 import { type FlowStep, flowFor, type TaskId } from "./flows";
 import { contractsScreen, detailScreen } from "./contract-views";
@@ -13,7 +14,7 @@ import { CHANNELS, homeScreen, type MyState } from "./screens";
 import type { Channel } from "../types";
 
 const TABS = [
-  { id: "home", label: "홈" },
+  { id: "home", label: "업무요약" },
   { id: "contracts", label: "약정" },
   { id: "docs", label: "자료·제출" },
   { id: "settings", label: "설정" },
@@ -99,7 +100,7 @@ const advance = (): void => {
     requestTask(flow.id, requestChoice, requestDetail);
     const message = flow.id === "C-101" ? (requestChoice === "end" ? "거래 종료 의사를 기록했습니다. 남은 발주 2건의 취소·이행 여부를 확인할 때까지 대기합니다." : requestChoice === "check" ? "계약 담당자에게 확인할 항목을 기록했습니다. 회신이 올 때까지 대기합니다." : "갱신 확인 요청을 기록했습니다. 갱신본과 서명이 확인되기 전에는 완료로 바뀌지 않습니다.")
       : flow.id === "C-102" ? `수정 요청 대상: ${requestDetail}. 발주 파일에서 변경 단가가 확인될 때 완료 처리합니다.` : `보완 요청 기한: ${requestDetail}. 자료 회신·검토 후에 처리합니다.`;
-    flow = { ...flow, steps: flow.steps.map((step: FlowStep, i: number): FlowStep => i === 2 ? { title: "요청을 기록했습니다 · 처리 대기", body: `<p>${esc(message)}</p><p class="note-s">가상 시나리오만 저장됩니다. 실제 메일은 보내지 않습니다.</p><a href="./app.html#/${flow?.id === "C-102" ? "reconcile" : flow?.id === "C-103" ? "review" : "contracts/ST-005"}">후속 업무 확인 →</a>`, cta: "대기 상태로 돌아가기" } : step) };
+    flow = { ...flow, steps: flow.steps.map((step: FlowStep, i: number): FlowStep => i === 2 ? { title: "요청을 기록했습니다 · 처리 대기", body: `<p>${esc(message)}</p><p class="note-s">가상 시나리오만 저장됩니다. 실제 메일은 보내지 않습니다.</p><a href="${esc(taskDetailHref(flow?.id ?? ""))}">후속 업무 확인 →</a>`, cta: "대기 상태로 돌아가기" } : step) };
   }
   if (flow.at < flow.steps.length - 1) {
     flow = { ...flow, at: flow.at + 1 };
@@ -164,3 +165,5 @@ document.addEventListener("keydown", (e) => {
 render();
 
 window.addEventListener("storage", (): void => { if (!flow) render(); });
+// 다른 페이지에서 뒤로 돌아왔을 때도 최신 반영 상태를 표시합니다.
+window.addEventListener("pageshow", (): void => { if (!flow) render(); });

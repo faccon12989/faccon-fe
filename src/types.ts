@@ -161,3 +161,9 @@ export interface DemoState {
   readonly deposited: boolean;
   readonly paid: boolean;
 }
+export type DetailPage = "review" | "contracts" | "reconcile" | "requests" | "packages" | "settlement" | "supplier";
+
+export interface DetailRoute {
+  readonly page: DetailPage | "summary";
+  readonly id?: string;
+}

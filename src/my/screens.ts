@@ -2,6 +2,7 @@
 import { adjust, pct, signedWon, won } from "../calc";
 import { isCounted, NOTICES, TODOS } from "../data";
 import { demoContracts, demoRows, taskDone, taskStatus } from "../demo";
+import { taskDetailHref } from "../detail-navigation";
 import type { Channel, Todo } from "../types";
 import { esc, findContract, supplierName } from "../ui";
 
@@ -50,7 +51,7 @@ const taskTable = (open: readonly Todo[]): string => {
       <td>${esc(t.reason)}<small>알림 ${esc(t.notified)} · <b class="status">${esc(taskStatus(t.code))}</b></small></td>
       <td class="n"><b>${esc(t.due)}</b><small>${esc(t.delay)}</small></td>
       <td class="impact-cell">${esc(t.impact)}</td>
-      <td class="act"><button class="btn solid sm" data-task="${esc(t.code)}">${esc(t.action)}</button></td></tr>`;
+      <td class="act"><button class="btn solid sm" data-task="${esc(t.code)}">${esc(t.action)}</button><a class="task-detail" href="${esc(taskDetailHref(t.code))}" aria-label="${esc(c?.item)} 상세 업무 확인">상세 업무 →</a></td></tr>`;
   }).join("");
   return `<section class="panel">
     <div class="panel-h"><h2>처리할 업무</h2><span class="count">${open.length}건 · 기한 빠른 순</span></div>
@@ -87,11 +88,17 @@ const notices = (): string => {
 export const homeScreen = (): string => {
   const open = TODOS.filter((t) => !taskDone(t.code));
   return `
-    <header class="page-h"><div><h1>홈</h1><p>2026년 11월 · 지표 기준일 11월 1일</p></div>
+    <header class="page-h"><div><h1>업무요약</h1><p>2026년 11월 · 지표 기준일 11월 1일</p></div>
       <button class="btn ghost sm" data-toast="11월 변동표 엑셀을 내려받았습니다 (데모)">11월 변동표 내려받기</button></header>
     ${summary(open)}
     <div class="cols">
       <div class="col-main">${taskTable(open)}${adjustTable()}</div>
-      <aside class="col-side">${notices()}</aside>
+      <aside class="col-side"><section class="panel"><h2>상세 업무 바로가기</h2><p class="foot-note">업무요약에서 현황을 확인하고, 필요한 작업만 이어서 진행합니다.</p>
+        <nav class="detail-links" aria-label="상세 업무 바로가기">
+          <a href="./app.html#/review">신규 약정 검토 →</a>
+          <a href="./app.html#/reconcile">발주·청구·지급근거 대조 →</a>
+          <a href="./app.html#/requests">자료 요청·공유 이력 →</a>
+          <a href="./app.html#/packages">제출 패키지 확인 →</a>
+        </nav></section>${notices()}<section class="panel"><h2>지급 시뮬레이션</h2><p class="foot-note">가상 예치·지급 흐름을 확인합니다. 실제 송금은 발생하지 않습니다.</p><a class="task-detail" href="./app.html#/settlement">시뮬레이션 열기 →</a></section></aside>
     </div>`;
 };
