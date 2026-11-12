@@ -111,5 +111,6 @@ export const detailScreen = (id: string): string => {
     <header class="page-h"><div><h1>${esc(c.item)} ${statusTag(c)}</h1><p>${esc(c.id)} · ${esc(supplierName(c.supplier))}</p></div>
       <button class="btn ghost sm" data-toast="변동표를 내려받았습니다 (데모)">변동표 내려받기</button></header>
     ${figures(c)}
+    <p><a class="btn ghost sm" href="./app.html#/contracts/${esc(encodeURIComponent(c.id))}">약정 상세 검토·계산 확인 →</a>${c.status === "draft" && c.id === "AL-004" ? ' <a class="btn solid sm" href="./app.html#/review">자료 보완·양사 확인 →</a>' : ""}</p>
     ${body}`;
 };

@@ -2,45 +2,44 @@
 import "./styles.css";
 import "./workflow.css";
 import { adjust } from "./calc";
-import { BUYER, SELF_SUPPLIER, TODOS } from "./data";
-import { nextEvidence, readDemo, requestTask, resetDemo, saveDemo, taskDone } from "./demo";
+import { BUYER, SELF_SUPPLIER } from "./data";
+import { nextEvidence, readDemo, requestTask, resetDemo, saveDemo } from "./demo";
+import { resolveDetailRoute } from "./detail-navigation";
 import { downloadEvidence } from "./evidence";
 import { handleReview, reviewView } from "./views/review";
-import type { AppState, Role } from "./types";
+import type { AppState, DetailPage, Role } from "./types";
 import { esc, findContract, supplierName } from "./ui";
 import { contractDetailView, contractsView, resultBlock } from "./views/contracts";
-import { dashboardView } from "./views/dashboard";
+import { supplierOverview } from "./views/dashboard";
 import { packagesView, reconcileView, requestsView } from "./views/operations";
 import { settlementView, syncSettlement } from "./views/settlement";
-
-type Page = "review" | "dashboard" | "contracts" | "reconcile" | "requests" | "packages" | "settlement";
 
 interface NavItem {
   href: string;
   label: string;
-  count?: () => number;
+  role?: Role;
 }
 
 const NAV: readonly (NavItem | "sep")[] = [
-  { href: "#/dashboard", label: "운영 현황", count: (): number => TODOS.filter((t): boolean => !taskDone(t.code)).length },
+  { href: "./my.html", label: "기업 대시보드" },
+  { href: "#/supplier", label: "자사 거래 현황", role: "supplier" },
   { href: "#/contracts", label: "연동약정" },
-  { href: "#/review", label: "신규 약정 검토" },
+  { href: "#/review", label: "신규 약정 검토", role: "buyer" },
   { href: "#/reconcile", label: "반영 대조" },
   { href: "#/requests", label: "자료 요청·공유" },
   { href: "#/packages", label: "제출 패키지" },
   "sep",
-  { href: "#/settlement", label: "차액 지급 시뮬레이션" },
+  { href: "#/settlement", label: "차액 지급 시뮬레이션", role: "buyer" },
 ];
 
-const TITLES: Readonly<Record<Page, string>> = {
-  review: "신규 약정 검토", dashboard: "운영 현황", contracts: "연동약정", reconcile: "반영 대조",
+const TITLES: Readonly<Record<DetailPage, string>> = {
+  review: "신규 약정 검토", supplier: "자사 거래 현황", contracts: "연동약정", reconcile: "반영 대조",
   requests: "자료 요청·공유", packages: "제출 패키지", settlement: "차액 정산 실증",
 };
 
-const PAGES = Object.keys(TITLES) as Page[];
 const TOAST_MS = 2200;
 
-let state: AppState = { role: "buyer", deposited: readDemo().deposited, paid: readDemo().paid };
+let state: AppState = { role: resolveDetailRoute(location.hash).page === "supplier" ? "supplier" : "buyer", deposited: readDemo().deposited, paid: readDemo().paid };
 let toastTimer: number | undefined;
 
 const setState = (patch: Partial<AppState>): void => {
@@ -53,22 +52,16 @@ const el = <T extends HTMLElement>(id: string): T => {
   return node as T;
 };
 
-const parseHash = (): { page: Page; id?: string } => {
-  const [, raw = "dashboard", id] = (location.hash || "#/dashboard").split("/");
-  const page = PAGES.includes(raw as Page) ? (raw as Page) : "dashboard";
-  return id ? { page, id: decodeURIComponent(id) } : { page };
-};
-
-const renderNav = (active: Page): void => {
+const renderNav = (active: DetailPage): void => {
   el("nav").innerHTML = NAV.map((item) => {
-    if (item === "sep") return `<div class="sep">독립 실증</div>`;
+    if (item === "sep") return state.role === "buyer" ? `<div class="sep">독립 실증</div>` : "";
+    if (item.role && item.role !== state.role) return "";
     const on = item.href.slice(2) === active;
-    const badge = item.count && state.role === "buyer" ? `<span class="cnt">${item.count()}</span>` : "";
-    return `<a href="${item.href}" class="${on ? "on" : ""}" ${on ? 'aria-current="page"' : ""}><span>${item.label}</span>${badge}</a>`;
+    return `<a href="${item.href}" class="${on ? "on" : ""}" ${on ? 'aria-current="page"' : ""}><span>${item.label}</span></a>`;
   }).join("");
 };
 
-const renderPage = (page: Page, id: string | undefined, role: Role): string => {
+const renderPage = (page: DetailPage, id: string | undefined, role: Role): string => {
   switch (page) {
     case "contracts": return id ? contractDetailView(role, id) : contractsView(role);
     case "reconcile": return reconcileView(role);
@@ -76,12 +69,15 @@ const renderPage = (page: Page, id: string | undefined, role: Role): string => {
     case "packages": return packagesView(role);
     case "review": return role === "buyer" ? reviewView() : `<section class="card"><h1>구매기업의 신규 거래 검토</h1><p>자사에 공유된 거래는 연동약정 메뉴에서 확인해 주세요.</p></section>`;
     case "settlement": return role === "buyer" ? settlementView() : `<section class="card"><h1>지급 시뮬레이션</h1><p>실행은 구매기업 역할에서 체험할 수 있습니다. 실제 송금은 발생하지 않습니다.</p></section>`;
-    default: return dashboardView(role);
+    default: return supplierOverview();
   }
 };
 
 const route = (): void => {
-  const { page, id } = parseHash();
+  const { page, id } = resolveDetailRoute(location.hash);
+  if (page === "summary") { location.replace("./my.html"); return; }
+  if (page === "supplier" && state.role !== "supplier") setState({ role: "supplier" });
+  document.querySelectorAll<HTMLElement>("[data-role]").forEach((b: HTMLElement): void => { b.classList.toggle("on", b.dataset.role === state.role); });
   const view = el("view");
   view.innerHTML = renderPage(page, id, state.role);
   renderNav(page);
@@ -105,6 +101,7 @@ const switchRole = (role: Role, button: HTMLElement): void => {
   setState({ role });
   document.querySelectorAll<HTMLElement>("[data-role]").forEach((b) => b.classList.toggle("on", b === button));
   toast(role === "supplier" ? "공급기업(동양알루텍) 화면으로 전환했습니다" : "구매기업(A정밀) 화면으로 전환했습니다");
+  if (role === "buyer" && resolveDetailRoute(location.hash).page === "supplier") { location.hash = "#/contracts"; return; }
   route();
 };
 
