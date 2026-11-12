@@ -206,3 +206,11 @@ h3{font-size:21px;margin:0 0 10px}
 
 /* 첫 화면 설명: 뜻 단위로 한 줄씩 */
 .lead span{display:block;white-space:nowrap}
+
+/* 첫 화면 알림: 대화방 배경 없이 알림 내용만 */
+.chatroom{background:none;box-shadow:none;border-radius:0;max-width:340px}
+.chat-body{padding:0}
+.chat-date{color:var(--mute);background:var(--surface)}
+.talk{border:1px solid var(--line);box-shadow:0 10px 28px -18px rgba(26,31,43,.35)}
+.chat-name{color:var(--soft)}
+.chat-line time{color:var(--mute)}
