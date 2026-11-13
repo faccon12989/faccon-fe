@@ -3,7 +3,7 @@ import "../site/site.css";
 import "./start.css";
 import {
   ALERT_CHANNELS, AUTO_MAPPING, ERP_FIELDS, INITIAL, LAST_STEP, MOCK_EXTRACTION, STEP_TITLES,
-  type ShareScope, type StartState, update, validate,
+  type Invite, type ShareScope, type StartState, update, validate,
 } from "./model";
 import { saveDemo } from "../demo";
 import { renderDone, renderStep } from "./steps";
@@ -129,7 +129,7 @@ $("step-form").addEventListener("submit", (e) => {
   const skippedErp = state.step === 4 && !state.erpUploaded && document.getElementById("skip-erp") === null;
   const problem = skippedErp ? null : validate(state);
   if (problem) { $("err").textContent = problem; return; }
-  if (state.step === LAST_STEP) { localStorage.setItem("faccon-setup-meta", JSON.stringify({ invite: state.invites.some((i): boolean => i.company.trim().length > 0), erp: state.erpUploaded })); saveDemo({ setup: state.path }); state = update(state, { done: true }); render(true); return; }
+  if (state.step === LAST_STEP) { localStorage.setItem("faccon-setup-meta", JSON.stringify({ invite: state.invites.some((i: Invite): boolean => i.company.trim().length > 0), erp: state.erpUploaded })); saveDemo({ setup: state.path }); state = update(state, { done: true }); render(true); return; }
   go(state.step + 1);
 });
 

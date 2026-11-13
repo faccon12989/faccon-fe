@@ -9,7 +9,7 @@ import { nextEvidence, readDemo, requestTask, resetDemo, saveDemo } from "./demo
 import { resolveDetailRoute } from "./detail-navigation";
 import { downloadEvidence } from "./evidence";
 import { reviewView } from "./views/review";
-import type { AppState, DetailPage, Role } from "./types";
+import type { AppState, Company, DetailPage, Role } from "./types";
 import { esc, findContract, supplierName } from "./ui";
 import { contractDetailView, contractsView, resultBlock } from "./views/contracts";
 import { supplierOverview } from "./views/dashboard";
@@ -45,7 +45,7 @@ const query = new URLSearchParams(location.search);
 const requestedRole = query.get("role");
 if (requestedRole === "buyer" || requestedRole === "supplier") {
   const selected = query.get("supplier");
-  setContext(requestedRole, SUPPLIERS.some((s): boolean => s.id === selected) ? selected ?? "S-01" : activeSupplier());
+  setContext(requestedRole, SUPPLIERS.some((s: Company): boolean => s.id === selected) ? selected ?? "S-01" : activeSupplier());
   query.delete("role"); query.delete("supplier");
   history.replaceState(null, "", `${location.pathname}${query.size ? `?${query}` : ""}${location.hash}`);
 } else if (resolveDetailRoute(location.hash).page === "supplier") setContext("supplier");
@@ -93,7 +93,7 @@ const route = (): void => {
   renderNav(page);
   const company = state.role === "buyer" ? BUYER.name : supplierName(activeSupplier());
   el("crumbs").innerHTML = `${esc(company)} / <b>${esc(TITLES[page])}${id ? ` · ${esc(id)}` : ""}</b>`;
-  el("company-panel").innerHTML = `<small>${state.role === "buyer" ? "구매기업" : "공급기업"}</small><b>${esc(company)}</b><small>가상 역할 전환 · 실제 로그인 아님</small>${state.role === "supplier" ? `<label>체험할 공급기업<select id="supplier-company" aria-label="체험할 공급기업">${SUPPLIERS.map((s): string => `<option value="${esc(s.id)}" ${activeSupplier() === s.id ? "selected" : ""}>${esc(s.name)}</option>`).join("")}</select></label>` : ""}`;
+  el("company-panel").innerHTML = `<small>${state.role === "buyer" ? "구매기업" : "공급기업"}</small><b>${esc(company)}</b><small>가상 역할 전환 · 실제 로그인 아님</small>${state.role === "supplier" ? `<label>체험할 공급기업<select id="supplier-company" aria-label="체험할 공급기업">${SUPPLIERS.map((s: Company): string => `<option value="${esc(s.id)}" ${activeSupplier() === s.id ? "selected" : ""}>${esc(s.name)}</option>`).join("")}</select></label>` : ""}`;
   if (page === "settlement") syncSettlement(state);
   view.focus({ preventScroll: true });
   window.scrollTo(0, 0);

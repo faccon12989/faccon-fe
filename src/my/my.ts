@@ -26,11 +26,11 @@ const TOAST_MS = 2000;
 
 setContext("buyer");
 const loadPreferences = (): Pick<MyState, "channels" | "events"> => {
-  const defaults: Pick<MyState, "channels" | "events"> = { channels: ["kakao", "email"], events: ALERT_EVENTS.map((e) => e.id) };
+  const defaults: Pick<MyState, "channels" | "events"> = { channels: ["kakao", "email"], events: ALERT_EVENTS.map((e: (typeof ALERT_EVENTS)[number]): string => e.id) };
   try {
     const x: unknown = JSON.parse(localStorage.getItem("faccon-alerts-v1") ?? "null");
     if (typeof x !== "object" || x === null || !("channels" in x) || !("events" in x) || !Array.isArray(x.channels) || !Array.isArray(x.events)) return defaults;
-    return { channels: CHANNELS.filter((c): boolean => (x.channels as unknown[]).includes(c.id)).map((c): Channel => c.id), events: ALERT_EVENTS.filter((e): boolean => (x.events as unknown[]).includes(e.id)).map((e): string => e.id) };
+    return { channels: CHANNELS.filter((c: (typeof CHANNELS)[number]): boolean => (x.channels as unknown[]).includes(c.id)).map((c: (typeof CHANNELS)[number]): Channel => c.id), events: ALERT_EVENTS.filter((e: (typeof ALERT_EVENTS)[number]): boolean => (x.events as unknown[]).includes(e.id)).map((e: (typeof ALERT_EVENTS)[number]): string => e.id) };
   } catch { return defaults; }
 };
 let state: MyState = { tab: "home", detail: null, ...loadPreferences() };
