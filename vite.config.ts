@@ -16,6 +16,7 @@ export default defineConfig({
         consult: resolve(__dirname, "consult.html"),
         faq: resolve(__dirname, "faq.html"),
         pilot: resolve(__dirname, "pilot.html"),
+        feature: resolve(__dirname, "feature.html"),
       },
     },
   },

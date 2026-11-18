@@ -20,11 +20,12 @@ type NavEntry = NavLink | NavGroup;
 const NAV: readonly NavEntry[] = [
   {
     label: "서비스 소개",
+    page: "feature",
     items: [
-      { label: "단가 계산", desc: "약정 산식 그대로 계산합니다", href: "./#calc" },
-      { label: "반영 대조", desc: "발주서에 빠진 단가를 찾아냅니다", href: "./#recon" },
-      { label: "자료 공유", desc: "정한 범위에서만 자료를 주고받습니다", href: "./#share" },
-      { label: "보안·권한", desc: "원가 원문 보호와 확인 이력", href: "./#trust" },
+      { label: "단가 계산", desc: "약정 산식 그대로 계산합니다", href: "./feature.html?f=calc" },
+      { label: "반영 대조", desc: "발주서에 빠진 단가를 찾아냅니다", href: "./feature.html?f=recon" },
+      { label: "자료 공유", desc: "정한 범위에서만 자료를 주고받습니다", href: "./feature.html?f=share" },
+      { label: "보안·권한", desc: "원가 원문 보호와 확인 이력", href: "./feature.html?f=security" },
     ],
   },
   { label: "도입 방식", href: "./pilot.html", page: "pilot" },
@@ -40,10 +41,16 @@ const NAV: readonly NavEntry[] = [
 ];
 
 const isGroup = (e: NavEntry): e is NavGroup => "items" in e;
-const current = (page?: string): string => (page && page === document.body.dataset.page ? ' aria-current="page"' : "");
+/** 지금 보고 있는 페이지면 표시 (상세 페이지는 ?f= 까지 같아야 함) */
+const samePage = (href: string): boolean => {
+  const u = new URL(href, location.href);
+  return u.pathname === location.pathname && u.search === location.search && !u.hash;
+};
+const current = (page?: string, href?: string): string =>
+  (page && page === document.body.dataset.page) || (href !== undefined && samePage(href)) ? ' aria-current="page"' : "";
 
 const renderLink = (l: NavLink): string =>
-  `<button class="drop-link" data-go="${esc(l.href)}"${current(l.page)}><strong>${esc(l.label)}</strong>${l.desc ? `<small>${esc(l.desc)}</small>` : ""}</button>`;
+  `<button class="drop-link" data-go="${esc(l.href)}"${current(l.page, l.href)}><strong>${esc(l.label)}</strong>${l.desc ? `<small>${esc(l.desc)}</small>` : ""}</button>`;
 
 const renderEntry = (e: NavEntry, i: number): string => isGroup(e)
   ? `<div class="nav-item has-drop"><button class="nav-top" aria-expanded="false" aria-controls="drop-${i}"${current(e.page)}>${esc(e.label)}</button>`

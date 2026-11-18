@@ -239,3 +239,8 @@ body,.home{font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,
 .faq-link:hover{color:#7fe0bd}
 @media (min-width:1001px){.floating-alert{top:16px;right:-96px}.floating-rule{bottom:-22px;left:-104px}}
 .home-links button[aria-current=page]{color:var(--blue);font-weight:700}
+
+/* 기능 행 '자세히 보기' */
+.more-link{display:inline-block;margin-top:18px;font-size:16px;font-weight:700;color:var(--blue);text-decoration:none}
+.more-link:hover{text-decoration:underline;text-underline-offset:4px}
+.more-link.center{display:block;text-align:center;margin:20px 0 0}
