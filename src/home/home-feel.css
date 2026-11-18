@@ -142,3 +142,47 @@ body,.home{font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,
   .home-hero{gap:52px;padding:128px max(32px,calc(50vw - 580px)) 88px}
   .hero-shot{max-width:720px;border-radius:12px;box-shadow:0 24px 60px -28px rgba(23,43,77,.32)}
 }
+
+/* ── 아래 구역: 제목 한 줄 + 설명 한 줄 + 큰 그림 하나 ── */
+.problem-section,.process-section{max-width:1120px;padding:120px 20px}
+.section-heading.centered > span,.problem-section .section-heading > span{justify-content:center}
+.section-heading p{margin:0}
+
+/* 01 필요성: 카드 3개, 제목 + 태그만 */
+.pain-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:52px}
+.pain{background:#fff;border:1px solid var(--line);border-radius:14px;padding:30px 28px;text-align:left}
+.pain h3{font-size:20px;margin:22px 0 16px;line-height:1.4}
+.pain .issue-chip{margin-top:0}
+
+/* 02 주요 기능: 화면 캡처 지그재그 */
+.feature-section{padding:120px max(32px,calc(50vw - 560px))}
+.show-rows{display:grid;gap:96px;margin-top:72px}
+.show-row{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:64px;align-items:center}
+.show-row.flip .show-text{order:2}
+.show-text small{display:block;font-size:15px;font-weight:700;color:var(--blue);margin-bottom:12px}
+.show-text h3{font-size:clamp(24px,2.2vw,32px);line-height:1.35;margin:0 0 14px;color:var(--ink)}
+.show-text p{font-size:17px;line-height:1.7;color:var(--ink-2);margin:0}
+.show-shot{margin:0;border-radius:12px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 22px 50px -28px rgba(23,43,77,.3)}
+.show-shot img{display:block;width:100%;height:auto}
+
+/* 03 이용 방식: 아이콘 + 단계 + 제목만 */
+.process-flow{margin-top:60px}
+.process-flow h3{margin-bottom:0}
+
+/* 04 보안·데이터: 한 줄 세 항목 */
+.trust-section{display:block;max-width:1120px;padding:120px 20px;margin:auto}
+.trust-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;margin-top:56px}
+.trust-item{text-align:center}
+.trust-item > span{display:grid;place-items:center;width:56px;height:56px;margin:0 auto 18px;border-radius:50%;color:var(--blue);background:#edf4ff}
+.trust-item h3{font-size:20px;margin:0 0 10px;color:var(--ink)}
+.trust-item p{font-size:16px;line-height:1.7;color:var(--mute);margin:0}
+
+@media (max-width:900px){
+  .pain-row,.trust-row{grid-template-columns:minmax(0,1fr)}
+  .show-row,.show-row.flip{grid-template-columns:minmax(0,1fr);gap:24px}
+  .show-row.flip .show-text{order:0}
+  .show-rows{gap:64px;margin-top:48px}
+  .problem-section,.process-section,.trust-section,.feature-section{padding-top:80px;padding-bottom:80px}
+}
+.show-row.flip{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)}
+@media (max-width:900px){.show-row.flip{grid-template-columns:minmax(0,1fr)}}
