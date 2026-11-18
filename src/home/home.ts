@@ -1,5 +1,6 @@
 /* 소개 페이지: 메뉴 이동 · 휴대폰 메뉴 · 상담 신청(데모, 전송 없음) */
 import "./home.css";
+import "./home-feel.css";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^[0-9-]{9,14}$/;
