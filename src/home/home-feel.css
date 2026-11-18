@@ -206,3 +206,35 @@ body,.home{font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,
 .mock-panel{border-color:#e3e1dc}
 .mock-company{color:#1e3a68;background:#e6ebf3}
 .show-shot{border-color:#e3e1dc;background:#faf9f7}
+
+/* ── 남은 아쉬운 점 정리 ── */
+/* 1) 첫 화면 그림 속 글씨를 읽히게 (6~9px → 10~13px) */
+.mini-logo{font-size:12px}
+.mock-welcome span{font-size:10px}
+.mock-welcome strong{font-size:16px}
+.mock-welcome button{font-size:10px;height:28px}
+.mock-metrics span,.mock-metrics small{font-size:10px}
+.mock-metrics strong{font-size:24px}
+.mock-title strong{font-size:12px}
+.mock-title span{font-size:9px}
+.mock-company{font-size:10px}
+.mock-row div strong{font-size:11.5px}
+.mock-row div small{font-size:9.5px}
+.mock-row > b{font-size:12px}
+.mock-row em{font-size:9.5px;padding:3px 8px}
+.floating-alert small,.floating-rule small{font-size:10px}
+.floating-alert strong,.floating-rule strong{font-size:13px}
+.floating-alert em{font-size:11px}
+
+/* 2) 휴대폰: 캡처를 줄이지 않고 옆으로 밀어서 보기 */
+@media (max-width:700px){
+  .show-shot{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .show-shot img{width:640px;max-width:none}
+  .show-shot::after{content:"← 옆으로 밀어서 보기 →";display:block;position:sticky;left:0;padding:8px 12px;font-size:12px;color:var(--mute);background:#fff;border-top:1px solid var(--line)}
+}
+
+/* 3) 상담 구역 강조, 4) FAQ 링크 */
+.contact-section h2 em{font-style:normal;color:#7fe0bd;background:none}
+.faq-link{display:inline-block;margin-top:22px;font-size:16px;font-weight:600;color:#fff;text-decoration:underline;text-underline-offset:4px}
+.faq-link:hover{color:#7fe0bd}
+@media (min-width:1001px){.floating-alert{top:16px;right:-96px}.floating-rule{bottom:-22px;left:-104px}}
