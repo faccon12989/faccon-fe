@@ -119,3 +119,20 @@ body,.home{font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,
 /* 업무 단계 띠·구매/공급 구역도 밝은 톤 */
 .client-strip{background:#fff}
 .partner-section{background:#f9fafc}
+
+/* ── 첫 화면 단순화: 제목 한 줄 · 설명 한 줄 · 버튼 · 실제 화면 캡처 ── */
+.hero-copy h1{margin:0 0 18px;font-size:clamp(34px,4vw,56px);line-height:1.25}
+.hero-copy > p{margin:0;font-size:clamp(17px,1.45vw,21px);color:var(--ink-2)}
+.hero-actions{margin-top:32px}
+.hero-shot{margin:0;position:relative;z-index:2;width:100%;border-radius:14px;overflow:hidden;background:#fff;border:1px solid var(--line);box-shadow:0 30px 70px -30px rgba(23,43,77,.35)}
+.hero-shot img{display:block;width:100%;height:auto}
+@media (min-width:1001px){
+  .home-hero{gap:64px;padding:140px max(32px,calc(50vw - 580px)) 100px}
+  .hero-copy{max-width:1000px}
+  .hero-copy h1,.hero-copy > p{white-space:nowrap}
+  .hero-shot{max-width:1160px}
+}
+@media (max-width:1000px){
+  .hero-shot{margin-top:36px;border-radius:10px}
+}
+@media (max-width:1000px){.hero-copy h1 em{display:block}}
