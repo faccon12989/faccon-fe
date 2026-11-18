@@ -14,7 +14,9 @@
 .drop-link small{display:block;margin-top:2px;font-size:13.5px;color:var(--mute)}
 
 /* 휴대폰: 펼쳐진 목록 안에서 하위 메뉴를 바로 보여 준다 */
+.home-links .mobile-login{display:none}
 @media (max-width:1000px){
+  .home-links .mobile-login{display:block;padding:12px 4px}
   .nav-top{padding:12px 4px!important}
   .has-drop > .nav-top::after{display:none}
   .nav-drop{display:block;position:static;min-width:0;padding:0 0 8px 8px;border:0;box-shadow:none;background:none}

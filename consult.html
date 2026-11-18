@@ -3,28 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>파일럿 상담 신청 · Faccon</title>
+<title>도입 상담 신청 · Faccon</title>
+<meta name="description" content="관리하는 연동약정과 필요한 업무를 정리하고 Faccon 도입 상담을 준비합니다.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 </head>
 <body class="consult-body">
-<header class="nav">
-  <a class="logo" href="./">Faccon</a>
-  <div class="nav-cta"><a class="btn ghost" href="./login.html">기업 로그인</a></div>
-</header>
+<header class="nav"><a class="logo" href="./">Faccon</a><div class="nav-cta"><a class="btn ghost" href="./faq.html">이용 가이드</a><a class="btn ghost" href="./login.html">기업 로그인</a></div></header>
 <main class="consult">
+  <aside class="consult-intro"><a class="back-link" href="./">← 서비스 소개</a><p class="eyebrow">도입 상담</p><h1>우리 회사의<br>단가 조정 업무를<br>함께 살펴봅니다.</h1><p>현재 운영 방식과 필요한 기능을 알려 주십시오. 상담에 필요한 내용을 한 번에 정리할 수 있습니다.</p><ol><li><b>기업과 담당자 정보</b><span>상담을 준비할 기본 정보를 입력합니다.</span></li><li><b>현재 어려운 업무</b><span>약정 준비, 단가 조정, 증빙 관리 중 필요한 내용을 남깁니다.</span></li><li><b>상담 내용 확인</b><span>작성 내용을 저장하고 파일로 내려받습니다.</span></li></ol><p class="consult-tip">상담 준비 단계에서는 계약서나 원가 자료를 첨부하지 않습니다.</p></aside>
   <section class="consult-card" aria-labelledby="consult-h" id="consult-card">
-    <h1 id="consult-h">파일럿 상담 신청</h1>
-    <p class="consult-lead">남겨 주시면 담당자가 연락드려 우리 회사 약정서로 어떻게 쓰는지 같이 확인합니다.</p>
+    <div id="consult-entry"><h2 id="consult-h">도입 상담 신청서</h2><p class="consult-lead">필수 정보만 작성하면 됩니다. <span>* 필수</span></p>
     <form id="consult-form" novalidate>
-      <label class="fld">회사명<input name="company" autocomplete="organization" required></label>
-      <label class="fld">담당자 이름<input name="name" autocomplete="name" required></label>
-      <label class="fld">연락처 <small>휴대폰 번호 또는 이메일</small><input name="contact" autocomplete="tel" required></label>
-      <label class="fld">주로 다루는 품목 <small>선택</small><input name="item" placeholder="예: 알루미늄 가공 부품"></label>
-      <label class="agree"><input type="checkbox" name="agree"> 상담 연락을 위해 위 정보를 받는 데 동의합니다.</label>
-      <p class="err-msg" id="consult-err" role="alert"></p>
-      <button class="btn solid lg wide" type="submit">상담 신청하기</button>
-    </form>
-    <p class="demo-note">데모 화면입니다. 입력하신 내용은 어디로도 전송되지 않습니다.</p>
+      <div class="field-pair"><label class="fld">기업명 *<input name="company" autocomplete="organization" maxlength="100" required></label><label class="fld">담당자명 *<input name="name" autocomplete="name" maxlength="60" required></label></div>
+      <label class="fld">이메일 또는 연락처 *<input name="contact" autocomplete="email" maxlength="150" placeholder="이메일 또는 휴대폰 번호를 입력합니다" required></label>
+      <label class="fld">주로 다루는 품목 <small>선택</small><input name="item" maxlength="150" placeholder="예: 알루미늄 가공 부품"></label>
+      <label class="fld">상담하고 싶은 내용 <small>선택</small><textarea name="message" rows="4" maxlength="2000" placeholder="거래처 수와 반복적으로 처리하는 업무 등을 적어 주십시오."></textarea></label>
+      <div class="storage-info"><b>작성 내용의 저장 범위</b><p>현재 입력 내용은 이 브라우저에만 저장되며 담당자에게 전송되지 않습니다. 저장 후 파일로 내려받거나 삭제할 수 있습니다.</p></div>
+      <label class="agree"><input type="checkbox" name="agree" required><span>위 저장 범위를 확인했으며, 상담 내용을 이 기기에 저장합니다.</span></label>
+      <p class="err-msg" id="consult-err" role="alert"></p><p class="form-message" id="consult-restore" role="status"></p>
+      <button class="btn solid lg wide" type="submit">상담 내용 저장 <span aria-hidden="true">→</span></button>
+    </form></div>
+    <section id="consult-result" hidden aria-live="polite"></section>
   </section>
 </main>
 <script type="module" src="/src/consult/consult.ts"></script>

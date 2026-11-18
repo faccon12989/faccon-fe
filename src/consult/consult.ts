@@ -1,45 +1,99 @@
-/* 파일럿 상담 신청 (데모): 형식만 확인하고 완료 안내를 보여준다. 아무것도 전송하지 않는다. */
+/* 상담 신청 초안은 명시적인 동의 후 이 브라우저에만 저장합니다. */
 import "../site/site.css";
-import "../login/login.css";
 import "./consult.css";
 import { esc } from "../ui";
+import { parseConsult, problemOf, type ConsultDraft } from "./model";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_RE = /^0\d{1,2}-?\d{3,4}-?\d{4}$/;
+const STORAGE_KEY = "faccon.consult-draft.v1";
+const DOWNLOAD_REVOKE_MS = 1000;
+const form = document.querySelector<HTMLFormElement>("#consult-form");
+const entry = document.getElementById("consult-entry");
+const result = document.getElementById("consult-result");
+const error = document.getElementById("consult-err");
+const restore = document.getElementById("consult-restore");
+let saved: ConsultDraft | null = null;
 
-interface Consult {
-  company: string;
-  name: string;
-  contact: string;
-  agree: boolean;
-}
-
-/** 신청할 수 없는 이유. 없으면 null. */
-const problemOf = (c: Consult): string | null => {
-  if (!c.company) return "회사명을 적어 주십시오.";
-  if (!c.name) return "담당자 이름을 적어 주십시오.";
-  if (!PHONE_RE.test(c.contact) && !EMAIL_RE.test(c.contact)) return "연락처는 휴대폰 번호(010-1234-5678) 또는 이메일로 적어 주십시오.";
-  if (!c.agree) return "연락 정보 수집에 동의해 주십시오.";
-  return null;
+const showError = (message: string): void => {
+  if (error) error.textContent = message;
 };
 
-const form = document.getElementById("consult-form");
-const err = document.getElementById("consult-err");
-const card = document.getElementById("consult-card");
-
-form?.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (!(form instanceof HTMLFormElement) || !card) return;
-  const data = new FormData(form);
+const readForm = (target: HTMLFormElement): ConsultDraft => {
+  const data = new FormData(target);
   const text = (key: string): string => String(data.get(key) ?? "").trim();
-  const consult: Consult = { company: text("company"), name: text("name"), contact: text("contact"), agree: data.get("agree") === "on" };
-  const problem = problemOf(consult);
-  if (err) err.textContent = problem ?? "";
+  return { company: text("company"), name: text("name"), contact: text("contact"), item: text("item"), message: text("message"), agreedAt: new Date().toISOString() };
+};
+
+const displayResult = (draft: Readonly<ConsultDraft>): void => {
+  if (!result || !entry) return;
+  entry.hidden = true;
+  result.hidden = false;
+  result.innerHTML = `<div class="result-icon" aria-hidden="true">✓</div><h2 tabindex="-1" id="result-heading">상담 내용을 저장했습니다</h2><p class="result-lead">${esc(draft.company)}의 상담 내용을 이 브라우저에 저장했습니다. 담당자에게 전송되지는 않았습니다. 파일을 내려받아 상담 시 활용할 수 있습니다.</p><dl class="consult-summary"><dt>기업명</dt><dd>${esc(draft.company)}</dd><dt>담당자명</dt><dd>${esc(draft.name)}</dd><dt>연락처</dt><dd>${esc(draft.contact)}</dd><dt>주요 품목</dt><dd>${esc(draft.item || "미입력")}</dd><dt>상담 내용</dt><dd>${esc(draft.message || "미입력")}</dd></dl><div class="consult-result-actions"><button class="btn solid" type="button" data-action="download">상담 내용 내려받기</button><button class="btn ghost" type="button" data-action="edit">내용 수정</button><a class="btn ghost" href="./">소개로 돌아가기</a></div><button class="delete-draft" type="button" data-action="delete">이 기기의 상담 내용 삭제</button>`;
+  document.getElementById("result-heading")?.focus();
+};
+
+const download = (draft: Readonly<ConsultDraft>): void => {
+  const content = `Faccon 도입 상담 초안\n작성일: ${draft.agreedAt}\n기업명: ${draft.company}\n담당자명: ${draft.name}\n연락처: ${draft.contact}\n주요 품목: ${draft.item || "미입력"}\n\n상담 내용\n${draft.message || "미입력"}\n\n이 파일은 사용자가 작성한 상담 초안입니다. 서버 접수·이메일 전송은 이루어지지 않았습니다.`;
+  const url = URL.createObjectURL(new Blob([content], { type: "text/plain;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "Faccon_도입상담_초안.txt";
+  link.click();
+  window.setTimeout((): void => URL.revokeObjectURL(url), DOWNLOAD_REVOKE_MS);
+};
+
+const showEntry = (): void => {
+  if (entry) entry.hidden = false;
+  if (result) result.hidden = true;
+  form?.querySelector<HTMLInputElement>("[name='company']")?.focus();
+};
+
+form?.addEventListener("submit", (event: SubmitEvent): void => {
+  event.preventDefault();
+  const draft = readForm(form);
+  const approved = new FormData(form).get("agree") === "on";
+  const problem = problemOf(draft, approved);
+  showError(problem ?? "");
   if (problem) return;
-  card.innerHTML = `
-    <h1>상담 신청 화면 체험을 마쳤습니다</h1>
-    <p class="consult-lead">${esc(consult.company)} ${esc(consult.name)}님, 입력 형식을 확인했습니다. 이 데모에서는 실제 접수·연락이 이루어지지 않습니다.</p>
-    <p class="consult-lead">상담 때 서명된 연동약정서와 최근 발주 내역을 보여 주시면 바로 확인해 드릴 수 있습니다.</p>
-    <div class="row"><a class="btn solid" href="./">소개로 돌아가기</a><a class="btn ghost" href="./login.html">데모 대시보드 보기</a></div>
-    <p class="demo-note">데모 화면이라 실제로 접수되지는 않았습니다.</p>`;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ schemaVersion: 1, draft }));
+    saved = draft;
+    displayResult(draft);
+  } catch {
+    showError("이 브라우저에서 저장할 수 없습니다. 저장 공간 또는 브라우저 설정을 확인한 뒤 다시 시도해 주십시오.");
+  }
 });
+
+result?.addEventListener("click", (event: MouseEvent): void => {
+  const action = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-action]")?.dataset.action : undefined;
+  if (action === "download" && saved) download(saved);
+  if (action === "edit") showEntry();
+  if (action !== "delete") return;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+    saved = null;
+    form?.reset();
+    showEntry();
+    if (restore) restore.textContent = "이 기기에 저장된 상담 내용을 삭제했습니다.";
+  } catch {
+    const notice = result.querySelector<HTMLElement>(".result-lead");
+    if (notice) notice.textContent = "저장된 내용을 삭제하지 못했습니다. 브라우저 저장소 설정을 확인해 주십시오.";
+  }
+});
+
+const restoreDraft = (): void => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw || !form) return;
+    saved = parseConsult(JSON.parse(raw) as unknown);
+    if (!saved) return;
+    const fill = (key: "company" | "name" | "contact" | "item" | "message"): void => {
+      const input = form.querySelector<HTMLInputElement | HTMLTextAreaElement>(`[name='${key}']`);
+      if (input && saved) input.value = saved[key];
+    };
+    fill("company"); fill("name"); fill("contact"); fill("item"); fill("message");
+    if (restore) restore.textContent = "이 브라우저에 저장된 상담 초안을 불러왔습니다.";
+  } catch {
+    if (restore) restore.textContent = "저장된 상담 초안을 불러오지 못했습니다. 새로 작성할 수 있습니다.";
+  }
+};
+restoreDraft();

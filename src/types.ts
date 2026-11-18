@@ -183,3 +183,44 @@ export interface WorkCommand {
   readonly revision: number; readonly m0?: number; readonly checked?: boolean;
   readonly scope?: "result" | "summary"; readonly note?: string;
 }
+
+/** 기기 내 업무 상태. 서버 인증 및 기업 간 공유는 추후 API 연동 대상입니다. */
+export interface LocalSession { readonly role: Role; readonly company: string; readonly name: string; }
+export type LocalStage = "draft" | "requested" | "submitted" | "agreement" | "active" | "adjustment" | "ready" | "completed";
+export interface LocalTerms {
+  readonly p0: number; readonly m0: number; readonly i0: number; readonly threshold: number;
+  readonly qty: number; readonly indexName: string; readonly cycle: string;
+  readonly basis: "delivery" | "inspection"; readonly effectiveDate: string;
+}
+export interface LocalDocument {
+  readonly id: string; readonly name: string; readonly size: number; readonly type: string;
+  readonly kind: string; readonly scope: "private" | "shared"; readonly owner: string;
+  readonly uploadedAt: string;
+}
+export interface LocalEvent {
+  readonly id: string; readonly at: string; readonly actor: string; readonly role: Role;
+  readonly action: string; readonly detail: string;
+}
+export interface LocalAdjustment {
+  readonly revision: number; readonly indexValue: number; readonly effectiveDate: string;
+  readonly source: string; readonly buyerApproved: boolean; readonly supplierApproved: boolean;
+  readonly poPrice?: number; readonly invoicePrice?: number; readonly reference?: string;
+  readonly invoiceReference?: string; readonly invoiceSubmittedAt?: string;
+  readonly deliveryDate?: string; readonly inspectionDate?: string;
+}
+export interface LocalTrade {
+  readonly id: string; readonly title: string; readonly buyer: string; readonly supplier: string;
+  readonly material: string; readonly entry: "new" | "existing"; readonly createdAt: string;
+  readonly terms: LocalTerms; readonly stage: LocalStage; readonly request: string;
+  readonly buyerApproved: boolean; readonly supplierApproved: boolean;
+  readonly documents: readonly LocalDocument[]; readonly events: readonly LocalEvent[];
+  readonly adjustment?: LocalAdjustment;
+  readonly adjustmentHistory?: readonly LocalAdjustment[];
+}
+export interface LocalStore { readonly version: 1; readonly trades: readonly LocalTrade[]; }
+export interface LocalCommand {
+  readonly action: "request" | "submit" | "return" | "approveAgreement" | "proposeAdjustment" | "approveAdjustment" | "submitInvoice" | "reflect";
+  readonly note?: string; readonly indexValue?: number; readonly effectiveDate?: string;
+  readonly source?: string; readonly poPrice?: number; readonly invoicePrice?: number;
+  readonly reference?: string; readonly deliveryDate?: string; readonly inspectionDate?: string;
+}

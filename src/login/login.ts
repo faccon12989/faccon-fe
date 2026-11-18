@@ -1,26 +1,30 @@
-/* 기업 로그인 (데모): 형식만 확인하고 기업 대시보드(내 업무)로 이동한다. 아무것도 전송하지 않는다. */
-import "../site/site.css";
-import "./login.css";
+import "../my/local.css";
+import { companyNames, saveSession } from "../local-store";
+import type { Role } from "../types";
+import { esc } from "../ui";
 
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const DASHBOARD = "./my.html";
-
-const form = document.getElementById("login-form");
-const err = document.getElementById("login-err");
-
-/** 넘어갈 수 없는 이유. 없으면 null. */
-const problemOf = (email: string, password: string): string | null => {
-  if (!EMAIL_RE.test(email)) return "업무 이메일 형식을 확인해 주십시오.";
-  if (password.length === 0) return "비밀번호를 입력해 주십시오.";
-  return null;
+const form = document.querySelector<HTMLFormElement>("#login-form");
+const errorNode = document.getElementById("login-error");
+const list = document.getElementById("companies");
+const updateCompanies = (): void => {
+  const role = document.querySelector<HTMLInputElement>('input[name="role"]:checked')?.value === "supplier" ? "supplier" : "buyer";
+  try { if (list) list.innerHTML = companyNames(role).map((name: string): string => `<option value="${esc(name)}"></option>`).join(""); }
+  catch (error: unknown) { if (errorNode) errorNode.textContent = error instanceof Error ? error.message : "저장된 자료를 확인하지 못했습니다."; }
 };
-
-form?.addEventListener("submit", (e) => {
-  e.preventDefault();
-  if (!(form instanceof HTMLFormElement)) return;
-  const data = new FormData(form);
-  const problem = problemOf(String(data.get("email") ?? "").trim(), String(data.get("password") ?? ""));
-  if (err) err.textContent = problem ?? "";
-  if (problem) return;
-  window.location.href = DASHBOARD;
+form?.addEventListener("change", (event: Event): void => {
+  if (event.target instanceof HTMLInputElement && event.target.name === "role") updateCompanies();
 });
+form?.addEventListener("submit", (event: SubmitEvent): void => {
+  event.preventDefault();
+  const data = new FormData(form);
+  const company = String(data.get("company") ?? "").trim();
+  const name = String(data.get("name") ?? "").trim();
+  const role: Role = data.get("role") === "supplier" ? "supplier" : "buyer";
+  if (!company || !name) { if (errorNode) errorNode.textContent = "회사명과 담당자명을 입력해 주세요."; return; }
+  try {
+    saveSession({ role, company, name });
+    const next = new URLSearchParams(location.search).get("next");
+    location.href = next === "start" && role === "buyer" ? "./start.html" : "./my.html#/home";
+  } catch { if (errorNode) errorNode.textContent = "업무 공간을 열지 못했습니다. 브라우저 저장소 사용 설정을 확인해 주세요."; }
+});
+updateCompanies();

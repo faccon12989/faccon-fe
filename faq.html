@@ -3,23 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>자주 묻는 질문 · Faccon</title>
-<meta name="description" content="Faccon 도입·비용·자료 보안에 대해 자주 묻는 질문입니다.">
+<title>이용 가이드 · Faccon</title>
+<meta name="description" content="위탁기업과 수탁기업이 거래 등록부터 자료 제출, 조정 승인, 발주·청구 반영과 증빙 정리까지 진행하는 방법입니다.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 </head>
-<body data-page="faq">
-<div class="home"><nav class="home-nav" id="home-nav" aria-label="주 메뉴"></nav>
-<main class="home-main faq-page">
-  <div class="faq-wrap">
-    <div class="section-heading centered"><span><b>FAQ</b>자주 묻는 질문</span>
-      <h2>궁금한 점을 <em>먼저</em> 정리했습니다</h2>
-      <p>여기 없는 내용은 도입 상담 때 실제 약정서를 보면서 같이 확인해 드립니다.</p></div>
-    <div class="faq-tabs" id="faq-tabs" role="tablist" aria-label="질문 분류"></div>
-    <div class="faq-list" id="faq-list"></div>
-    <div class="faq-cta"><button class="home-cta" data-go="./#contact">도입 상담 신청</button><button class="outline-cta" data-go="./my.html">서비스 화면 보기</button></div>
-  </div>
+<body class="guide-body" data-page="faq">
+<div class="home"><nav class="home-nav" id="home-nav" aria-label="주요 메뉴"></nav></div>
+<main class="guide-page">
+  <section class="guide-intro"><span>처음 이용하는 기업을 위한 안내</span><h1>같은 거래를,<br>양사의 업무로 이어갑니다.</h1><p>위탁기업이 거래를 등록하면 수탁기업은 요청받은 자료와 조건을 확인합니다.<br>합의한 산식으로 계산하고 청구·발주 반영과 증빙을 정리합니다.</p><div class="guide-role-key"><b>위탁기업</b> 거래 등록·검토·발주 반영 <span>↔</span> <b>수탁기업</b> 자료 제출·조건 확인</div></section>
+  <nav class="guide-jump" aria-label="이용 단계 바로가기"><a href="#guide-agreement">01 거래·자료 준비</a><a href="#guide-calculate">02 약정·계산 확인</a><a href="#guide-reconcile">03 발주·청구 대조</a><a href="#guide-evidence">04 자료·증빙</a></nav>
+  <section class="guide-step" id="guide-agreement"><div class="guide-step-number">01</div><div class="guide-step-main"><h2>거래를 등록하고 필요한 자료를 모읍니다</h2><p>위탁기업은 <b>새로운 거래 등록</b>에서 신규 약정 준비 또는 기존 약정 등록을 선택합니다. 거래처·품목·원재료와 약정 조건을 입력합니다.</p><div class="guide-actions"><article><b>위탁기업</b><h3>자료명과 확인할 내용을 요청합니다</h3><p>거래 상세의 <b>자료 요청하기</b>에서 필요한 자료와 기간을 입력합니다. 수탁기업이 제출하면 같은 거래에서 확인합니다.</p></article><span aria-hidden="true">→</span><article><b>수탁기업</b><h3>공개 범위를 정하고 제출합니다</h3><p><b>자료 등록</b>에서 파일과 공개 범위를 선택합니다. 상대 기업에 보여 줄 자료는 <b>상대 기업에도 공유</b>로 등록한 뒤 <b>공유 자료 제출하기</b>를 누릅니다.</p></article></div><p class="guide-output">다음 단계: 같은 거래 안에서 제출자료와 합의할 약정 조건을 확인합니다.</p></div></section>
+  <section class="guide-step" id="guide-calculate"><div class="guide-step-number">02</div><div class="guide-step-main"><h2>약정 조건을 확인하고 조정단가를 계산합니다</h2><p>기준 납품단가·제품당 원재료비·기준지표·조정요건과 주기를 확인합니다. 단가 적용 기준은 거래 약정에 따라 <b>납품일 또는 검수일</b>로 선택합니다.</p><div class="guide-flow"><span>양사 약정 조건 승인</span><b>→</b><span>비교지표·출처 입력</span><b>→</b><span>약정 산식 계산</span><b>→</b><span>계산 확인 기록·ERP 반영</span></div><p>거래 상세에서 <b>약정 조건 승인</b>을 진행합니다. 양사의 확인이 끝나면 비교지표 값·지표 출처·조정단가 반영일을 입력하고 <b>조정단가 계산·저장</b>을 실행합니다.</p><p class="guide-output">다음 단계: 계산한 단가를 ERP 반영용 CSV로 내려받습니다. 정기 계산의 확인 기록은 선택이며, 매번 양사의 재승인을 기다릴 필요는 없습니다.</p></div></section>
+  <section class="guide-step" id="guide-reconcile"><div class="guide-step-number">03</div><div class="guide-step-main"><h2>실제 발주·청구에 반영했는지 확인합니다</h2><p>수탁기업은 <b>청구정보 제출</b>에서 청구단가와 청구서 식별번호를 입력합니다. 위탁기업은 기존 ERP 등에 가격을 반영한 뒤, <b>발주·청구 반영 확인</b>에서 발주단가와 날짜를 입력합니다. 수탁기업이 제출한 청구단가는 위탁기업이 대신 수정하지 않습니다.</p><div class="guide-compare"><div><small>약정에 따른 단가</small><strong>10,320원</strong></div><b>↔</b><div><small>위탁 발주 + 수탁 청구</small><strong>각 기업이 제출한 값</strong></div><b>→</b><div class="guide-compare-result"><small>적용 기준일과 단가 확인</small><strong>일치 여부 대조</strong></div></div><p>반영일 이후의 거래인지 약정의 날짜 기준으로 확인합니다. 입력 단가가 계산 결과와 다르면 내용을 다시 확인한 뒤 반영 상태를 처리합니다.</p><p class="guide-output">다음 단계: 수탁기업의 청구 제출 내역과 위탁기업의 발주 반영 결과를 업무 이력에 연결합니다. 다음 조정 회차를 계산해도 이전 회차를 보존합니다.</p></div></section>
+  <section class="guide-step" id="guide-evidence"><div class="guide-step-number">04</div><div class="guide-step-main"><h2>거래별 자료와 확인 이력을 내려받습니다</h2><p><b>자료·증빙</b> 메뉴에서 필요한 거래를 선택합니다. <b>증빙 목록 내려받기</b>에는 약정 조건, 계산 근거, 열람 가능한 원문 목록과 승인·반영 이력이 포함됩니다.</p><div class="guide-actions"><article><b>목록 파일</b><h3>업무 진행 내용을 한 번에</h3><p>TXT 형식의 증빙 목록에서 약정 조건과 주요 이력을 확인합니다. ERP 반영용 단가는 CSV로 내려받습니다.</p></article><span aria-hidden="true">+</span><article><b>원문 파일</b><h3>공유 권한에 맞게 개별 확인</h3><p>원문 파일은 거래 상세의 <b>내려받기</b>로 각각 확인합니다. 제출처의 필수 서류와 최종 제출 범위는 담당자가 확인합니다.</p></article></div><p class="guide-output">결과: 거래별로 확인한 조건과 자료를 같은 흐름에서 다시 찾을 수 있습니다.</p></div></section>
+  <section class="guide-storage"><h2>현재 이용 환경</h2><p>이 로컬 버전은 입력한 거래와 자료를 <b>현재 브라우저에 저장</b>합니다. 별도 기기 간 동기화, 실제 계정 인증, 정부기관 제출은 연결되지 않았습니다. 파일 등록은 보관 기능이며 OCR·AI 분석을 실행하지 않습니다. 실제 기업 기밀자료 대신 인터뷰용 자료로 이용합니다.</p></section>
+  <section class="guide-questions" id="questions"><h2>자주 묻는 질문</h2><div class="faq-tabs" id="faq-tabs" role="group" aria-label="질문 분류"></div><div class="faq-list" id="faq-list"></div></section>
+  <div class="guide-bottom"><div><h2>직접 업무 흐름을 확인해 보십시오.</h2><p>기업 역할을 선택하고 첫 거래 등록부터 시작합니다.</p></div><a class="btn solid lg" href="./login.html">기업 로그인</a><a class="btn ghost lg" href="./consult.html">도입 상담</a></div>
+<section class="guide-download"><h2>직접 시험할 자료</h2><p>가상 거래용 원문과 금액 대조 순서를 함께 받습니다.</p><a href="./demo/FACCON_sample.zip" download>실습 자료 ZIP 내려받기</a></section>
 </main>
-<footer class="home-footer"><div class="footer-brand"><span class="brand-mark">F</span><div><strong>Faccon</strong><small>납품대금 연동약정 운영 솔루션</small></div></div><div class="footer-info"><a href="./#problem">서비스 소개</a><a href="./#trust">보안·데이터 정책</a><a href="./faq.html">자주 묻는 질문</a><a href="./login.html">기업 로그인</a></div><p>© 2026 Faccon · 화면의 회사·거래·금액은 모두 가상 데이터입니다.</p></footer></div>
+<footer class="guide-footer"><a class="logo" href="./">Faccon</a><span>단가 조정 효율화 서비스</span><a href="./">서비스 소개로 돌아가기 →</a></footer>
 <script type="module" src="/src/faq/faq.ts"></script>
 </body>
 </html>

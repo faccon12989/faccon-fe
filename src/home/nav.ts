@@ -1,6 +1,5 @@
 /* 소개·도입 방식·FAQ 공통 머리 메뉴: 펼침 메뉴 · 페이지 이동 · 휴대폰 메뉴 */
 import "./home.css";
-import "./home-feel.css";
 import "./nav.css";
 import { esc } from "../ui";
 
@@ -33,11 +32,11 @@ const NAV: readonly NavEntry[] = [
     label: "고객 지원",
     page: "faq",
     items: [
-      { label: "자주 묻는 질문", desc: "도입·비용·자료 보안", href: "./faq.html", page: "faq" },
+      { label: "이용 가이드 및 자주 묻는 질문", desc: "도입·비용·자료 보안", href: "./faq.html", page: "faq" },
       { label: "데모 화면 둘러보기", desc: "가상 데이터로 직접 눌러 봅니다", href: "./my.html" },
     ],
   },
-  { label: "도입 문의", href: "./#contact" },
+  { label: "도입 문의", href: "./consult.html" },
 ];
 
 const isGroup = (e: NavEntry): e is NavGroup => "items" in e;
@@ -60,9 +59,9 @@ const renderEntry = (e: NavEntry, i: number): string => isGroup(e)
 const nav = document.querySelector<HTMLElement>("#home-nav");
 if (nav) {
   nav.innerHTML = `<button class="home-logo" data-go="./" aria-label="Faccon 처음으로"><span class="brand-mark">F</span>Faccon</button>`
-    + `<div class="home-links" id="home-links">${NAV.map(renderEntry).join("")}</div>`
-    + `<div class="home-nav-actions"><button class="supplier-link" data-go="./login.html">초대받은 공급기업이십니까?</button>`
-    + `<button class="login-btn" data-go="./login.html">로그인</button><button class="home-cta small" data-go="./#contact">도입 문의</button></div>`
+    + `<div class="home-links" id="home-links">${NAV.map(renderEntry).join("")}<a class="mobile-login" href="./login.html">기업 로그인</a></div>`
+    + `<div class="home-nav-actions"><button class="supplier-link" data-go="./login.html">수탁기업으로 참여하기</button>`
+    + `<button class="login-btn" data-go="./login.html">로그인</button><button class="home-cta small" data-go="./consult.html">도입 문의</button></div>`
     + `<button class="menu-toggle" aria-label="메뉴 열기" aria-expanded="false"><span></span><span></span><span></span></button>`;
 }
 

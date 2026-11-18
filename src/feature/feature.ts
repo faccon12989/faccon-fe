@@ -1,5 +1,6 @@
 /* 서비스 소개 상세 페이지: feature.html?f=calc|recon|share|security */
 import "../home/nav";
+import "../home/home-feel.css";
 import "../faq/faq.css";
 import "./feature.css";
 import { esc } from "../ui";
@@ -28,7 +29,7 @@ const points = (f: Feature): string => `
 const others = (f: Feature): string => `
   <section class="feat-others"><h3>다른 기능도 보기</h3><div>${FEATURES.filter((o) => o.id !== f.id).map((o) => `
     <button data-go="./feature.html?f=${o.id}"><strong>${esc(o.label)}</strong><small>${esc(o.summary)}</small></button>`).join("")}</div>
-    <div class="faq-cta"><button class="home-cta" data-go="./#contact">도입 상담 신청</button><button class="outline-cta" data-go="./pilot.html">도입 방식 보기</button></div>
+    <div class="faq-cta"><button class="home-cta" data-go="./consult.html">도입 상담 신청</button><button class="outline-cta" data-go="./pilot.html">도입 방식 보기</button></div>
   </section>`;
 
 const f = pick();

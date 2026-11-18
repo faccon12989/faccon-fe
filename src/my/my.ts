@@ -1,185 +1,138 @@
-/* 사용자 앱: 탭 이동, 할 일 해결 시트 */
-import "../site/site.css";
-import "./my.css";
-import "../workflow.css";
-import { setContext } from "../context";
-import { downloadMonthly } from "../monthly";
-import { readWork, saveWork, transition } from "../workflow";
-import { downloadEvidence } from "../evidence";
-import { requestTask, resetDemo } from "../demo";
-import { taskDetailHref } from "../detail-navigation";
+import "./local.css";
+import { reviewVisit, previewChange } from "./visit-review";
+import { pct, won } from "../calc";
+import { clearSession, readLocalStore, readSession, requireSession, saveLocalTrade } from "../local-store";
+import { addLocalDocument, calculateLocal, canAccess, runLocalCommand, visibleDocuments } from "../local-workflow";
+import { downloadBlob, downloadLocalFile, storeLocalFile, validateLocalFile } from "../local-files";
+import { exportPriceCsv, exportTradeText } from "../local-export";
+import type { LocalCommand, LocalDocument, LocalSession, LocalTrade } from "../types";
 import { esc } from "../ui";
-import { type FlowStep, flowFor, type TaskId } from "./flows";
-import { contractsScreen, detailScreen } from "./contract-views";
-import { docsScreen } from "./docs-view";
-import { ALERT_EVENTS, settingsScreen } from "./settings-view";
-import { CHANNELS, homeScreen, type MyState } from "./screens";
-import type { Channel } from "../types";
+import { detailView } from "./local-detail";
+import { documentsView, overview, tradesView } from "./local-overview";
+import { detailLink, empty, shell } from "./local-shell";
 
-const TABS = [
-  { id: "home", label: "업무요약" },
-  { id: "contracts", label: "약정" },
-  { id: "docs", label: "자료·제출" },
-  { id: "settings", label: "설정" },
-] as const;
-const TOAST_MS = 2000;
-
-setContext("buyer");
-const loadPreferences = (): Pick<MyState, "channels" | "events"> => {
-  const defaults: Pick<MyState, "channels" | "events"> = { channels: ["kakao", "email"], events: ALERT_EVENTS.map((e: (typeof ALERT_EVENTS)[number]): string => e.id) };
-  try {
-    const x: unknown = JSON.parse(localStorage.getItem("faccon-alerts-v1") ?? "null");
-    if (typeof x !== "object" || x === null || !("channels" in x) || !("events" in x) || !Array.isArray(x.channels) || !Array.isArray(x.events)) return defaults;
-    return { channels: CHANNELS.filter((c: (typeof CHANNELS)[number]): boolean => (x.channels as unknown[]).includes(c.id)).map((c: (typeof CHANNELS)[number]): Channel => c.id), events: ALERT_EVENTS.filter((e: (typeof ALERT_EVENTS)[number]): boolean => (x.events as unknown[]).includes(e.id)).map((e: (typeof ALERT_EVENTS)[number]): string => e.id) };
-  } catch { return defaults; }
-};
-let state: MyState = { tab: "home", detail: null, ...loadPreferences() };
-let flow: { id: TaskId; steps: FlowStep[]; at: number } | null = null;
-let lastFocus: HTMLElement | null = null;
-let requestChoice = "extend";
-let requestDetail = "";
+const session = requireSession();
 let toastTimer: number | undefined;
-
-const byId = (id: string): HTMLElement => {
-  const el = document.getElementById(id);
-  if (!el) throw new Error(`#${id} 요소가 없습니다`);
-  return el;
+const sessionMatches = (): boolean => {
+  const current = readSession();
+  return Boolean(session && current && current.role === session.role && current.company === session.company && current.name === session.name);
 };
-
-const setState = (patch: Partial<MyState>): void => {
-  state = { ...state, ...patch };
-  localStorage.setItem("faccon-alerts-v1", JSON.stringify({ channels: state.channels, events: state.events }));
-  render();
+const currentId = (): string => decodeURIComponent(location.hash.split("/")[2] ?? "");
+const scopedTrades = (user: LocalSession): readonly LocalTrade[] => readLocalStore().trades.filter((trade: LocalTrade): boolean => canAccess(trade, user));
+const findTrade = (id: string): LocalTrade => {
+  if (!sessionMatches()) throw new Error("로그인 상태가 바뀌었습니다. 다시 로그인해 주세요.");
+  const trade = session ? scopedTrades(session).find((row: LocalTrade): boolean => row.id === id) : undefined;
+  if (!trade) throw new Error("현재 회사에서 확인할 수 없는 거래입니다.");
+  return trade;
 };
-
 const render = (): void => {
-  const screen = byId("screen");
-  screen.innerHTML = state.detail ? detailScreen(state.detail)
-    : state.tab === "contracts" ? contractsScreen()
-    : state.tab === "docs" ? docsScreen()
-    : state.tab === "settings" ? settingsScreen(state)
-    : homeScreen();
-  byId("tabbar").innerHTML = TABS.map((t) => {
-    const on = t.id === state.tab;
-    return `<button data-tab="${t.id}" class="${on ? "on" : ""}" ${on ? 'aria-current="page"' : ""}>${t.label}</button>`;
-  }).join("");
+  if (!session) return;
+  const trades = scopedTrades(session);
+  const page = location.hash.split("/")[1] ?? "home";
+  let content: string;
+  if (page === "trade") {
+    const trade = trades.find((row: LocalTrade): boolean => row.id === currentId());
+    content = trade ? detailView(trade, session, trades) : empty("거래를 찾을 수 없습니다", "현재 회사의 거래 목록에서 다시 선택해 주세요.", '<a class="fd-button" href="#/trades">현재 약정으로</a>');
+  } else content = page === "trades" ? tradesView(trades, session) : page === "documents" ? documentsView(trades, session) : overview(trades, session);
+  document.body.innerHTML = shell(session, page, content);
 };
-
-const toast = (msg: string): void => {
-  const t = byId("toast");
-  t.textContent = msg;
-  t.classList.add("show");
+const toast = (message: string, error: boolean = false): void => {
+  const node = document.getElementById("toast");
+  if (!node) return;
+  node.textContent = message; node.className = `fd-toast show ${error ? "error" : ""}`;
   window.clearTimeout(toastTimer);
-  toastTimer = window.setTimeout(() => t.classList.remove("show"), TOAST_MS);
+  toastTimer = window.setTimeout((): void => node.classList.remove("show"), error ? 6500 : 4000);
 };
-
-const renderSheet = (): void => {
-  if (!flow) return;
-  const step = flow.steps[flow.at];
-  if (!step) return;
-  const dots = flow.steps.map((_, i) => `<span class="${i <= flow!.at ? "on" : ""}"></span>`).join("");
-  byId("sheet").innerHTML = `
-    <div class="sheet-head"><div class="dots" aria-label="${flow.at + 1} / ${flow.steps.length} 단계">${dots}</div>
-      <button class="x" data-close aria-label="닫기">×</button></div>
-    <h2 id="sheet-title" tabindex="-1">${step.title}</h2>
-    <div class="sheet-body">${step.body}</div>
-    <button class="btn solid lg wide" data-advance>${step.cta}</button>`;
-  byId("sheet-title").focus();
-};
-
-const openFlow = (id: TaskId, opener: HTMLElement): void => {
-  lastFocus = opener;
-  requestChoice = "extend"; requestDetail = "";
-  flow = { id, steps: flowFor(id), at: 0 };
-  byId("sheet-bg").hidden = false;
-  byId("sheet").hidden = false;
-  document.body.classList.add("locked");
-  renderSheet();
-};
-
-const closeFlow = (): void => {
-  flow = null;
-  byId("sheet-bg").hidden = true;
-  byId("sheet").hidden = true;
-  document.body.classList.remove("locked");
-  if (lastFocus?.isConnected) lastFocus.focus(); else byId("screen").focus();
-};
-
-const advance = (): void => {
-  if (!flow) return;
-  if (flow.at === 1) {
-    requestChoice = document.querySelector<HTMLInputElement>('input[name="renew"]:checked')?.value ?? "request";
-    requestDetail = document.querySelector<HTMLSelectElement>('select[name="to"],select[name="due"]')?.value ?? "계약 담당자 확인";
-    requestTask(flow.id, requestChoice, requestDetail);
-    if (flow.id === "C-103" && readWork().phase === "draft") saveWork(transition(readWork(), { action: "request", role: "buyer", supplier: "S-04", revision: readWork().revision }));
-    const message = flow.id === "C-101" ? (requestChoice === "end" ? "거래 종료 의사를 기록했습니다. 남은 발주 2건의 취소·이행 여부를 확인할 때까지 대기합니다." : requestChoice === "check" ? "계약 담당자에게 확인할 항목을 기록했습니다. 회신이 올 때까지 대기합니다." : "갱신 확인 요청을 기록했습니다. 갱신본과 서명이 확인되기 전에는 완료로 바뀌지 않습니다.")
-      : flow.id === "C-102" ? `수정 요청 대상: ${requestDetail}. 발주 파일에서 변경 단가가 확인될 때 완료 처리합니다.` : `보완 요청 기한: ${requestDetail}. 자료 회신·검토 후에 처리합니다.`;
-    flow = { ...flow, steps: flow.steps.map((step: FlowStep, i: number): FlowStep => i === 2 ? { title: "요청을 기록했습니다 · 처리 대기", body: `<p>${esc(message)}</p><p class="note-s">가상 시나리오만 저장됩니다. 실제 메일은 보내지 않습니다.</p><a href="${esc(taskDetailHref(flow?.id ?? ""))}">후속 업무 확인 →</a>`, cta: "대기 상태로 돌아가기" } : step) };
-  }
-  if (flow.at < flow.steps.length - 1) {
-    flow = { ...flow, at: flow.at + 1 };
-    renderSheet();
-    return;
-  }
-  closeFlow();
+const execute = (command: LocalCommand): void => {
+  if (!session) return;
+  saveLocalTrade(runLocalCommand(findTrade(currentId()), session, command));
   render();
-  toast("요청을 기록했습니다. 처리될 때까지 대기로 표시합니다");
 };
-
-const toggleEvent = (id: string, label: string): void => {
-  const on = state.events.includes(id);
-  setState({ events: on ? state.events.filter((e) => e !== id) : [...state.events, id] });
-  toast(on ? `${label} 알림을 껐습니다` : `${label} 알림을 켰습니다`);
+const handleClick = async (event: MouseEvent): Promise<void> => {
+  if (!(event.target instanceof Element) || !session) return;
+  const button = event.target.closest<HTMLElement>("button");
+  if (!button) return;
+  try {
+    if (button.hasAttribute("data-logout")) { clearSession(); location.href = "./login.html"; return; }
+    if (button.hasAttribute("data-approve-agreement")) {
+      if (!document.querySelector<HTMLInputElement>("#agreement-consent")?.checked) throw new Error("약정 조건 확인란에 체크해 주세요.");
+      execute({ action: "approveAgreement" }); toast("약정 조건 확인을 완료했습니다. 양사 확인 상태를 업데이트했습니다.");
+    }
+    if (button.hasAttribute("data-approve-adjustment")) {
+      if (!document.querySelector<HTMLInputElement>("#adjustment-consent")?.checked) throw new Error("조정 내용 확인란에 체크해 주세요.");
+      execute({ action: "approveAdjustment" }); toast("계산 결과 확인을 완료했습니다.");
+    }
+    if (button.dataset.file) {
+      const doc = visibleDocuments(findTrade(currentId()), session).find((row: LocalDocument): boolean => row.id === button.dataset.file);
+      if (!doc) throw new Error("이 자료를 확인할 수 없습니다.");
+      await downloadLocalFile(doc);
+    }
+    if (button.dataset.export) {
+      const trade = findTrade(button.dataset.export);
+      downloadBlob(new Blob([exportTradeText(trade, session)], { type: "text/plain;charset=utf-8" }), `FACCON_${trade.id}_증빙목록.txt`);
+      toast("약정·조정·승인 이력이 담긴 증빙 목록을 내려받았습니다.");
+    }
+    if (button.hasAttribute("data-export-price")) {
+      const trade = findTrade(currentId());
+      downloadBlob(new Blob([exportPriceCsv(trade)], { type: "text/csv;charset=utf-8" }), `FACCON_${trade.id}_단가반영.csv`);
+      toast("ERP에 반영할 단가와 적용 기준을 CSV로 내려받았습니다.");
+    }
+  } catch (error: unknown) { toast(error instanceof Error ? error.message : "작업을 완료하지 못했습니다.", true); }
 };
-
-const toggleChannel = (id: Channel, label: string): void => {
-  const on = state.channels.includes(id);
-  setState({ channels: on ? state.channels.filter((c) => c !== id) : [...state.channels, id] });
-  toast(on ? `${label} 알림을 껐습니다` : `${label} 수신 설정을 저장했습니다 (실제 발송 없음)`);
+const handleSubmit = async (event: SubmitEvent): Promise<void> => {
+  const form = event.target;
+  if (!(form instanceof HTMLFormElement) || !form.dataset.form || !session) return;
+  event.preventDefault();
+  const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+  if (submit) submit.disabled = true;
+  const data = new FormData(form);
+  const value = (name: string): string => String(data.get(name) ?? "").trim();
+  try {
+    if (form.dataset.form === "visitReview") {
+      const out = document.getElementById("visit-review-output");
+      if (out) { out.replaceChildren(); await reviewVisit(findTrade(currentId()), session, data, out); }
+    } else if (form.dataset.form === "visitChange") {
+      previewChange(findTrade(currentId()), value("adjusted"));
+    } else if (form.dataset.form === "upload") {
+      const file = data.get("file");
+      if (!(file instanceof File)) throw new Error("등록할 파일을 선택해 주세요.");
+      validateLocalFile(file);
+      const doc: LocalDocument = { id: crypto.randomUUID(), name: file.name, size: file.size, type: file.type, kind: value("kind"), scope: value("scope") === "shared" ? "shared" : "private", owner: session.company, uploadedAt: new Date().toISOString() };
+      const tradeId = currentId();
+      addLocalDocument(findTrade(tradeId), doc, session);
+      await storeLocalFile(doc.id, file);
+      saveLocalTrade(addLocalDocument(findTrade(tradeId), doc, session)); render(); toast("자료를 등록했습니다. 선택한 공유 범위를 적용했습니다.");
+    } else {
+      const action = form.dataset.form as LocalCommand["action"];
+      execute({ action, note: value("note"), indexValue: Number(value("indexValue")), effectiveDate: value("effectiveDate"), source: value("source"), poPrice: Number(value("poPrice")), invoicePrice: Number(value("invoicePrice")), reference: value("reference"), deliveryDate: value("deliveryDate"), inspectionDate: value("inspectionDate") });
+      const messages: Readonly<Record<string, string>> = { request: "자료 요청을 등록했습니다. 수탁기업의 거래 화면에서 확인할 수 있습니다.", return: "보완 요청을 등록했습니다. 수탁기업이 필요한 내용을 확인할 수 있습니다.", submit: "자료 제출을 완료했습니다. 위탁기업이 검토할 수 있습니다.", proposeAdjustment: "약정 산식으로 계산했습니다. 결과와 반영일을 확인하고 ERP에 반영해 주세요.", submitInvoice: "청구정보를 제출했습니다. 위탁기업이 발주 단가와 대조할 수 있습니다.", reflect: "발주·청구 단가가 일치합니다. 반영 확인을 완료했습니다." };
+      toast(messages[action] ?? "업무 내용을 저장했습니다.");
+    }
+  } catch (error: unknown) { toast(error instanceof Error ? error.message : "저장하지 못했습니다.", true); }
+  finally { if (submit) submit.disabled = false; }
 };
-
-document.addEventListener("click", (e) => {
-  const el = e.target instanceof Element ? e.target : null;
-  if (!el) return;
-  if (el.closest("[data-reset]")) { if (window.confirm("가상 시나리오를 처음 상태로 되돌리시겠습니까?")) { resetDemo(); render(); } return; }
-  const monthly = el.closest<HTMLElement>("[data-monthly]");
-  if (monthly) { downloadMonthly(monthly.dataset.monthly || undefined); return; }
-  if (el.closest("[data-export-csv]")) { downloadEvidence("buyer"); return; }
-  if (el.closest("[data-print]")) { window.print(); return; }
-  const tab = el.closest<HTMLElement>("[data-tab]");
-  if (tab?.dataset.tab === "home" || tab?.dataset.tab === "contracts" || tab?.dataset.tab === "docs" || tab?.dataset.tab === "settings") {
-    setState({ tab: tab.dataset.tab, detail: null });
-    window.scrollTo({ top: 0 });
-    return;
-  }
-  const detail = el.closest<HTMLElement>("[data-detail]");
-  if (detail?.dataset.detail) { setState({ tab: "contracts", detail: detail.dataset.detail }); window.scrollTo({ top: 0 }); return; }
-  const task = el.closest<HTMLElement>("[data-task]");
-  const tid = task?.dataset.task;
-  if (task && (tid === "C-101" || tid === "C-102" || tid === "C-103")) { openFlow(tid, task); return; }
-  if (el.closest("[data-advance]")) { advance(); return; }
-  if (el.closest("[data-close]") || el.id === "sheet-bg") { closeFlow(); return; }
-  const chan = el.closest<HTMLElement>("[data-channel]");
-  const picked = CHANNELS.find((ch) => ch.id === chan?.dataset.channel);
-  if (picked) { toggleChannel(picked.id, picked.label); return; }
-  const ev = ALERT_EVENTS.find((x) => x.id === el.closest<HTMLElement>("[data-event]")?.dataset.event);
-  if (ev) { toggleEvent(ev.id, ev.label); return; }
-  const t = el.closest<HTMLElement>("[data-toast]");
-  if (t?.dataset.toast) toast(t.dataset.toast);
+document.addEventListener("click", (event: MouseEvent): void => { void handleClick(event); });
+document.addEventListener("submit", (event: SubmitEvent): void => { void handleSubmit(event); });
+document.addEventListener("change", (event: Event): void => {
+  const target = event.target;
+  if (target instanceof HTMLSelectElement && target.id === "trade-navigation") location.hash = detailLink(target.value);
 });
-
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && flow) closeFlow();
-  if (e.key === "Tab" && flow) {
-    const focusable = Array.from(byId("sheet").querySelectorAll<HTMLElement>('button:not(:disabled), input, select, a[href]'));
-    const first = focusable[0]; const last = focusable[focusable.length - 1];
-    if (e.shiftKey && (document.activeElement === first || document.activeElement === byId("sheet-title"))) { e.preventDefault(); last?.focus(); }
-    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
-  }
+document.addEventListener("input", (event: Event): void => {
+  const target = event.target;
+  if (target instanceof Element && target.closest('[data-form="visitReview"]')) document.getElementById("visit-review-output")?.replaceChildren();
+  if (!(target instanceof HTMLInputElement) || target.name !== "indexValue") return;
+  const preview = document.getElementById("calc-preview");
+  if (!preview) return;
+  try {
+    const result = calculateLocal(findTrade(currentId()), Number(target.value));
+    preview.innerHTML = `<strong>${esc(won(result.price))}</strong><span>지표 변동 ${esc(pct(result.rate))} · ${result.triggered ? "조정요건 충족" : "조정요건 미충족"}</span>`;
+  } catch { preview.textContent = "0보다 큰 비교지표 값을 입력해 주세요."; }
 });
-
-render();
-
-window.addEventListener("storage", (): void => { if (!flow) render(); });
-// 다른 페이지에서 뒤로 돌아왔을 때도 최신 반영 상태를 표시합니다.
-window.addEventListener("pageshow", (): void => { if (!flow) render(); });
+window.addEventListener("hashchange", (): void => { render(); window.scrollTo(0, 0); });
+window.addEventListener("storage", (): void => render());
+window.addEventListener("pageshow", (): void => {
+  if (session && !sessionMatches()) location.replace("./login.html");
+});
+try { render(); } catch (error: unknown) {
+  document.body.innerHTML = `<main class="fd-load-error"><h1>업무 데이터를 열지 못했습니다</h1><p>${esc(error instanceof Error ? error.message : "브라우저 저장공간을 확인해 주세요.")}</p><a href="./login.html">로그인 화면으로</a></main>`;
+}
