@@ -186,3 +186,7 @@ body,.home{font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,
 }
 .show-row.flip{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)}
 @media (max-width:900px){.show-row.flip{grid-template-columns:minmax(0,1fr)}}
+
+/* 첫 화면 가짜 화면 크기: 약 740px (한 화면 안에 다 보이게) */
+@media (min-width:1001px){.hero-product{width:640px;zoom:1.15}.floating-alert{right:-70px}.floating-rule{left:-70px}}
+@media (min-width:1001px){.hero-product{zoom:1.05}}
