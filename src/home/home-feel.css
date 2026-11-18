@@ -136,3 +136,9 @@ body,.home{font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,
   .hero-shot{margin-top:36px;border-radius:10px}
 }
 @media (max-width:1000px){.hero-copy h1 em{display:block}}
+
+/* 첫 화면 그림 크기: 한 화면 안에 제목·버튼·그림이 다 보이도록 (약 720px) */
+@media (min-width:1001px){
+  .home-hero{gap:52px;padding:128px max(32px,calc(50vw - 580px)) 88px}
+  .hero-shot{max-width:720px;border-radius:12px;box-shadow:0 24px 60px -28px rgba(23,43,77,.32)}
+}
