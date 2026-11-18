@@ -190,3 +190,19 @@ body,.home{font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,
 /* 첫 화면 가짜 화면 크기: 약 740px (한 화면 안에 다 보이게) */
 @media (min-width:1001px){.hero-product{width:640px;zoom:1.15}.floating-alert{right:-70px}.floating-rule{left:-70px}}
 @media (min-width:1001px){.hero-product{zoom:1.05}}
+
+/* ── 첫 화면 가짜 화면을 실제 기업 대시보드 톤으로 (흰 메뉴 · 따뜻한 회색 바탕 · 남색) ── */
+.product-window{border-color:#e3e1dc}
+.product-bar{border-bottom-color:#e3e1dc}
+.product-side{background:#fff;border-right:1px solid #e3e1dc}
+.side-line{background:#e3e1dc}
+.side-line.active{background:#e6ebf3;border-left:2px solid #1e3a68}
+.product-content{background:#faf9f7}
+.mock-welcome span{color:#6a7080}
+.mock-welcome strong{color:#1a1f2b}
+.mock-welcome button{background:#1e3a68}
+.mock-metrics > div{border-color:#e3e1dc}
+.mock-metrics .alert-metric{border:2px solid #1e3a68}
+.mock-panel{border-color:#e3e1dc}
+.mock-company{color:#1e3a68;background:#e6ebf3}
+.show-shot{border-color:#e3e1dc;background:#faf9f7}
