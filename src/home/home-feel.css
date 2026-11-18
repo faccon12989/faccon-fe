@@ -238,3 +238,4 @@ body,.home{font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,
 .faq-link{display:inline-block;margin-top:22px;font-size:16px;font-weight:600;color:#fff;text-decoration:underline;text-underline-offset:4px}
 .faq-link:hover{color:#7fe0bd}
 @media (min-width:1001px){.floating-alert{top:16px;right:-96px}.floating-rule{bottom:-22px;left:-104px}}
+.home-links button[aria-current=page]{color:var(--blue);font-weight:700}

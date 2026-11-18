@@ -1,0 +1,27 @@
+/* 자주 묻는 질문: 소개 페이지(home.css · home-feel.css)와 같은 톤 */
+.faq-page{padding-top:72px}
+.faq-wrap{max-width:880px;margin:0 auto;padding:96px 20px 120px}
+.faq-wrap .section-heading > span{justify-content:center}
+.faq-tabs{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:44px 0 24px}
+.faq-tabs button{font-size:16px;font-weight:600;border:1px solid var(--line)!important;background:#fff;color:var(--ink-2);border-radius:999px;padding:10px 20px}
+.faq-tabs button:hover{border-color:var(--blue)!important;color:var(--blue)}
+.faq-tabs button[aria-selected=true]{background:var(--ink);border-color:var(--ink)!important;color:#fff}
+.faq-list{border-top:2px solid var(--ink)}
+.faq-item{border-bottom:1px solid var(--line)}
+.faq-item summary{display:flex;align-items:center;gap:16px;padding:22px 8px;cursor:pointer;list-style:none;font-size:18px;font-weight:600;color:var(--ink)}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"";margin-left:auto;width:10px;height:10px;border-right:2px solid var(--mute);border-bottom:2px solid var(--mute);transform:rotate(45deg);transition:transform .2s}
+.faq-item[open] summary::after{transform:rotate(225deg)}
+.faq-item summary:hover .q-text{color:var(--blue)}
+.q-mark,.a-mark{flex:none;font-size:18px;font-weight:800}
+.q-mark{color:var(--blue)}
+.a-mark{color:var(--mute)}
+.answer{display:flex;gap:16px;background:#f7f9fc;padding:20px 24px 22px 8px;border-top:1px solid var(--line)}
+.answer p{margin:0;color:var(--ink-2);font-size:17px;line-height:1.7}
+.faq-cta{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:48px}
+@media (max-width:700px){
+  .faq-wrap{padding:56px 16px 80px}
+  .faq-item summary{font-size:16px;padding:18px 4px;gap:12px}
+  .answer{padding:16px 16px 18px 4px}
+  .answer p{font-size:16px}
+}

@@ -1,5 +1,6 @@
 /* 자주 묻는 질문: 분류 탭 + 누르면 펼쳐지는 질문 목록 */
-import "../site/site.css";
+import "../home/nav";
+import "./faq.css";
 import { esc } from "../ui";
 
 type Category = "service" | "start" | "data";
