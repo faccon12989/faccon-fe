@@ -77,3 +77,45 @@ body,.home{font-family:'Pretendard Variable',Pretendard,system-ui,-apple-system,
 .footer-brand small,.footer-info,.home-footer > p{font-size:14px}
 /* 두 단 구역 제목은 조금 작게 (2~3줄 안쪽) */
 .partner-copy h2,.contact-section h2{font-size:clamp(26px,2.3vw,33px)}
+
+/* ── 배치·분위기 (참고: 밝고 여백 많은 서비스 소개 페이지). 색은 Faccon 남색·파랑 그대로 ── */
+/* 첫 화면: 가운데 큰 제목 → 아래 큰 제품 화면 */
+.home-hero{background:linear-gradient(180deg,#f7f9fc 0%,#fff 70%);text-align:center}
+.hero-actions,.hero-trust{justify-content:center}
+.hero-product{text-align:left}
+.hero-glow{left:50%;right:auto;top:auto;bottom:-4%;width:900px;height:400px;transform:translateX(-50%);background:rgba(36,107,253,.09);filter:blur(110px)}
+@media (min-width:1001px){
+  .home-hero{display:flex;flex-direction:column;align-items:center;gap:60px;min-height:0;padding:150px max(32px,calc(50vw - 560px)) 110px}
+  .hero-copy{max-width:880px}
+  .hero-product{width:640px;zoom:1.45}
+  .product-window{transform:none}
+  .floating-alert{right:-60px}
+  .floating-rule{left:-60px}
+}
+
+/* 구역 제목 가운데 */
+.problem-section > .section-heading{display:block;text-align:center}
+.problem-section > .section-heading p{margin:0}
+.section-heading > span{justify-content:center}
+.problem-section,.process-section{padding:130px 20px}
+
+/* 어두운 띠 없이 밝게: 주요 기능 = 연회색 바탕 + 흰 카드 */
+.feature-section{background:#f5f7fa;padding:130px max(32px,calc(50vw - 600px))}
+.section-heading.light > span{color:var(--mute)}
+.section-heading.light > span b{color:var(--blue)}
+.section-heading.light h2{color:var(--ink)}
+.section-heading.light h2 em{background:linear-gradient(transparent 62%,var(--mark) 62%)}
+.section-heading.light p{color:var(--ink-2)}
+.feature-tabs{gap:16px;margin-top:56px}
+.feature-tabs article{color:var(--ink);background:#fff;border:1px solid var(--line);min-height:0;padding:30px 26px}
+.feature-tabs article.featured{background:#fff;border-color:var(--blue);box-shadow:inset 0 3px 0 var(--blue)}
+.feature-icon{color:var(--blue);background:#edf4ff}
+.feature-num{color:#b6c2cf}
+.feature-tabs p{color:var(--mute)}
+.feature-tabs ul{border-top:1px solid var(--line)}
+.feature-tabs li{color:var(--ink-2)}
+.feature-tabs li::before{color:var(--blue)}
+
+/* 업무 단계 띠·구매/공급 구역도 밝은 톤 */
+.client-strip{background:#fff}
+.partner-section{background:#f9fafc}
