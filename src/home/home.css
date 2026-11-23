@@ -18,20 +18,8 @@ button { cursor: pointer; }
 .brand-mark { color: rgb(13, 59, 54); background: rgb(57, 208, 164); border-radius: 9px 9px 9px 3px; place-items: center; width: 30px; height: 30px; font-size: 19px; font-weight: 700; display: grid; }
 .home { color: rgb(16, 42, 67); background: rgb(255, 255, 255); overflow: hidden; }
 .home button { border: 0px; }
-.home-nav { z-index: 20; backdrop-filter: blur(12px); background: rgba(255, 255, 255, 0.92); border-bottom: 1px solid rgba(226, 232, 238, 0.8); align-items: center; height: 72px; padding: 0px max(32px, -600px + 50vw); display: flex; position: fixed; inset: 0px 0px auto; }
-.home-logo { color: rgb(16, 42, 67); letter-spacing: -0.5px; background: none; align-items: center; gap: 9px; font-size: 21px; font-weight: 700; display: flex; }
-.home-logo .brand-mark, .footer-brand .brand-mark { width: 29px; height: 29px; font-size: 18px; }
-.home-links { align-items: center; gap: 31px; margin-left: 68px; display: flex; }
-.home-links button { color: rgb(82, 103, 123); background: none; font-size: 12px; font-weight: 500; }
-.home-links button:hover { color: rgb(36, 107, 253); }
-.home-nav-actions { align-items: center; gap: 9px; margin-left: auto; display: flex; }
-.supplier-link { color: rgb(113, 130, 149); background: none; margin-right: 10px; font-size: 10px; }
-.login-btn { color: rgb(49, 75, 99); background: rgb(255, 255, 255); border-radius: 7px; height: 35px; padding: 0px 15px; font-size: 11px; font-weight: 600; border: 1px solid rgb(220, 227, 234) !important; }
 .home-cta { color: rgb(255, 255, 255); background: rgb(36, 107, 253); border-radius: 8px; justify-content: center; align-items: center; gap: 8px; height: 46px; padding: 0px 22px; font-size: 12px; font-weight: 600; display: inline-flex; box-shadow: rgba(36, 107, 253, 0.2) 0px 7px 20px; }
 .home-cta:hover { background: rgb(24, 88, 223); transform: translateY(-1px); }
-.home-cta.small { height: 35px; box-shadow: none; padding: 0px 15px; font-size: 11px; }
-.menu-toggle { background: none; width: 36px; height: 36px; margin-left: auto; padding: 8px; display: none; }
-.menu-toggle span { background: rgb(41, 65, 88); border-radius: 2px; height: 2px; margin: 4px 0px; display: block; }
 .home-main { width: 100%; margin: 0px; }
 .home-hero { background: linear-gradient(135deg, rgb(247, 250, 255) 0%, rgb(255, 255, 255) 52%, rgb(242, 251, 248) 100%); grid-template-columns: 0.88fr 1.12fr; align-items: center; gap: 70px; min-height: 720px; padding: 155px max(32px, -600px + 50vw) 100px; display: grid; position: relative; }
 .hero-glow { filter: blur(90px); background: rgba(78, 218, 178, 0.12); border-radius: 50%; width: 460px; height: 460px; position: absolute; top: 10%; right: 2%; }
@@ -197,18 +185,7 @@ button { cursor: pointer; }
 .contact-section input:focus, .contact-section textarea:focus { border-color: rgb(36, 107, 253); box-shadow: rgba(36, 107, 253, 0.08) 0px 0px 0px 3px; }
 .form-submit { color: rgb(255, 255, 255); background: rgb(36, 107, 253); border-radius: 7px; justify-content: center; align-items: center; gap: 7px; width: 100%; height: 41px; margin-top: 16px; font-size: 11px; font-weight: 600; display: flex; }
 .contact-section form > small { text-align: center; color: rgb(154, 166, 178); margin-top: 9px; font-size: 8px; display: block; }
-.home-footer { color: rgb(255, 255, 255); background: rgb(10, 34, 55); align-items: center; gap: 50px; min-height: 120px; padding: 27px max(32px, -600px + 50vw); display: flex; }
-.footer-brand { align-items: center; gap: 9px; display: flex; }
-.footer-brand strong, .footer-brand small { display: block; }
-.footer-brand strong { font-size: 15px; }
-.footer-brand small { color: rgb(114, 141, 164); margin-top: 2px; font-size: 7px; }
-.footer-info { color: rgb(155, 176, 193); gap: 22px; font-size: 8px; display: flex; }
-.home-footer > p { color: rgb(100, 127, 149); margin-left: auto; font-size: 8px; }
 @media (max-width: 1000px) {
-.home-links { background: rgb(255, 255, 255); border-bottom: 1px solid rgb(227, 232, 237); flex-direction: column; align-items: flex-start; margin: 0px; padding: 15px 25px; display: none; position: absolute; top: 72px; left: 0px; right: 0px; }
-.home-links.open { display: flex; }
-.home-nav-actions { display: none; }
-.menu-toggle { display: block; }
 .home-hero { grid-template-columns: 1fr; gap: 65px; padding-top: 130px; }
 .hero-copy { text-align: center; }
 .hero-actions, .hero-trust { justify-content: center; }
@@ -223,8 +200,6 @@ button { cursor: pointer; }
 .contact-section { gap: 35px; }
 }
 @media (max-width: 700px) {
-.home-nav { height: 62px; padding: 0px 18px; }
-.home-links { top: 62px; }
 .home-hero { min-height: auto; padding: 115px 20px 70px; }
 .hero-copy h1 { letter-spacing: -1.8px; font-size: 36px; }
 .hero-copy > p br { display: none; }
@@ -261,15 +236,10 @@ button { cursor: pointer; }
 .contact-section { grid-template-columns: 1fr; padding: 70px 20px; }
 .form-grid { grid-template-columns: 1fr; }
 .contact-section form { padding: 22px; }
-.home-footer { padding: 28px 20px; display: block; }
-.footer-info { flex-wrap: wrap; margin: 25px 0px; }
-.home-footer > p { margin: 0px; }
 }
 
 /* 옮기면서 더한 것: 바닥글 링크, 상담 양식 안내, 키보드 초점, 동작 줄이기 설정 */
 html{scroll-behavior:smooth;scroll-padding-top:80px}
-.footer-info a{color:inherit;text-decoration:none}
-.footer-info a:hover{text-decoration:underline}
 .form-status{min-height:1.2em;margin:4px 0 0;font-size:12px;color:var(--blue)}
 .form-status.err{color:#d64545}
 .home button:focus-visible,.home a:focus-visible,.home input:focus-visible,.home textarea:focus-visible{outline:2px solid var(--blue);outline-offset:2px}

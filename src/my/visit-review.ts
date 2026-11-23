@@ -10,10 +10,10 @@ const own = (trade: LocalTrade, user: LocalSession, kind: string): readonly Loca
 const selectDoc = (docs: readonly LocalDocument[], name: string, label: string): string =>
   `<label class="fd-field"><span>${esc(label)}</span><select name="${esc(name)}" required><option value="">자료 선택</option>${docs.map((d: LocalDocument): string => `<option value="${esc(d.id)}">${esc(d.name)}</option>`).join("")}</select></label>`;
 export const visitPanel = (trade: LocalTrade, user: LocalSession): string => {
-  const calc = user.role === "supplier" ? `<section class="fd-panel"><h2>원재료비 검토</h2><p>회사 내부 보관으로 등록한 자료를 선택합니다. 시연 양식의 두 엑셀 파일을 읽고, 세금계산서에서 직접 확인한 공급가액과 대조합니다.</p>
+  const calc = user.role === "supplier" ? `<section class="fd-panel fd-action-panel fd-visit-panel"><h2>원재료비 검토</h2><p>회사 내부 보관으로 등록한 자료를 선택합니다. 시연 양식의 두 엑셀 파일을 읽고, 세금계산서에서 직접 확인한 공급가액과 대조합니다.</p>
   <form class="fd-form" data-form="visitReview">${selectDoc(own(trade,user,"소요량 산출표"),"bom","제품별 소요량 산출표 · XLSX")}${selectDoc(own(trade,user,"매입증빙"),"purchase","매입 거래명세서 · XLSX")}${selectDoc(own(trade,user,"세금계산서"),"tax","같은 거래의 세금계산서 · PDF")}
   <label class="fd-field"><span>세금계산서 원문에서 확인한 공급가액 (원, 부가세 제외)</span><input name="taxNet" type="number" required min="1" step="1"></label><button type="submit" class="fd-button">원문 대조·보고서 미리보기</button></form><div id="visit-review-output" aria-live="polite"></div></section>` : "";
-  const change = trade.adjustment ? `<section class="fd-panel"><h2>약정 서식 출력</h2><form class="fd-form" data-form="visitChange"><label class="fd-field"><span>약정에 따라 이번 단가를 조정한 날짜</span><input required type="date" name="adjusted"></label><button type="submit" class="fd-button">변동표 미리보기</button></form></section>` : "";
+  const change = trade.adjustment ? `<section class="fd-panel fd-action-panel fd-visit-panel"><h2>약정 서식 출력</h2><form class="fd-form" data-form="visitChange"><label class="fd-field"><span>약정에 따라 이번 단가를 조정한 날짜</span><input required type="date" name="adjusted"></label><button type="submit" class="fd-button">변동표 미리보기</button></form></section>` : "";
   return calc + change;
 };
 const pos = (x: number, y: number, text: string, size: number = 9, width: number = 180): string =>

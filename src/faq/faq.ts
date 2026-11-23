@@ -1,6 +1,7 @@
 /* 이용 가이드와 실제 구현 범위를 설명하는 질문 목록. */
 import "../site/site.css";
-import "../home/nav";
+import "../home/home.css";
+import { mountSiteChrome } from "../shared/site-chrome";
 import "./guide.css";
 import { esc } from "../ui";
 
@@ -41,3 +42,5 @@ document.getElementById("faq-tabs")?.addEventListener("click", (event: MouseEven
   document.querySelector<HTMLButtonElement>(`[data-cat='${current}']`)?.focus();
 });
 render();
+
+mountSiteChrome();

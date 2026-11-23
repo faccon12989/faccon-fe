@@ -1,5 +1,6 @@
 /* 서비스 소개 상세 페이지: feature.html?f=calc|recon|share|security */
-import "../home/nav";
+import "../home/home.css";
+import { mountSiteChrome } from "../shared/site-chrome";
 import "../home/home-feel.css";
 import "../faq/faq.css";
 import "./feature.css";
@@ -36,3 +37,5 @@ const f = pick();
 document.title = `${f.label} · Faccon`;
 const main = document.querySelector<HTMLElement>("#feature");
 if (main) main.innerHTML = hero(f) + example(f) + points(f) + others(f);
+
+mountSiteChrome();

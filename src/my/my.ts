@@ -1,4 +1,5 @@
 import "./local.css";
+import { siteHeaderHtml } from "../shared/site-header";
 import { reviewVisit, previewChange } from "./visit-review";
 import { pct, won } from "../calc";
 import { clearSession, readLocalStore, readSession, requireSession, saveLocalTrade } from "../local-store";
@@ -34,7 +35,7 @@ const render = (): void => {
     const trade = trades.find((row: LocalTrade): boolean => row.id === currentId());
     content = trade ? detailView(trade, session, trades) : empty("거래를 찾을 수 없습니다", "현재 회사의 거래 목록에서 다시 선택해 주세요.", '<a class="fd-button" href="#/trades">현재 약정으로</a>');
   } else content = page === "trades" ? tradesView(trades, session) : page === "documents" ? documentsView(trades, session) : overview(trades, session);
-  document.body.innerHTML = shell(session, page, content);
+  document.body.innerHTML = siteHeaderHtml() + shell(session, page, content);
 };
 const toast = (message: string, error: boolean = false): void => {
   const node = document.getElementById("toast");
@@ -134,5 +135,5 @@ window.addEventListener("pageshow", (): void => {
   if (session && !sessionMatches()) location.replace("./login.html");
 });
 try { render(); } catch (error: unknown) {
-  document.body.innerHTML = `<main class="fd-load-error"><h1>업무 데이터를 열지 못했습니다</h1><p>${esc(error instanceof Error ? error.message : "브라우저 저장공간을 확인해 주세요.")}</p><a href="./login.html">로그인 화면으로</a></main>`;
+  document.body.innerHTML = `${siteHeaderHtml()}<main class="fd-load-error"><h1>업무 데이터를 열지 못했습니다</h1><p>${esc(error instanceof Error ? error.message : "브라우저 저장공간을 확인해 주세요.")}</p><a href="./login.html">로그인 화면으로</a></main>`;
 }

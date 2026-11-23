@@ -1,5 +1,5 @@
 /* 서비스 소개 상세 페이지 (소개 페이지와 같은 톤) */
-.feature-page{padding-top:72px}
+.feature-page{padding-top:0}
 .feat-hero{padding:96px 20px 40px;background:linear-gradient(180deg,#f7f9fc 0%,#fff 100%)}
 .feat-hero .section-heading > span{justify-content:center}
 .feat-hero h2{font-size:clamp(28px,3.2vw,44px)}
@@ -13,7 +13,7 @@
 .feat-example dt{font-size:15.5px;color:var(--mute)}
 .feat-example dd{margin:0;font-size:16.5px;font-weight:600;color:var(--ink)}
 
-.feat-points{max-width:1120px;margin:0 auto;padding:80px 20px}
+.feat-points{max-width:1176px;margin:0 auto;padding:80px 28px}
 .feat-points ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
 .feat-points li{background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px 26px}
 .feat-points b{display:block;font-size:15px;color:var(--blue)}
@@ -30,11 +30,11 @@
 .feat-others small{display:block;margin-top:4px;font-size:14px;color:var(--mute)}
 
 @media (max-width:900px){
-  .feat-hero{padding:56px 16px 24px}
-  .feat-example{margin:28px 16px 0;padding:22px 20px}
+  .feat-hero{padding:56px 20px 24px}
+  .feat-example{margin:28px 20px 0;padding:22px 20px}
   .feat-example dl{grid-template-columns:1fr;gap:2px}
   .feat-example dd{margin-bottom:10px}
-  .feat-points{padding:56px 16px}
+  .feat-points{padding:56px 20px}
   .feat-others > div:first-of-type{grid-template-columns:minmax(0,1fr)}
 }
 .feat-points h3,.feat-others h3,.feat-example h3{font-weight:700}

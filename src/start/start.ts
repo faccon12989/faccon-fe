@@ -1,4 +1,5 @@
 import "../my/local.css";
+import { mountSiteChrome } from "../shared/site-chrome";
 import { requireSession, saveLocalTrade } from "../local-store";
 import { validateTerms } from "../local-workflow";
 import { won } from "../calc";
@@ -52,3 +53,5 @@ document.addEventListener("submit", (event: SubmitEvent): void => {
   }
 });
 render();
+
+mountSiteChrome();

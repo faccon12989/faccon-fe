@@ -1,0 +1,17 @@
+/* 모든 소개 페이지 공통 바닥글. 소개 첫 화면의 모양을 기준으로 값을 직접 정합니다. */
+.sf,.sf *{box-sizing:border-box;margin:0;padding:0;border:0;background:none;color:inherit;font:inherit;letter-spacing:normal;text-decoration:none}
+.sf{display:flex;align-items:center;gap:40px;min-height:130px;padding:27px max(28px,calc((100vw - 1280px)/2));background:#0e223c;color:#fff;font-family:"Noto Sans KR","Pretendard Variable",Pretendard,system-ui,sans-serif;font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;word-break:keep-all}
+.sf .sf-brand{display:flex;align-items:center;gap:9px;flex:none}
+.sf .sf-mark{display:grid;place-items:center;width:29px;height:29px;border-radius:9px 9px 9px 3px;background:#245bce;color:#fff;font-size:18px;font-weight:700;line-height:1}
+.sf .sf-brand strong{display:block;font-size:20px;font-weight:700}
+.sf .sf-brand small{display:block;margin-top:2px;font-size:12px;color:#c3cfe0}
+.sf .sf-links{display:flex;flex-wrap:wrap;gap:22px;font-size:13px;line-height:1.5;color:#c3cfe0}
+.sf .sf-links a:hover{text-decoration:underline}
+.sf .sf-links a:focus-visible{outline:3px solid #91b3ff;outline-offset:2px}
+.sf > p{margin-left:auto;font-size:12px;color:#9db0c7;text-align:right}
+@media (max-width:1000px){
+  .sf{display:block;padding:30px 20px}
+  .sf .sf-links{gap:14px;margin:25px 0}
+  .sf > p{margin:0;text-align:left}
+}
+@media print{.sf{display:none}}

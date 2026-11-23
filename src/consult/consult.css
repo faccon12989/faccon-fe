@@ -1,11 +1,8 @@
 :root{--accent:#245bce;--accent-dark:#1847a9;--accent-bg:#edf3ff;--ink:#12233f;--soft:#45566e;--mute:#52637a;--line:#dce4ef;--surface:#edf2fa;--surface-2:#f4f7fc;--r:10px}
 
 .consult-body{background:var(--surface-2);font-size:16px}
-.consult-body .nav{background:#fff;border-bottom:1px solid var(--line);height:78px;padding:0 max(24px,calc((100vw - 1200px)/2))}
-.consult-body .logo{color:var(--accent);font-size:28px}
-.consult-body .nav-cta{gap:14px}
 
-.consult{max-width:1200px;margin:0 auto;padding:52px 24px 80px;display:grid;grid-template-columns:.85fr 1.15fr;gap:72px;align-items:start}
+.consult{max-width:1176px;margin:0 auto;padding:52px 28px 80px;display:grid;grid-template-columns:.85fr 1.15fr;gap:72px;align-items:start}
 .back-link{font-size:14px;color:var(--mute);text-decoration:none}
 .back-link:hover{text-decoration:underline}
 .eyebrow{color:var(--accent);font-weight:700;font-size:14px;margin:36px 0 14px}
@@ -56,12 +53,9 @@
 .consult-intro ol,.consult-tip{display:none}
 .eyebrow{margin-top:24px}
 .consult-card{padding:26px}
-.consult-body .nav{height:70px}
-.consult-body .nav-cta .btn{font-size:13px;padding:8px}
 }
 
-@media(max-width:480px){.consult{padding:24px 16px 50px}
-.consult-body .nav{padding-inline:16px}
+@media(max-width:480px){.consult{padding:24px 20px 50px}
 .consult-card{padding:23px 18px}
 .field-pair{grid-template-columns:1fr}
 .consult-lead{display:block}

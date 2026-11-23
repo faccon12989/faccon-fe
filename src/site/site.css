@@ -42,13 +42,6 @@ h3{font-size:21px;margin:0 0 10px}
 .btn.lg{padding:16px 28px;min-height:58px;font-size:18px;border-radius:14px}
 
 /* 상단 메뉴 */
-.nav{position:sticky;top:0;z-index:10;display:flex;align-items:center;gap:32px;padding:0 32px;height:var(--nav-h);background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.logo{display:flex;align-items:center;font-weight:800;font-size:26px;text-decoration:none;letter-spacing:-.04em}
-.nav nav{display:flex;gap:4px}
-.nav nav a{text-decoration:none;color:var(--soft);font-size:17px;padding:8px 12px;border-radius:10px}
-.nav nav a:hover{color:var(--ink);background:var(--surface)}
-.nav-cta{margin-left:auto;display:flex;gap:8px}
-.nav-cta .btn{min-height:42px;padding:8px 16px;font-size:16px;border-radius:10px}
 
 /* 구역은 내용 길이대로, 사이 여백은 넉넉하게 */
 .sec{padding:112px 0}
@@ -167,7 +160,6 @@ h3{font-size:21px;margin:0 0 10px}
 .faq-page h1{font-size:clamp(2rem,1.5rem + 1.4vw,2.6rem);margin:0 0 12px;letter-spacing:-.03em}
 .faq-page .big{margin-bottom:0}
 .faq-cta{margin-top:40px}
-.nav nav a[aria-current=page]{color:var(--ink);font-weight:700}
 
 /* 자주 묻는 질문: 분류 탭 + 펼쳐지는 목록 */
 .faq-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:36px 0 16px}
@@ -249,10 +241,6 @@ h3{font-size:21px;margin:0 0 10px}
   :root{--nav-h:60px}
   body{font-size:16px}
   .wrap{padding:0 16px}
-  .nav{gap:12px;padding:0 16px}
-  .nav nav{display:none}
-  .logo{font-size:22px}
-  .nav-cta .btn{min-height:38px;padding:6px 12px;font-size:14px}
   .hero{grid-template-columns:minmax(0,1fr);gap:44px;padding:44px 16px 64px}
   .hero h1{font-size:2rem}
   .lead{font-size:17px}

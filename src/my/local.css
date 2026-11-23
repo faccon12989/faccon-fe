@@ -21,11 +21,9 @@ input:read-only{background:#f5f7fb;color:#61718a}
 input[type=checkbox],input[type=radio]{width:17px;height:17px;accent-color:var(--blue);flex:none}
 textarea{resize:vertical}
 select{cursor:pointer}
-.fd-app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
-.fd-sidebar{position:sticky;top:0;height:100vh;background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;padding:30px 20px 22px}
-.fd-logo{font-size:29px;font-weight:800;letter-spacing:-1.6px;display:inline-block}
-.fd-logo span{color:var(--blue)}
-.fd-org{display:flex;align-items:center;gap:10px;margin:34px 0 26px;padding-bottom:24px;border-bottom:1px solid #edf0f6}
+.fd-app{display:grid;grid-template-columns:230px 1fr;min-height:calc(100vh - var(--sh-h,0px))}
+.fd-sidebar{position:sticky;top:var(--sh-h,0px);height:calc(100vh - var(--sh-h,0px));background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;padding:30px 20px 22px}
+.fd-org{display:flex;align-items:center;gap:10px;margin:0 0 26px;padding-bottom:24px;border-bottom:1px solid #edf0f6}
 .fd-org strong{display:block;font-size:14px;max-width:145px;overflow-wrap:anywhere}
 .fd-org small{color:var(--muted);display:block;margin-top:5px;font-size:11px}
 .fd-avatar{background:#e9f0ff;color:var(--blue);font-weight:700;border-radius:10px;width:38px;height:40px;display:grid;place-items:center;flex:none}
@@ -158,9 +156,7 @@ select{cursor:pointer}
 .fd-toast.error{background:#8c343a}
 .fd-load-error{max-width:700px;margin:80px auto;padding:30px;background:#fff;border-radius:15px}
 .fd-load-error p{margin:20px 0}
-.fd-public-head{display:flex;justify-content:space-between;align-items:center;padding:25px 6vw;border-bottom:1px solid var(--border);background:#fff}
-.fd-public-head>a:last-child{font-size:13px;color:#4b6183}
-.fd-login-wrap{display:grid;grid-template-columns:1fr 1fr;max-width:1080px;gap:80px;margin:70px auto;padding:0 35px;align-items:center}
+.fd-login-wrap{display:grid;grid-template-columns:1fr 1fr;max-width:1176px;gap:80px;margin:70px auto;padding:0 28px;align-items:center}
 .fd-login-intro .fd-eyebrow{color:var(--blue);font-size:11px}
 .fd-login-intro h1{font-size:40px;line-height:1.35;letter-spacing:-1.8px}
 .fd-login-intro>p:not(.fd-eyebrow){font-size:15px;color:var(--muted);margin-top:20px}
@@ -180,6 +176,15 @@ select{cursor:pointer}
 .fd-login-note{font-size:11px!important;color:#75859e!important;margin-top:24px;border-top:1px solid var(--border);padding-top:18px;line-height:1.8!important}
 .fd-login-note a{color:var(--blue)}
 .fd-start-wrap{max-width:920px;margin:35px auto 60px;padding:0 25px}
+.fd-start-back{margin:28px auto 0}
+.fd-start-back a{font-size:13px;font-weight:600;color:#3b5b87}
+.fd-start-back+.fd-start-wrap{margin-top:16px}
+/* 기업 방문 검토(원재료비 검토·약정 서식 출력): 결과 버튼 줄바꿈과 안쪽 여백 */
+.fd-visit-panel>p{margin-top:2px}
+.fd-visit-panel .fd-request{margin:18px 0 0}
+.fd-visit-panel .fd-request h3{font-size:15px;overflow-wrap:anywhere}
+.fd-visit-panel .fd-request .fd-button{margin-top:12px}
+.fd-visit-panel .fd-field>span{line-height:1.5}
 .fd-start-stepper{display:flex;gap:10px;padding:0;list-style:none;margin:25px 0}
 .fd-start-stepper li{flex:1;padding:13px 15px;color:#8a98ae;font-size:13px;border-bottom:3px solid #dce4ef}
 .fd-start-stepper li.on{color:var(--blue);border-color:var(--blue);font-weight:700}
@@ -229,12 +234,11 @@ select{cursor:pointer}
 }
 @media(max-width:600px){.fd-app{display:block}
 .fd-sidebar{position:static;height:auto;padding:15px 18px;display:grid;grid-template-columns:1fr auto;gap:14px}
-.fd-logo{font-size:24px}
 .fd-org{display:none}
 .fd-sidebar nav{grid-column:1/-1;display:flex;order:4;gap:5px}
 .fd-sidebar nav a{flex:1;justify-content:center;font-size:12px;padding:10px 5px}
 .fd-sidebar nav a span{display:none}
-.fd-create{margin:0;font-size:11px;padding:10px}
+.fd-create{margin:0;font-size:11px;padding:10px;justify-self:start}
 .fd-account{margin:0;padding:0;border:0;grid-column:1/-1;display:flex;align-items:center;gap:8px;order:3;font-size:12px}
 .fd-account small{margin:0;font-size:11px}
 .fd-account .fd-text-button{margin-left:auto;font-size:11px}
@@ -274,7 +278,6 @@ select{cursor:pointer}
 .fd-history>div{grid-template-columns:1fr 1fr;gap:7px}
 .fd-history p{grid-column:1/-1}
 .fd-toast{width:calc(100% - 32px);bottom:16px;font-size:12px}
-.fd-public-head{padding:20px}
 .fd-login-wrap{padding:0 20px;margin:32px auto;gap:26px}
 .fd-login-intro h1{font-size:27px}
 .fd-login-intro>p:not(.fd-eyebrow){font-size:13px;margin-top:12px}

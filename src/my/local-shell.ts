@@ -6,7 +6,7 @@ export const detailLink = (id: string): string => `#/trade/${encodeURIComponent(
 export const badge = (trade: LocalTrade): string => `<span class="fd-badge ${["active", "completed"].includes(trade.stage) ? "success" : ""}">${esc(STAGE_LABEL[trade.stage])}</span>`;
 export const dateText = (iso: string): string => new Date(iso).toLocaleString("ko-KR", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" });
 export const shell = (session: LocalSession, page: string, content: string): string => `<div class="fd-app">
-  <aside class="fd-sidebar"><a class="fd-logo" href="./">faccon<span>.</span></a>
+  <aside class="fd-sidebar">
     <div class="fd-org"><span class="fd-avatar">${esc(session.company.slice(0, 1))}</span><div><strong>${esc(session.company)}</strong><small>${session.role === "buyer" ? "위탁기업" : "수탁기업"} 워크스페이스</small></div></div>
     <nav aria-label="업무 메뉴"><a class="${page === "home" ? "on" : ""}" href="#/home"><span>◫</span>업무 요약</a><a class="${page === "trades" || page === "trade" ? "on" : ""}" href="#/trades"><span>▤</span>현재 약정</a><a class="${page === "documents" ? "on" : ""}" href="#/documents"><span>▧</span>자료·증빙</a></nav>
     ${session.role === "buyer" ? '<a class="fd-create" href="./start.html">＋ 새로운 거래 등록</a>' : '<div class="fd-side-note">등록된 거래의 자료 제출과<br>약정 승인·계산 확인을 진행합니다.</div>'}

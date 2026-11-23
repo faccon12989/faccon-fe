@@ -1,7 +1,7 @@
 /* 도입 방식 페이지 (소개 페이지와 같은 톤) */
-.pilot-page{padding-top:72px}
+.pilot-page{padding-top:0}
 .pilot-hero{padding:100px 20px 40px;background:linear-gradient(180deg,#f7f9fc 0%,#fff 100%)}
-.pilot-sec{max-width:1120px;margin:0 auto;padding:90px 20px}
+.pilot-sec{max-width:1176px;margin:0 auto;padding:90px 28px}
 .pilot-sec.alt{max-width:none;background:#f5f7fa}
 .pilot-sec .section-heading > span{justify-content:center}
 
@@ -37,7 +37,7 @@
 @media (max-width:900px){
   .pilot-weeks,.pilot-plans,.pilot-two{grid-template-columns:minmax(0,1fr)}
   .pilot-two{gap:28px}
-  .pilot-sec{padding:64px 16px}
-  .pilot-hero{padding:64px 16px 24px}
+  .pilot-sec{padding:64px 20px}
+  .pilot-hero{padding:64px 20px 24px}
 }
 .pilot-end h2{font-weight:700;margin-bottom:28px}

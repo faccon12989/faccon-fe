@@ -1,6 +1,7 @@
 /* 상담 신청 초안은 명시적인 동의 후 이 브라우저에만 저장합니다. */
 import "../site/site.css";
 import "./consult.css";
+import { mountSiteChrome } from "../shared/site-chrome";
 import { esc } from "../ui";
 import { parseConsult, problemOf, type ConsultDraft } from "./model";
 
@@ -97,3 +98,5 @@ const restoreDraft = (): void => {
   }
 };
 restoreDraft();
+
+mountSiteChrome();

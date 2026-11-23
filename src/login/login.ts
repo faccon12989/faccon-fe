@@ -1,4 +1,5 @@
 import "../my/local.css";
+import { mountSiteChrome } from "../shared/site-chrome";
 import { companyNames, saveSession } from "../local-store";
 import type { Role } from "../types";
 import { esc } from "../ui";
@@ -28,3 +29,5 @@ form?.addEventListener("submit", (event: SubmitEvent): void => {
   } catch { if (errorNode) errorNode.textContent = "업무 공간을 열지 못했습니다. 브라우저 저장소 사용 설정을 확인해 주세요."; }
 });
 updateCompanies();
+
+mountSiteChrome();
