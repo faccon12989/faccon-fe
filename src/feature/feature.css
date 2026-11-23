@@ -4,7 +4,7 @@
 .feat-hero .section-heading > span{justify-content:center}
 .feat-hero h2{font-size:clamp(28px,3.2vw,44px)}
 .feat-hero .section-heading p{max-width:720px;margin:0 auto}
-.feat-shot{max-width:880px;margin:52px auto 0}
+.feat-hero .feat-shot{max-width:880px;margin:52px auto 0}
 
 .feat-example{max-width:880px;margin:40px auto 0;padding:28px 32px;background:#f7f9fc;border:1px solid var(--line);border-radius:14px}
 .feat-example h3{margin:0 0 14px;font-size:19px;color:var(--ink)}
